@@ -314,7 +314,7 @@ export default function Home() {
               { sigla: 'DBT', nombre: 'Terapia Dialéctico-Conductual', emoji: '🌊', border: 'border-[#2B9ED4]' },
               { sigla: 'AC', nombre: 'Activación Conductual', emoji: '🏃', border: 'border-[#F9BC15]' },
               { sigla: 'PBBT', nombre: 'Terapia Basada en Procesos', emoji: '⚙️', border: 'border-[#2B9ED4]' },
-              { sigla: 'IBT', nombre: 'Terapia Conductual Integrativa', emoji: '🧩', border: 'border-[#E8720A]' },
+              { sigla: 'IBT', nombre: 'Terapia Conductual Interpersonal', emoji: '🧩', border: 'border-[#E8720A]' },
             ].map((modelo) => (
               <div key={modelo.sigla} className={`bg-white p-8 rounded-3xl shadow-lg flex flex-col items-center text-center border-b-8 ${modelo.border} transform hover:-translate-y-1 transition-all`}>
                 <div className="bg-[#f4f5f7] w-20 h-20 rounded-full flex items-center justify-center mb-4">
