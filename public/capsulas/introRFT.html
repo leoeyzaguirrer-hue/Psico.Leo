@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFT: De la Teoría a la Clínica | Un Curso para Terapeutas CBS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== CSS VARIABLES ========== */
+:root {
+  --blue:     #1B4F8A;
+  --celeste:  #2B9ED4;
+  --yellow:   #F9BC15;
+  --orange:   #E8720A;
+  --cream:    #FFF8E7;
+  --white:    #ffffff;
+  --gray-100: #F4F6FA;
+  --gray-200: #E2E8F0;
+  --gray-400: #94A3B8;
+  --gray-600: #475569;
+  --gray-800: #1E293B;
+  --text:     #1E293B;
+  --bg:       #F4F6FA;
+  --bg-card:  #ffffff;
+  --bg-sidebar: #ffffff;
+  --sidebar-text: #1E293B;
+  --border:   #E2E8F0;
+  --shadow:   0 4px 24px rgba(27,79,138,0.10);
+  --shadow-lg: 0 8px 40px rgba(27,79,138,0.16);
+  --radius:   16px;
+  --radius-sm: 8px;
+}
+[data-theme="dark"] {
+  --text:     #E2E8F0;
+  --bg:       #0F1923;
+  --bg-card:  #1A2535;
+  --bg-sidebar: #142030;
+  --sidebar-text: #CBD5E1;
+  --border:   #2D3E52;
+  --gray-100: #1A2535;
+  --gray-200: #253347;
+  --gray-600: #94A3B8;
+  --gray-800: #CBD5E1;
+  --shadow:   0 4px 24px rgba(0,0,0,0.30);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.40);
+  --cream:    #1F2D1A;
+}
+
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .3s, color .3s;
+  overflow-x: hidden;
+}
+h1,h2,h3,h4,h5 { font-family: 'Nunito', sans-serif; font-weight: 800; }
+a { color: var(--celeste); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ========== LANDING PAGE ========== */
+#landing {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--blue) 0%, #0d2d5e 40%, #0a2040 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 60px 40px;
+}
+#landing::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43,158,212,0.18) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 20% 80%, rgba(249,188,21,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.landing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  max-width: 1100px;
+  width: 100%;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(249,188,21,0.15);
+  border: 1px solid rgba(249,188,21,0.4);
+  color: var(--yellow);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+.landing-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.landing-title span.accent { color: var(--yellow); }
+.landing-title span.celeste { color: #7FD3F5; }
+.landing-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+.landing-authors {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 36px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.btn-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--yellow);
+  color: var(--blue);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 14px 32px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 20px rgba(249,188,21,0.35);
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,188,21,0.45); }
+.landing-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.lcard {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: background .2s;
+}
+.lcard:hover { background: rgba(255,255,255,0.11); }
+.lcard-emoji { font-size: 1.8rem; flex-shrink: 0; line-height: 1; }
+.lcard h4 { font-family: 'Nunito', sans-serif; font-weight: 700; color: #fff; font-size: 0.95rem; margin-bottom: 4px; }
+.lcard p { font-size: 0.82rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+.landing-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.stat { text-align: center; }
+.stat-num { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.6rem; color: var(--yellow); }
+.stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); font-weight: 600; }
+
+/* ========== APP LAYOUT ========== */
+#app { display: none; min-height: 100vh; }
+#app.active { display: flex; }
+
+/* ========== SIDEBAR ========== */
+#sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  transition: background .3s, border .3s;
+  z-index: 100;
+}
+.sidebar-header {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+[data-theme="dark"] .sidebar-logo { color: var(--celeste); }
+.sidebar-tagline {
+  font-size: 0.72rem;
+  color: var(--gray-400);
+  margin-top: 4px;
+  font-weight: 600;
+}
+.sidebar-section-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  padding: 16px 20px 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all .2s;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--sidebar-text);
+  opacity: 0.75;
+}
+.nav-item:hover { background: var(--gray-100); opacity: 1; }
+.nav-item.active {
+  border-left-color: var(--blue);
+  background: linear-gradient(90deg, rgba(27,79,138,0.08) 0%, transparent 100%);
+  color: var(--blue);
+  opacity: 1;
+}
+[data-theme="dark"] .nav-item.active { color: var(--celeste); border-left-color: var(--celeste); }
+.nav-emoji { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--celeste);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 100px;
+}
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.dark-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.toggle-track {
+  width: 40px; height: 22px;
+  background: var(--gray-200);
+  border-radius: 100px;
+  position: relative;
+  transition: background .3s;
+}
+.toggle-track.on { background: var(--blue); }
+.toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: transform .3s;
+}
+.toggle-track.on .toggle-thumb { transform: translateX(18px); }
+.sidebar-credits {
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* ========== MAIN CONTENT ========== */
+#main {
+  flex: 1;
+  padding: 48px 56px;
+  max-width: 860px;
+  overflow-x: hidden;
+}
+
+/* ========== SECTIONS ========== */
+.section { display: none; animation: fadeIn .35s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* ========== MODULE HEADER ========== */
+.mod-header {
+  margin-bottom: 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.mod-number {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--celeste);
+  margin-bottom: 8px;
+}
+.mod-title {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--blue);
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+[data-theme="dark"] .mod-title { color: #7FD3F5; }
+.mod-emoji { font-size: 2.8rem; margin-bottom: 12px; display: block; }
+.mod-intro {
+  font-size: 1.1rem;
+  color: var(--gray-600);
+  line-height: 1.75;
+  max-width: 680px;
+}
+.mod-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  background: var(--gray-100);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+
+/* ========== CONTENT BLOCKS ========== */
+.content-block {
+  margin-bottom: 36px;
+}
+.block-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--blue);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+[data-theme="dark"] .block-title { color: var(--celeste); }
+.block-title::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, var(--border), transparent);
+  border-radius: 2px;
+}
+p { line-height: 1.8; margin-bottom: 14px; font-size: 1rem; }
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { line-height: 1.8; margin-bottom: 6px; font-size: 1rem; }
+
+/* ========== HIGHLIGHT BOX ========== */
+.highlight-box {
+  background: linear-gradient(135deg, rgba(27,79,138,0.06) 0%, rgba(43,158,212,0.06) 100%);
+  border: 1.5px solid rgba(27,79,138,0.18);
+  border-left: 4px solid var(--blue);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  margin: 24px 0;
+}
+[data-theme="dark"] .highlight-box {
+  background: rgba(43,158,212,0.07);
+  border-color: rgba(43,158,212,0.3);
+  border-left-color: var(--celeste);
+}
+.highlight-box .hb-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+[data-theme="dark"] .highlight-box .hb-label { color: var(--celeste); }
+.highlight-box p { margin-bottom: 0; font-size: 1rem; }
+
+/* ========== YELLOW CALLOUT ========== */
+.callout-yellow {
+  background: linear-gradient(135deg, rgba(249,188,21,0.12) 0%, rgba(232,114,10,0.06) 100%);
+  border: 1.5px solid rgba(249,188,21,0.35);
+  border-left: 4px solid var(--yellow);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  margin: 24px 0;
+}
+.callout-yellow .cy-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+
+/* ========== EXPERIMENT BOX ========== */
+.experiment-box {
+  background: linear-gradient(135deg, #FFF8E7 0%, #FFF3D6 100%);
+  border: 2px solid var(--yellow);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+[data-theme="dark"] .experiment-box {
+  background: linear-gradient(135deg, rgba(249,188,21,0.08) 0%, rgba(232,114,10,0.05) 100%);
+  border-color: rgba(249,188,21,0.3);
+}
+.exp-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.exp-emoji { font-size: 1.6rem; }
+.exp-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--orange);
+}
+.exp-subtitle { font-size: 0.8rem; color: var(--gray-600); font-weight: 600; }
+.exp-steps {
+  list-style: none;
+  padding: 0;
+  counter-reset: step-counter;
+}
+.exp-steps li {
+  counter-increment: step-counter;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+.exp-steps li::before {
+  content: counter(step-counter);
+  min-width: 26px;
+  height: 26px;
+  background: var(--orange);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.exp-note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(232,114,10,0.3);
+  font-size: 0.88rem;
+  color: var(--orange);
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* ========== CLINICAL EXAMPLE (collapsible) ========== */
+.clinical-example {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  margin: 20px 0;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.clinical-example:hover { border-color: var(--celeste); }
+.ce-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  background: var(--bg-card);
+  user-select: none;
+  transition: background .2s;
+}
+.ce-trigger:hover { background: var(--gray-100); }
+.ce-icon { font-size: 1.2rem; }
+.ce-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--celeste);
+}
+.ce-title { font-size: 0.9rem; color: var(--gray-600); flex: 1; }
+.ce-arrow {
+  font-size: 0.9rem;
+  color: var(--gray-400);
+  transition: transform .3s;
+}
+.clinical-example.open .ce-arrow { transform: rotate(180deg); }
+.ce-body {
+  display: none;
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+.clinical-example.open .ce-body { display: block; }
+.dialogue {
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin: 12px 0;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 0.9rem;
+}
+.dialogue .speaker {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+}
+.dialogue .speaker.t { color: var(--blue); }
+.dialogue .speaker.c { color: var(--orange); }
+.dialogue-line { margin-bottom: 14px; }
+.ce-analysis {
+  margin-top: 14px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(27,79,138,0.06) 0%, rgba(43,158,212,0.04) 100%);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--celeste);
+  font-size: 0.88rem;
+}
+.ce-analysis strong { color: var(--blue); }
+[data-theme="dark"] .ce-analysis strong { color: var(--celeste); }
+
+/* ========== FRAME TABLE ========== */
+.frame-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.9rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.frame-table thead tr {
+  background: var(--blue);
+  color: white;
+}
+[data-theme="dark"] .frame-table thead tr { background: #1e3a5f; }
+.frame-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+.frame-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  vertical-align: top;
+}
+.frame-table tr:last-child td { border-bottom: none; }
+.frame-table tr:hover td { background: var(--gray-100); }
+.frame-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+}
+.ft-coord { background: rgba(43,158,212,0.15); color: var(--celeste); }
+.ft-dist  { background: rgba(232,114,10,0.12); color: var(--orange); }
+.ft-comp  { background: rgba(27,79,138,0.12); color: var(--blue); }
+.ft-temp  { background: rgba(34,197,94,0.12); color: #16a34a; }
+.ft-hier  { background: rgba(168,85,247,0.12); color: #7c3aed; }
+.ft-deic  { background: rgba(249,188,21,0.2); color: #b45309; }
+
+/* ========== CONCEPT CARD ========== */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.concept-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.concept-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--celeste); }
+.cc-emoji { font-size: 2rem; margin-bottom: 10px; }
+.cc-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+[data-theme="dark"] .cc-title { color: var(--celeste); }
+.cc-body { font-size: 0.87rem; line-height: 1.65; color: var(--gray-600); }
+
+/* ========== QUOTE ========== */
+.quote-block {
+  border-left: 4px solid var(--yellow);
+  padding: 16px 24px;
+  margin: 24px 0;
+  background: var(--gray-100);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.quote-text {
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.quote-source {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-400);
+}
+
+/* ========== FAQ SECTION ========== */
+.faq-item {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.faq-item:hover { border-color: var(--celeste); }
+.faq-trigger {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+  cursor: pointer;
+  background: var(--bg-card);
+  user-select: none;
+}
+.faq-q-num {
+  min-width: 32px;
+  height: 32px;
+  background: var(--blue);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+[data-theme="dark"] .faq-q-num { background: var(--celeste); }
+.faq-q-text {
+  flex: 1;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+.faq-arrow {
+  font-size: 1rem;
+  color: var(--gray-400);
+  transition: transform .3s;
+  margin-top: 2px;
+}
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-body {
+  display: none;
+  padding: 24px 28px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  font-size: 0.97rem;
+  line-height: 1.8;
+}
+.faq-item.open .faq-body { display: block; }
+.faq-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(27,79,138,0.08);
+  color: var(--blue);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(27,79,138,0.15);
+}
+[data-theme="dark"] .faq-tag { background: rgba(43,158,212,0.1); color: var(--celeste); border-color: rgba(43,158,212,0.2); }
+
+/* ========== GLOSSARY BUTTON ========== */
+.glossary-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 52px;
+  height: 52px;
+  background: var(--blue);
+  color: white;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(27,79,138,0.35);
+  transition: transform .2s, box-shadow .2s;
+  z-index: 1000;
+}
+.glossary-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(27,79,138,0.5); }
+
+/* ========== GLOSSARY PANEL ========== */
+#glossary-panel {
+  position: fixed;
+  bottom: 96px;
+  right: 32px;
+  width: 340px;
+  max-height: 480px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+#glossary-panel.open { display: flex; }
+.gp-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.gp-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--blue);
+}
+[data-theme="dark"] .gp-title { color: var(--celeste); }
+.gp-close { cursor: pointer; font-size: 1.1rem; color: var(--gray-400); border: none; background: none; }
+.gp-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.gp-search input {
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.gp-search input:focus { border-color: var(--celeste); }
+.gp-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 0;
+}
+.gp-term {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.gp-term:last-child { border-bottom: none; }
+.gp-term-name {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+[data-theme="dark"] .gp-term-name { color: var(--celeste); }
+.gp-term-def {
+  font-size: 0.8rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+
+/* ========== GLOSSARY TERM INLINE ========== */
+.gterm {
+  color: var(--celeste);
+  font-weight: 700;
+  cursor: help;
+  border-bottom: 1.5px dashed rgba(43,158,212,0.45);
+  transition: color .2s;
+}
+.gterm:hover { color: var(--blue); }
+
+/* ========== PROGRESS BAR ========== */
+.progress-bar {
+  height: 3px;
+  background: var(--gray-200);
+  border-radius: 2px;
+  margin: 8px 20px 0;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--celeste));
+  border-radius: 2px;
+  transition: width .5s;
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
+
+/* ========== FORMULA BOX ========== */
+.formula-box {
+  background: var(--blue);
+  color: white;
+  border-radius: var(--radius);
+  padding: 24px 32px;
+  margin: 24px 0;
+  text-align: center;
+}
+[data-theme="dark"] .formula-box { background: #1e3a5f; }
+.formula-text {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+}
+.formula-label {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.6);
+  margin-top: 8px;
+}
+
+/* ========== WELCOME PANEL ========== */
+.welcome-panel {
+  background: linear-gradient(135deg, var(--blue) 0%, #0d3d7a 100%);
+  border-radius: var(--radius);
+  padding: 40px 48px;
+  color: white;
+  margin-bottom: 32px;
+}
+.wp-title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+.wp-sub { font-size: 1rem; opacity: 0.8; line-height: 1.7; max-width: 520px; }
+
+/* ========== MODULE GRID (overview) ========== */
+.module-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.mod-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.mod-card:hover { border-color: var(--celeste); transform: translateY(-2px); box-shadow: var(--shadow); }
+.mc-emoji { font-size: 2rem; margin-bottom: 8px; }
+.mc-num { font-size: 0.72rem; font-weight: 700; color: var(--celeste); text-transform: uppercase; letter-spacing: 0.1em; }
+.mc-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem; color: var(--blue); margin-top: 4px; }
+[data-theme="dark"] .mc-title { color: #7FD3F5; }
+.mc-desc { font-size: 0.8rem; color: var(--gray-600); margin-top: 6px; line-height: 1.5; }
+
+/* ========== STEP PROCESS ========== */
+.step-list {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.step-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  position: relative;
+  padding-bottom: 24px;
+}
+.step-item:last-child { padding-bottom: 0; }
+.step-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.step-connector {
+  width: 2px;
+  flex: 1;
+  min-height: 24px;
+  background: var(--border);
+  margin-top: 4px;
+}
+.step-item:last-child .step-connector { display: none; }
+.step-content { padding-top: 6px; }
+.step-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+.step-desc { font-size: 0.9rem; color: var(--gray-600); line-height: 1.65; }
+
+/* ========== PILL TAGS ========== */
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+}
+.pill-blue { background: rgba(27,79,138,0.1); color: var(--blue); border: 1px solid rgba(27,79,138,0.2); }
+.pill-celeste { background: rgba(43,158,212,0.1); color: var(--celeste); border: 1px solid rgba(43,158,212,0.2); }
+.pill-yellow { background: rgba(249,188,21,0.15); color: #b45309; border: 1px solid rgba(249,188,21,0.3); }
+.pill-orange { background: rgba(232,114,10,0.1); color: var(--orange); border: 1px solid rgba(232,114,10,0.2); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .landing-grid { grid-template-columns: 1fr; }
+  .landing-cards { display: none; }
+  #main { padding: 32px 24px; }
+  #sidebar { width: 240px; min-width: 240px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LANDING PAGE
+============================================================ -->
+<section id="landing">
+  <div class="landing-grid">
+    <div class="landing-left">
+      <div class="landing-badge">🧠 Ciencia Conductual Contextual</div>
+      <h1 class="landing-title">
+        <span class="celeste">Teoría de</span><br>
+        Marcos<br>
+        <span class="accent">Relacionales</span>
+      </h1>
+      <p class="landing-subtitle">
+        Un curso completo para terapeutas que quieren entender el lenguaje humano desde sus bases científicas — y usarlo en la clínica.
+      </p>
+      <p class="landing-authors">📚 Basado en Törneke (2010) · Villatte, Villatte & Hayes (2016)</p>
+      <button class="btn-start" onclick="startCourse()">
+        Comenzar el curso →
+      </button>
+      <div class="landing-stats">
+        <div class="stat"><div class="stat-num">8</div><div class="stat-label">Módulos</div></div>
+        <div class="stat"><div class="stat-num">8</div><div class="stat-label">Preguntas FAQ</div></div>
+        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Aplicación clínica</div></div>
+      </div>
+    </div>
+    <div class="landing-cards">
+      <div class="lcard"><div class="lcard-emoji">🧩</div><div><h4>¿Qué es el aprendizaje relacional?</h4><p>Entendé por qué los humanos somos los únicos animales con este problema.</p></div></div>
+      <div class="lcard"><div class="lcard-emoji">🕸️</div><div><h4>Marcos relacionales y clínica</h4><p>Cómo las redes verbales mantienen el sufrimiento psicológico.</p></div></div>
+      <div class="lcard"><div class="lcard-emoji">🔬</div><div><h4>Experimentos que lo demuestran</h4><p>Dinámicas para que tus alumnos lo vivan en primera persona.</p></div></div>
+      <div class="lcard"><div class="lcard-emoji">❓</div><div><h4>Preguntas reales, respuestas reales</h4><p>FAQ con las preguntas más frecuentes de estudiantes de ACT.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     APP
+============================================================ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">🧠 RFT Curso</div>
+      <div class="sidebar-tagline">Para terapeutas CBS · 2025</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+
+    <div class="sidebar-section-label">Inicio</div>
+    <div class="nav-item active" onclick="showSection('overview')">
+      <span class="nav-emoji">🏠</span> Vista general
+    </div>
+
+    <div class="sidebar-section-label">Módulos del curso</div>
+    <div class="nav-item" onclick="showSection('mod0')"><span class="nav-emoji">🚀</span> 0 · ¿Por qué RFT?</div>
+    <div class="nav-item" onclick="showSection('mod1')"><span class="nav-emoji">🧩</span> 1 · Aprendizaje Relacional</div>
+    <div class="nav-item" onclick="showSection('mod2')"><span class="nav-emoji">🕸️</span> 2 · Marcos Relacionales</div>
+    <div class="nav-item" onclick="showSection('mod3')"><span class="nav-emoji">📏</span> 3 · Conducta y Reglas</div>
+    <div class="nav-item" onclick="showSection('mod4')"><span class="nav-emoji">🌑</span> 4 · El Lado Oscuro</div>
+    <div class="nav-item" onclick="showSection('mod5')"><span class="nav-emoji">🔍</span> 5 · RFT en Evaluación</div>
+    <div class="nav-item" onclick="showSection('mod6')"><span class="nav-emoji">🛠️</span> 6 · RFT y Técnicas ACT</div>
+    <div class="nav-item" onclick="showSection('mod7')"><span class="nav-emoji">🌐</span> 7 · RFT más allá de ACT</div>
+
+    <div class="sidebar-section-label">Recursos</div>
+    <div class="nav-item" onclick="showSection('faq')">
+      <span class="nav-emoji">❓</span> Preguntas frecuentes <span class="nav-badge">8</span>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="dark-toggle" onclick="toggleDark()">
+        <span>🌙 Modo oscuro</span>
+        <div class="toggle-track" id="dark-track"><div class="toggle-thumb"></div></div>
+      </div>
+      <p class="sidebar-credits">Basado en Törneke (2010) · Villatte et al. (2016). Uso educativo.</p>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main id="main">
+
+    <!-- ======= OVERVIEW ======= -->
+    <div id="sec-overview" class="section active">
+      <div class="welcome-panel">
+        <div class="wp-title">🧠 Bienvenido al curso de RFT</div>
+        <p class="wp-sub">Este recurso está diseñado para terapeutas que recién empiezan con ACT y quieren comprender las bases científicas del lenguaje humano. Vas a encontrar teoría sólida, experimentos vivenciales y aplicación clínica directa.</p>
+      </div>
+      <h2 style="font-size:1.3rem; margin-bottom:16px; color:var(--blue);">¿Qué vas a aprender?</h2>
+      <div class="module-overview-grid">
+        <div class="mod-card" onclick="showSection('mod0')"><div class="mc-emoji">🚀</div><div class="mc-num">Módulo 0</div><div class="mc-title">¿Por qué RFT?</div><div class="mc-desc">El problema con el conductismo clásico y el lenguaje humano.</div></div>
+        <div class="mod-card" onclick="showSection('mod1')"><div class="mc-emoji">🧩</div><div class="mc-num">Módulo 1</div><div class="mc-title">Aprendizaje Relacional</div><div class="mc-desc">Sidman, entailment mutuo y por qué los humanos somos únicos.</div></div>
+        <div class="mod-card" onclick="showSection('mod2')"><div class="mc-emoji">🕸️</div><div class="mc-num">Módulo 2</div><div class="mc-title">Marcos Relacionales</div><div class="mc-desc">AARR, familias de marcos y transformación de funciones.</div></div>
+        <div class="mod-card" onclick="showSection('mod3')"><div class="mc-emoji">📏</div><div class="mc-num">Módulo 3</div><div class="mc-title">Conducta y Reglas</div><div class="mc-desc">Pliance, tracking, augmenting y sus implicancias clínicas.</div></div>
+        <div class="mod-card" onclick="showSection('mod4')"><div class="mc-emoji">🌑</div><div class="mc-num">Módulo 4</div><div class="mc-title">El Lado Oscuro</div><div class="mc-desc">Fusión cognitiva, evitación experiencial y psicopatología.</div></div>
+        <div class="mod-card" onclick="showSection('mod5')"><div class="mc-emoji">🔍</div><div class="mc-num">Módulo 5</div><div class="mc-title">RFT en Evaluación</div><div class="mc-desc">Análisis funcional verbal y los dos arenas terapéuticos.</div></div>
+        <div class="mod-card" onclick="showSection('mod6')"><div class="mc-emoji">🛠️</div><div class="mc-num">Módulo 6</div><div class="mc-title">RFT y Técnicas ACT</div><div class="mc-desc">Defusión, metáforas y aceptación desde la TMR.</div></div>
+        <div class="mod-card" onclick="showSection('mod7')"><div class="mc-emoji">🌐</div><div class="mc-num">Módulo 7</div><div class="mc-title">RFT más allá de ACT</div><div class="mc-desc">DBT, FAP y la Ciencia Conductual Contextual.</div></div>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 0 ======= -->
+    <div id="sec-mod0" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">🚀</span>
+        <div class="mod-number">Módulo 0 · Introducción</div>
+        <h1 class="mod-title">¿Por qué necesitamos la RFT?<br>El problema del lenguaje humano</h1>
+        <p class="mod-intro">El conductismo clásico —con Skinner a la cabeza— construyó una ciencia rigurosa del comportamiento. Pero se topó con un muro: el lenguaje y la cognición humana. Este módulo explica cuál fue ese muro y por qué la RFT es la respuesta más coherente dentro del paradigma conductual.</p>
+        <span class="mod-source">📖 Törneke, Cap. 1-3 · Villatte et al., 2016</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">El conductismo radical y sus límites</div>
+        <p>Skinner fue genial. Su análisis funcional del comportamiento —antecedente → conducta → consecuencia— revolucionó la psicología. Explicó cómo los organismos aprenden a partir de contingencias directas: el reforzamiento positivo, el negativo, el castigo. Todo verificable, todo operacionalizable.</p>
+        <p>Pero cuando intentó aplicar los mismos principios al lenguaje humano, apareció el problema. En su libro <em>Verbal Behavior</em> (1957), Skinner describió conductas verbales como <strong>mands</strong> (exigir), <strong>tacts</strong> (nombrar) y <strong>intraverbales</strong> (responder a otros). Era un intento serio, pero dejaba sin respuesta algo fundamental:</p>
+        <div class="highlight-box">
+          <div class="hb-label">El problema central</div>
+          <p>¿Cómo puede un antecedente verbal especificar consecuencias que la persona <strong>nunca ha experimentado directamente</strong>, y aun así gobernar su conducta de forma efectiva durante años?</p>
+        </div>
+        <p>Por ejemplo: "Si no vas al médico este año, en diez años podrías tener complicaciones graves." Esta regla puede gobernar la conducta de una persona que jamás experimentó esas consecuencias, en un futuro que no llegó todavía. Las contingencias directas —base del aprendizaje operante— no explican esto.</p>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Chomsky y el desafío al conductismo</div>
+        <p>Noam Chomsky (1959) atacó duramente el <em>Verbal Behavior</em> de Skinner. Su argumento central era que la creatividad lingüística —la capacidad de producir y entender oraciones jamás escuchadas— no podía explicarse solo por reforzamiento. Los niños generan nuevas frases sin haberlas entrenado directamente.</p>
+        <p>Chomsky tenía razón al señalar el problema. Pero su solución —una gramática universal innata— tampoco satisfacía a los conductistas. El reto quedó abierto: <em>¿puede el paradigma conductual explicar el lenguaje sin apelar a representaciones mentales ni estructuras innatas?</em></p>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">La respuesta: Teoría de Marcos Relacionales</div>
+        <p>En los años 80 y 90, Steven Hayes y colaboradores desarrollaron una respuesta conductual al problema del lenguaje. La propuesta: el lenguaje y la cognición son formas de <strong>conducta operante generalizada</strong> —específicamente, la habilidad de relacionar estímulos de forma arbitraria, aprendida bajo control de claves contextuales.</p>
+        <p>Esto es la <span class="gterm" data-term="RFT">Teoría de Marcos Relacionales (RFT)</span>: una teoría conductual, científicamente fundamentada, que explica cómo el lenguaje humano funciona sin apelar a representaciones mentales ni estructuras innatas.</p>
+        <div class="callout-yellow">
+          <div class="cy-label">⚡ Punto clave</div>
+          <p>La RFT no es solo teoría básica — es un mapa del territorio verbal que explica por qué ciertos problemas psicológicos surgen, se mantienen, y por qué ciertas técnicas terapéuticas funcionan. La RFT es el <em>por qué</em> detrás del ACT.</p>
+        </div>
+      </div>
+
+      <div class="experiment-box">
+        <div class="exp-header">
+          <span class="exp-emoji">🔬</span>
+          <div>
+            <div class="exp-title">Experimento vivencial #1 · El límite del condicionamiento clásico</div>
+            <div class="exp-subtitle">5 minutos · Individual o en grupo</div>
+          </div>
+        </div>
+        <ol class="exp-steps">
+          <li>Cerrá los ojos e imagina un limón. Visualizalo con detalle: su color amarillo brillante, su textura rugosa.</li>
+          <li>Ahora imaginá que lo cortás al medio. Oís el sonido del cuchillo. Ves el jugo.</li>
+          <li>Llevá un gajo a tu boca. Sentí la acidez en tu lengua.</li>
+        </ol>
+        <p style="margin: 12px 0; font-size:0.9rem;">¿Salivaste? ¿Hiciste alguna mueca? La mayoría lo hace. Pero nunca hubo ningún limón real. Ninguna contingencia directa.</p>
+        <p class="exp-note">🧠 Lo que acaba de ocurrir es el núcleo de la RFT: la palabra "limón" está en un marco de coordinación con el limón real, y por eso transforma sus funciones hacia tu sistema autonómico. Sin haber probado ningún limón en ese momento.</p>
+      </div>
+
+      <div class="clinical-example">
+        <div class="ce-trigger" onclick="toggleExample(this)">
+          <span class="ce-icon">🏥</span>
+          <div>
+            <div class="ce-label">Ejemplo Clínico</div>
+            <div class="ce-title">¿Por qué mi paciente siente miedo solo de hablar de su ex?</div>
+          </div>
+          <span class="ce-arrow">▼</span>
+        </div>
+        <div class="ce-body">
+          <p>María viene a consulta con ansiedad crónica. Dice sentir miedo intenso cada vez que su expareja le escribe, pero también <em>cada vez que piensa</em> en que podría escribirle, o cuando ve a alguien que se parece a él.</p>
+          <p>Desde el condicionamiento clásico, podemos explicar la respuesta ante el mensaje real (el estímulo condicionado). Pero ¿cómo se explica la respuesta ante el <em>pensamiento</em> de que podría escribir?</p>
+          <div class="dialogue">
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>¿Cuándo fue la última vez que sentiste ese miedo fuerte?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">María</div>
+              <div>Ayer. Estaba manejando y de repente pensé "¿y si me escribe hoy?"... y empecé a temblar.</div>
+            </div>
+          </div>
+          <div class="ce-analysis">
+            <strong>Análisis RFT:</strong> El estímulo verbal "podría escribirme" está en un <span class="gterm" data-term="marco-coordinacion">marco de coordinación</span> con el mensaje real. A través de esta relación verbal, los mensajes reales <strong>transfieren sus funciones</strong> hacia el pensamiento. Por eso el pensamiento produce la misma respuesta que el estímulo real. Esto es la <span class="gterm" data-term="transformacion-funciones">transformación de funciones de estímulos</span> a través de marcos relacionales.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 1 ======= -->
+    <div id="sec-mod1" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">🧩</span>
+        <div class="mod-number">Módulo 1 · Fundamentos</div>
+        <h1 class="mod-title">Aprendizaje Relacional Derivado:<br>La habilidad única de los humanos</h1>
+        <p class="mod-intro">Todo empieza con el trabajo de Murray Sidman en los años 70. Sus experimentos con niños con dificultades de aprendizaje revelaron algo que nadie esperaba: los humanos podemos establecer relaciones entre estímulos que nunca fueron entrenadas directamente. Este es el fundamento de la RFT.</p>
+        <span class="mod-source">📖 Törneke, Cap. 4 · Hayes, Barnes-Holmes & Roche, 2001</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">El descubrimiento de Sidman</div>
+        <p>Murray Sidman (1971) estudiaba cómo niños con dificultades de aprendizaje podían aprender habilidades de lectura. Usaba un procedimiento llamado <em>matching-to-sample</em> (emparejamiento con la muestra): mostrar un estímulo de referencia y pedir que el niño elija entre varias opciones cuál corresponde.</p>
+        <p>En un experimento típico, se entrena al participante a elegir el estímulo <strong>D</strong> cuando aparece <strong>E</strong>. La relación entrenada es: <code>E → D</code>. Hasta ahí, operante puro.</p>
+        <p>Lo sorprendente vino después. Sin ningún entrenamiento adicional, los participantes humanos también elegían <strong>E</strong> cuando se les mostraba <strong>D</strong>. La relación <code>D → E</code> emergió sin ser entrenada. Esto es lo que Törneke llama <span class="gterm" data-term="relacion-derivada">relación de estímulos derivada</span>.</p>
+        <div class="highlight-box">
+          <div class="hb-label">Definición técnica</div>
+          <p>Una <strong>relación de estímulos derivada</strong> es una relación que emerge entre estímulos sin haber sido específicamente reforzada. Aparece a partir de otras relaciones ya establecidas, por inferencia relacional.</p>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Entailment mutuo y combinatorio</div>
+        <p>El fenómeno que Sidman describió tiene dos niveles de complejidad:</p>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="cc-emoji">↔️</div>
+            <div class="cc-title">Entailment Mutuo</div>
+            <div class="cc-body">Si entreno <strong>A → B</strong>, entonces <strong>B → A</strong> emerge automáticamente. La relación va en ambas direcciones. Si "perro" evoca la imagen del animal, la imagen del animal también evoca "perro".</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">🔀</div>
+            <div class="cc-title">Entailment Combinatorio</div>
+            <div class="cc-body">Si entreno <strong>A → B</strong> y <strong>B → C</strong>, emerge <strong>A → C</strong> y <strong>C → A</strong> sin entrenamiento. Dos relaciones entrenadas generan cuatro relaciones derivadas.</div>
+          </div>
+        </div>
+        <p>Este fenómeno tiene consecuencias explosivas para la complejidad del lenguaje. Con solo algunas relaciones entrenadas, emergen redes relacionales de enorme complejidad — lo que Törneke llama <span class="gterm" data-term="red-relacional">redes relacionales</span>.</p>
+
+        <div class="formula-box">
+          <div class="formula-text">
+            2 relaciones entrenadas → 4 relaciones derivadas<br>
+            5 relaciones entrenadas → potencialmente decenas de relaciones derivadas<br>
+            100 relaciones → redes de complejidad prácticamente infinita
+          </div>
+          <div class="formula-label">Esto explica la creatividad lingüística que Chomsky creía imposible de explicar conductualmente</div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">¿Esto solo lo hacemos los humanos?</div>
+        <p>Sí, con pocas excepciones. Estudios con diversas especies animales —incluyendo chimpancés con años de entrenamiento en lenguaje— muestran que o bien no tienen esta habilidad, o la tienen en grado mínimo (Hayes, 1989; Dugdale & Lowe, 2000).</p>
+        <p>Los humanos muestran esta habilidad desde los <strong>2 años de edad</strong> (Devany, Hayes & Nelson, 1986). Aparece temprano, se generaliza rápidamente, y parece ser el fundamento de toda nuestra capacidad simbólica.</p>
+        <div class="callout-yellow">
+          <div class="cy-label">💡 ¿Cuál es la diferencia con las clases de equivalencia?</div>
+          <p><strong>Clases de equivalencia</strong> (Sidman) describen relaciones de coordinación (simetría, reflexividad, transitividad) entre estímulos. Son un caso especial del fenómeno más amplio que describe la RFT. La RFT amplía el concepto: no solo hay relaciones de "igualdad" o equivalencia, sino <em>cualquier</em> tipo de relación arbitraria: mayor que, opuesto a, parte de, antes de, yo/tú... La RFT explica <em>cómo</em> se aprende la habilidad de establecer estas relaciones diversas, lo que las clases de equivalencia no hacen. Además, la RFT hace énfasis en que esta habilidad está mediada por el contexto verbal-social.</p>
+        </div>
+      </div>
+
+      <div class="experiment-box">
+        <div class="exp-header">
+          <span class="exp-emoji">🔬</span>
+          <div>
+            <div class="exp-title">Experimento vivencial #2 · El efecto Sidman en acción</div>
+            <div class="exp-subtitle">10 minutos · Necesitás hojas o post-its</div>
+          </div>
+        </div>
+        <ol class="exp-steps">
+          <li>Escribí en tres tarjetas: "BLORF", "GRITH", "ZUNKA". Son palabras inventadas sin significado.</li>
+          <li>Ahora leé esto: "Un BLORF es mayor que un GRITH. Un GRITH es mayor que un ZUNKA."</li>
+          <li>Sin leer más, respondé: ¿Un ZUNKA es mayor o menor que un BLORF? ¿Cómo lo sabés si nunca lo entrenaron directamente?</li>
+          <li>Ahora pensá: si BLORF evoca "lujo y poder", ¿qué funciones adquiere ZUNKA automáticamente? ¿Y GRITH?</li>
+        </ol>
+        <p class="exp-note">🧠 Lo que acabás de hacer es entailment combinatorio en tiempo real. Tu mente derivó relaciones que nadie te enseñó explícitamente. Eso es el aprendizaje relacional derivado — y es la base del lenguaje.</p>
+      </div>
+
+      <div class="clinical-example">
+        <div class="ce-trigger" onclick="toggleExample(this)">
+          <span class="ce-icon">🏥</span>
+          <div>
+            <div class="ce-label">Ejemplo Clínico</div>
+            <div class="ce-title">La red relacional del "fracaso"</div>
+          </div>
+          <span class="ce-arrow">▼</span>
+        </div>
+        <div class="ce-body">
+          <p>Pablo, 34 años, consulta por ansiedad laboral. Cuenta que cuando comete un error en el trabajo siente vergüenza intensa, aunque sea algo menor.</p>
+          <div class="dialogue">
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>Cuando cometés ese error, ¿qué pasa por tu mente?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Pablo</div>
+              <div>Pienso "soy un inútil". Pero también me viene "mi papá siempre decía que si no hacías bien las cosas, no valías nada"... y siento exactamente eso.</div>
+            </div>
+          </div>
+          <div class="ce-analysis">
+            <strong>Análisis RFT:</strong> "Error" → "inútil" → "no valer nada" → "desaprobación paterna". Esta es una red relacional derivada. El error actual está conectado, a través de múltiples marcos de coordinación y causalidad, con consecuencias de rechazo y desvalor que Pablo aprendió décadas atrás. <strong>El entailment combinatorio explica por qué un pequeño error dispara una respuesta tan grande</strong>: activa toda una red relacional con funciones históricas cargadas de dolor.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 2 ======= -->
+    <div id="sec-mod2" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">🕸️</span>
+        <div class="mod-number">Módulo 2 · Núcleo de la RFT</div>
+        <h1 class="mod-title">Marcos Relacionales:<br>La arquitectura del lenguaje</h1>
+        <p class="mod-intro">Si el aprendizaje relacional derivado es el fenómeno, los marcos relacionales son su explicación funcional. Un marco relacional es la unidad básica del pensamiento y el lenguaje verbal. Entenderlos cambia la forma en que ves la mente humana — y el sufrimiento.</p>
+        <span class="mod-source">📖 Törneke, Cap. 4-5 · Hayes et al., 2001</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">¿Qué es un marco relacional?</div>
+        <p>Un <span class="gterm" data-term="marco-relacional">marco relacional</span> es un patrón de conducta relacional aprendida que: (1) es arbitrariamente aplicable, (2) implica entailment mutuo y combinatorio, y (3) transforma las funciones de los estímulos relacionados.</p>
+        <p>En otras palabras: un marco relacional es la habilidad de poner estímulos en un tipo específico de relación (coordinación, oposición, jerarquía, etc.) de forma flexible y generativa, controlada por claves contextuales del ambiente social.</p>
+        <p>Törneke (2010) describe esta habilidad como un <strong>operante generalizado</strong>: se aprende bajo contingencias de reforzamiento, pero una vez adquirida, puede aplicarse a cualquier par o conjunto de estímulos, independientemente de sus propiedades físicas.</p>
+        <div class="highlight-box">
+          <div class="hb-label">Las tres propiedades del AARR</div>
+          <p><strong>A</strong>rbitrarily <strong>A</strong>pplicable <strong>R</strong>elational <strong>R</strong>esponding (AARR) es la conducta de establecer relaciones entre estímulos de forma arbitraria —es decir, independientemente de las propiedades físicas de los estímulos, sino gobernada por claves contextuales convencionales del entorno social.</p>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Familias de marcos relacionales</div>
+        <p>Hay muchos tipos diferentes de relaciones que los humanos aprendemos a establecer. Cada tipo constitye una "familia" de marcos relacionales:</p>
+
+        <table class="frame-table">
+          <thead>
+            <tr>
+              <th>Marco</th>
+              <th>Ejemplo lingüístico</th>
+              <th>Relevancia clínica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="frame-tag ft-coord">Coordinación</span></td>
+              <td>"X es igual a Y", "X significa Y", "X simboliza Y"</td>
+              <td>Base de toda simbolización. Un pensamiento adquiere las funciones del evento real.</td>
+            </tr>
+            <tr>
+              <td><span class="frame-tag ft-dist">Distinción / Oposición</span></td>
+              <td>"X es diferente de Y", "X es lo opuesto a Y"</td>
+              <td>Explica por qué "intentar no pensar en algo" aumenta ese pensamiento.</td>
+            </tr>
+            <tr>
+              <td><span class="frame-tag ft-comp">Comparación</span></td>
+              <td>"X es mayor/mejor/peor que Y"</td>
+              <td>Autocrítica, comparación social, estándares rígidos.</td>
+            </tr>
+            <tr>
+              <td><span class="frame-tag ft-temp">Temporal / Causal</span></td>
+              <td>"X ocurre antes que Y", "si X entonces Y"</td>
+              <td>Preocupación, anticipación ansiosa, rumiación causal.</td>
+            </tr>
+            <tr>
+              <td><span class="frame-tag ft-hier">Jerárquico</span></td>
+              <td>"X es parte de Y", "X pertenece a la categoría Y"</td>
+              <td>Identidad: "soy ansioso" como categoría que incluye todos los comportamientos.</td>
+            </tr>
+            <tr>
+              <td><span class="frame-tag ft-deic">Deíctico (Perspectiva)</span></td>
+              <td>"Yo/tú", "aquí/allí", "ahora/entonces"</td>
+              <td>Base de la empatía, la perspectiva del self, la desesperanza contextualizada.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Crel y Cfunc: las dos claves contextuales</div>
+        <p>El tipo de marco que se aplica en un momento dado está controlado por dos tipos de claves contextuales:</p>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="cc-emoji">🏷️</div>
+            <div class="cc-title">Crel (Clave Relacional)</div>
+            <div class="cc-body">Determina el <em>tipo</em> de relación que se establece. Por ejemplo, la palabra "es igual a" es una Crel para marcos de coordinación; "es peor que" para comparación; "si... entonces..." para causalidad.</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">⚡</div>
+            <div class="cc-title">Cfunc (Clave Funcional)</div>
+            <div class="cc-body">Determina qué <em>funciones</em> de los estímulos se transforman en un momento dado. El contexto de "evaluación" activa funciones diferentes que el contexto de "juego", aunque los mismos marcos estén presentes.</div>
+          </div>
+        </div>
+        <p>Esta distinción es crucial para la clínica: la <strong>defusión cognitiva</strong> y el <strong>mindfulness</strong> trabajan principalmente modificando las claves funcionales (Cfunc) — cambiando el contexto en el que los pensamientos ocurren, no los marcos en sí.</p>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Transformación de funciones de estímulos</div>
+        <p>Cuando dos o más estímulos están en un marco relacional, las funciones de uno se transfieren al otro. Esto es lo que Törneke llama <span class="gterm" data-term="transformacion-funciones">transformación de funciones de estímulos</span>.</p>
+        <p>El proceso ocurre así:</p>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">1</div><div class="step-connector"></div></div>
+            <div class="step-content"><div class="step-title">Estímulo A tiene funciones directas</div><div class="step-desc">El evento real (una serpiente) tiene funciones de miedo por condicionamiento directo.</div></div>
+          </div>
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">2</div><div class="step-connector"></div></div>
+            <div class="step-content"><div class="step-title">Se establece un marco entre A y B</div><div class="step-desc">La palabra "serpiente" entra en un marco de coordinación con el animal real.</div></div>
+          </div>
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">3</div><div class="step-connector"></div></div>
+            <div class="step-content"><div class="step-title">Las funciones de A se transfieren a B</div><div class="step-desc">La palabra "serpiente" adquiere funciones de miedo. Una imagen de serpiente también. Un pensamiento sobre serpientes también.</div></div>
+          </div>
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">4</div><div class="step-connector"></div></div>
+            <div class="step-content"><div class="step-title">Redes enteras se transforman</div><div class="step-desc">Todo lo relacionado con serpientes (el pasto alto, el zoológico, la noticia de una mordedura) adquiere funciones relacionadas — aunque la persona nunca haya tenido contacto directo con una serpiente real.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="experiment-box">
+        <div class="exp-header">
+          <span class="exp-emoji">🔬</span>
+          <div>
+            <div class="exp-title">Experimento vivencial #3 · Marcos en acción</div>
+            <div class="exp-subtitle">5 minutos · Solo lectura + reflexión</div>
+          </div>
+        </div>
+        <ol class="exp-steps">
+          <li>Leé estas palabras despacio y notá qué pasa en tu cuerpo: <strong>cáncer · pobreza · muerte · traición</strong></li>
+          <li>Ahora leé estas: <strong>playa · abrazo · logro · hogar</strong></li>
+          <li>Preguntate: ¿acaso "playa" tiene propiedades físicas que producen bienestar? ¿O es la red relacional construida alrededor de esa palabra la que transforma sus funciones hacia vos?</li>
+          <li>Extra: ¿qué pasa si para alguien "hogar" evoca abuso o conflicto? La misma palabra, funciones completamente distintas — porque la red relacional construida es diferente.</li>
+        </ol>
+        <p class="exp-note">🧠 Las palabras no tienen significado intrínseco. Su "significado" son las funciones que adquieren a través de las redes relacionales en las que participan. Esto es la razón por la que la historia de una persona importa tanto.</p>
+      </div>
+
+      <div class="clinical-example">
+        <div class="ce-trigger" onclick="toggleExample(this)">
+          <span class="ce-icon">🏥</span>
+          <div>
+            <div class="ce-label">Ejemplo Clínico</div>
+            <div class="ce-title">¿Cómo explicarle los marcos relacionales a mi consultante?</div>
+          </div>
+          <span class="ce-arrow">▼</span>
+        </div>
+        <div class="ce-body">
+          <p>No necesitás usar el lenguaje técnico. Podés usar la propia experiencia de la persona para mostrar cómo funcionan los marcos:</p>
+          <div class="dialogue">
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>Cuando escuchás la voz de tu jefe diciéndote "necesito hablar con vos", ¿qué sentís inmediatamente?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Consultante</div>
+              <div>Angustia. Automáticamente pienso que hice algo mal.</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>¿Y esa voz, esa frase... dónde la escuchaste antes?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Consultante</div>
+              <div>Mi papá. Siempre que me decía eso, era porque estaba en problemas.</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>Entonces tu mente aprendió a conectar esa frase con "estoy en problemas". Y ahora, aunque tu jefe puede decirte eso para cualquier cosa, tu mente ya disparó esa alarma. No porque seas irracional — sino porque tu mente es muy buena para aprender conexiones.</div>
+            </div>
+          </div>
+          <div class="ce-analysis">
+            <strong>Lo que estás haciendo:</strong> Psicoeducación basada en marcos relacionales, sin usar jerga técnica. Estás mostrando cómo la <em>transformación de funciones</em> explica por qué la respuesta emocional es automática. Esto normaliza la experiencia del consultante y abre la puerta a trabajar la defusión.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 3 ======= -->
+    <div id="sec-mod3" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">📏</span>
+        <div class="mod-number">Módulo 3 · Complejidad Verbal</div>
+        <h1 class="mod-title">Conducta Gobernada por Reglas:<br>Pliance, Tracking y Augmenting</h1>
+        <p class="mod-intro">Una vez que entendemos los marcos relacionales, podemos explicar uno de los fenómenos más clínicamente relevantes: la conducta gobernada por reglas. Los humanos seguimos instrucciones verbales que nunca hemos entrenado directamente — y esto tiene enormes ventajas, pero también un lado oscuro.</p>
+        <span class="mod-source">📖 Törneke, Cap. 6 · Hayes et al., 2001, pp. 108-109</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">¿Qué es la conducta gobernada por reglas?</div>
+        <p>Una regla es un <strong>antecedente verbal</strong> que especifica una relación entre una conducta y sus consecuencias. Cuando seguimos una regla, no necesitamos haber experimentado directamente esas consecuencias — basta con que la red relacional esté activa.</p>
+        <p>Ejemplo: "Si no usas protector solar, te vas a quemar." Una persona que nunca se quemó puede cambiar su conducta basándose en esta regla. Esto es imposible desde el condicionamiento operante clásico — pero la RFT lo explica elegantemente.</p>
+        <div class="highlight-box">
+          <div class="hb-label">La pregunta clave de Törneke</div>
+          <p>¿Cómo puede un antecedente verbal adquirir funciones a partir de consecuencias que el individuo nunca experimentó directamente, y que quizás jamás ocurrirán? La respuesta: a través de <span class="gterm" data-term="transformacion-funciones">transformación de funciones</span> por marcos relacionales.</p>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Los tres tipos de conducta gobernada por reglas</div>
+        <div class="concept-grid">
+          <div class="concept-card" style="border-top: 3px solid var(--blue);">
+            <div class="cc-emoji">🤝</div>
+            <div class="cc-title">Pliance</div>
+            <div class="cc-body"><strong>"Seguir reglas porque la gente que importa lo aprueba."</strong><br>Conducta bajo el control de una historia de reforzamiento social por hacer lo que se dice. El reforzamiento lo da el emisor de la regla, no las contingencias descritas. Ejemplo clínico: paciente que va a terapia porque "mi pareja quiere que vaya", no porque lo vea útil.</div>
+          </div>
+          <div class="concept-card" style="border-top: 3px solid var(--celeste);">
+            <div class="cc-emoji">🗺️</div>
+            <div class="cc-title">Tracking</div>
+            <div class="cc-body"><strong>"Seguir reglas porque describen bien cómo funciona el mundo."</strong><br>La conducta está bajo el control de la correspondencia entre la regla y las contingencias ambientales reales. El reforzamiento lo dan las consecuencias naturales. Ejemplo clínico: paciente que aplica lo que aprendió en terapia porque nota que genuinamente le funciona.</div>
+          </div>
+          <div class="concept-card" style="border-top: 3px solid var(--yellow);">
+            <div class="cc-emoji">🔥</div>
+            <div class="cc-title">Augmenting</div>
+            <div class="cc-body"><strong>"Seguir reglas porque cambian cuánto importa la consecuencia."</strong><br>Redes verbales que aumentan o disminuyen el valor reforzante de las consecuencias. "Tu salud es lo más importante" convierte a comer bien en algo más valioso. Crucial en trabajo con valores en ACT.</div>
+          </div>
+        </div>
+
+        <div class="quote-block">
+          <div class="quote-text">"Pliance is rule-governed behavior under the control of a history of socially mediated reinforcement for coordination between behavior and the antecedent verbal stimuli."</div>
+          <div class="quote-source">— Hayes, Barnes-Holmes & Roche (2001, p. 108), citado en Törneke (2010)</div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Indicadores clínicos: ¿conducta verbal o contingencial?</div>
+        <p>Una pregunta clave en la evaluación clínica es: ¿este comportamiento está siendo mantenido por contingencias directas, o por procesos verbales/relacionales? Aquí van los indicadores que señala Törneke:</p>
+        <div class="highlight-box">
+          <div class="hb-label">🔍 Señales de que un problema es mantenido por procesos relacionales</div>
+          <p>
+          <strong>1. Insensibilidad a las consecuencias actuales:</strong> El consultante sigue haciendo algo que claramente no le funciona, a pesar de la evidencia. La regla ("debo hacer X", "si siento Y haré Z") tiene más control que la experiencia directa.<br><br>
+          <strong>2. Rigidez contextual:</strong> La misma respuesta aparece en contextos muy diferentes donde no sería adaptativa. El patrón no varía según el contexto porque está gobernado por una regla, no por contingencias flexibles.<br><br>
+          <strong>3. El problema se activa verbalmente:</strong> La persona siente ansiedad al <em>hablar</em> o <em>pensar</em> en el problema, no solo al estar en contacto directo con él. La red verbal es suficiente para activar las funciones.<br><br>
+          <strong>4. Historia verbal explicativa:</strong> El consultante tiene narrativas elaboradas que "explican" su conducta, pero estas explicaciones parecen más una justificación post-hoc que una descripción funcional real.<br><br>
+          <strong>5. Conducta dirigida a evitar contenido verbal:</strong> Evita pensar en X, hablar de X, o estar en situaciones que recuerden a X — aunque X no esté presente de forma directa.
+          </p>
+        </div>
+      </div>
+
+      <div class="experiment-box">
+        <div class="exp-header">
+          <span class="exp-emoji">🔬</span>
+          <div>
+            <div class="exp-title">Experimento vivencial #4 · Identificá tus reglas clínicas</div>
+            <div class="exp-subtitle">10-15 minutos · Reflexión individual o grupal</div>
+          </div>
+        </div>
+        <ol class="exp-steps">
+          <li>Pensá en un momento reciente donde hiciste algo que en el fondo sabías que no te conviene. ¿Qué "regla" estabas siguiendo? Formulala en voz alta: "Si... entonces..." o "Debería..."</li>
+          <li>Preguntate: ¿esta regla vino de alguien? ¿De una experiencia pasada? ¿De una cultura o norma?</li>
+          <li>¿El seguir esa regla te da reforzamiento social (pliance), o genuinamente te ayuda a obtener lo que querés (tracking)?</li>
+          <li>En grupos: compartan. Noten cuántas reglas son de pliance disfrazadas de tracking.</li>
+        </ol>
+        <p class="exp-note">🧠 La distinción pliance/tracking no es moralista — no hay una que sea "mala". Pero en clínica, la pliance rígida a reglas disfuncionales mantiene muchos problemas psicológicos. Ese es el "lado oscuro" del lenguaje.</p>
+      </div>
+
+      <div class="clinical-example">
+        <div class="ce-trigger" onclick="toggleExample(this)">
+          <span class="ce-icon">🏥</span>
+          <div>
+            <div class="ce-label">Ejemplo Clínico</div>
+            <div class="ce-title">Pliance rígida en un paciente con depresión</div>
+          </div>
+          <span class="ce-arrow">▼</span>
+        </div>
+        <div class="ce-body">
+          <p>Gonzalo, 42 años, depresión mayor. Sigue trabajando 12 horas diarias aunque esto claramente empeora su estado de ánimo. Dice que "no puede" reducir su carga laboral.</p>
+          <div class="dialogue">
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>Notaste que cuando reducís un poco el trabajo, tu humor mejora un poco ese día. ¿Eso te hace pensar en hacer menos?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Gonzalo</div>
+              <div>No puedo. Un hombre tiene que responder por su familia. Si paro, estoy fallando.</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>¿Quién dijo eso? ¿De dónde viene esa idea?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Gonzalo</div>
+              <div>(pausa) ...Mi padre trabajaba sin parar. Nunca se quejaba. Supongo que aprendí eso.</div>
+            </div>
+          </div>
+          <div class="ce-analysis">
+            <strong>Análisis RFT:</strong> Gonzalo está bajo pliance rígida respecto a la regla "los hombres trabajan sin quejarse". El reforzador no son las consecuencias actuales (que claramente son negativas) sino la coordinación con la identidad paterna — una red verbal que incluye aprobación, masculinidad y valor personal. La insensibilidad a las contingencias actuales (mejora al descansar) es la huella digital de la conducta gobernada por reglas disfuncional.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 4 ======= -->
+    <div id="sec-mod4" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">🌑</span>
+        <div class="mod-number">Módulo 4 · Psicopatología</div>
+        <h1 class="mod-title">El Lado Oscuro del Lenguaje:<br>Fusión, Evitación y Sufrimiento</h1>
+        <p class="mod-intro">El lenguaje nos da superpoderes: podemos planificar, anticipar, imaginar, crear cultura. Pero el mismo mecanismo que hace todo esto posible es el que nos causa sufrimiento psicológico. Törneke dedica todo un capítulo a este "lado oscuro" — y es el corazón de la psicopatología desde una perspectiva RFT.</p>
+        <span class="mod-source">📖 Törneke, Cap. 7 · Törneke, Luciano & Valdivia-Salas, 2008</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">La interfaz ampliada con el dolor</div>
+        <p>Los animales sufren cuando están en contacto directo con eventos aversivos. Los humanos sufrimos también cuando <em>pensamos</em> en eventos aversivos, los <em>anticipamos</em>, los <em>recordamos</em>, o cuando estamos en contacto con estímulos <em>verbalmente relacionados</em> con ellos.</p>
+        <p>Törneke lo dice de forma poderosa: la capacidad relacional amplía nuestra interfaz con el dolor. Cualquier cosa puede conectarse verbalmente con algo aversivo, y así adquirir funciones aversivas — aunque nunca hayamos tenido contacto directo con el evento original.</p>
+        <div class="highlight-box">
+          <div class="hb-label">La paradoja humana</div>
+          <p>El mismo mecanismo que nos permite imaginar el futuro, planificar, crear arte, construir cultura — la <span class="gterm" data-term="AARR">AARR</span> — es el que hace que podamos sufrir por cosas que todavía no ocurrieron, que ya pasaron hace décadas, o que quizás jamás ocurrirán.</p>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Insensibilidad a las contingencias</div>
+        <p>Uno de los efectos más documentados de la conducta gobernada por reglas es la <strong>insensibilidad a las contingencias directas</strong>. Cuando una regla verbal gobierna la conducta, esta se vuelve relativamente independiente de lo que realmente ocurre en el ambiente.</p>
+        <p>Experimentos clásicos (Hayes et al., 1986; Matthews et al., 1977) demuestran que participantes que aprenden una tarea mediante instrucciones verbales tienen <em>más dificultad</em> en adaptarse cuando las contingencias cambian, comparados con quienes aprendieron por ensayo y error. La regla que fue útil al principio se convierte en obstáculo.</p>
+        <div class="callout-yellow">
+          <div class="cy-label">⚡ Implicancia clínica directa</div>
+          <p>¿Alguna vez te diste cuenta de que un consultante sigue haciendo algo que claramente no le funciona, aunque pueda describir perfectamente que no le funciona? Eso es insensibilidad a contingencias por conducta gobernada por reglas. La "solución" conceptual ("sé que debería hacer X") no genera conducta porque la regla que gobierna el comportamiento es otra.</p>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Fusión cognitiva: el lenguaje como realidad</div>
+        <p>La <span class="gterm" data-term="fusion-cognitiva">fusión cognitiva</span> ocurre cuando los estímulos verbales (pensamientos, reglas, evaluaciones) tienen tanto control sobre la conducta que la persona responde <em>al contenido verbal</em> como si fuera el evento real. La distinción entre la red verbal y la realidad se difumina.</p>
+        <p>Desde la RFT, la fusión cognitiva no es un error irracional — es el producto natural de un repertorio relacional muy desarrollado. Los marcos de coordinación entre el pensamiento y el evento crean funciones tan equivalentes que es difícil tratarlos de forma diferente.</p>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="cc-emoji">💭</div>
+            <div class="cc-title">Fusión con evaluaciones</div>
+            <div class="cc-body">"Soy un fracasado" → Se trata como dato objetivo sobre el self, no como una evaluación verbal contextualmente determinada.</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">🔮</div>
+            <div class="cc-title">Fusión con predicciones</div>
+            <div class="cc-body">"Me va a ir mal en esa entrevista" → Se trata como certeza, no como un posible futuro entre muchos.</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">📜</div>
+            <div class="cc-title">Fusión con reglas</div>
+            <div class="cc-body">"No puedo estar ansioso" → Se trata como mandato absoluto, no como una preferencia contextual.</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">📖</div>
+            <div class="cc-title">Fusión con el self narrativo</div>
+            <div class="cc-body">"Soy así" → La historia personal se trata como descripción objetiva de una entidad fija, no como una construcción verbal.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Evitación experiencial: el intento fallido de escapar</div>
+        <p>Si los pensamientos y emociones adquieren funciones aversivas a través de marcos relacionales, la respuesta lógica es intentar evitarlos. La <span class="gterm" data-term="evitacion-experiencial">evitación experiencial</span> (Hayes et al., 1996) es el patrón de intentar reducir, eliminar o alterar eventos privados no deseados.</p>
+        <p>El problema: la supresión verbal activa el marco de distinción/oposición. "No pensar en X" requiere pensar en X para saber qué evitar. Además, la regla "no debo sentir X" entra en marcos de coordinación con X, aumentando la probabilidad de contacto con X. La evitación, paradójicamente, amplifica el problema.</p>
+
+        <div class="formula-box">
+          <div class="formula-text">
+            Dolor psicológico inevitable + Evitación experiencial<br>
+            = Sufrimiento psicológico evitable
+          </div>
+          <div class="formula-label">Una de las formulaciones centrales de ACT — con base directa en RFT</div>
+        </div>
+      </div>
+
+      <div class="experiment-box">
+        <div class="exp-header">
+          <span class="exp-emoji">🔬</span>
+          <div>
+            <div class="exp-title">Experimento vivencial #5 · La paradoja del oso blanco</div>
+            <div class="exp-subtitle">3 minutos · El clásico de Wegner (1994)</div>
+          </div>
+        </div>
+        <ol class="exp-steps">
+          <li>Por los próximos 60 segundos, <strong>no pienses en un oso blanco</strong>. Cada vez que pienses en un oso blanco, anotalo o levantá la mano.</li>
+          <li>Cronometrá. Observá qué ocurre.</li>
+          <li>Ahora, por los próximos 60 segundos, <strong>podés pensar en lo que quieras</strong>. Notá cuántas veces aparece el oso blanco.</li>
+        </ol>
+        <p class="exp-note">🧠 La supresión verbal activa el marco de oposición: "no X" requiere X como referente. Además, la regla "no debo pensar en X" entra en coordinación con X, aumentando su accesibilidad. Desde la RFT, la evitación experiencial no solo no funciona — activamente amplifica el problema.</p>
+      </div>
+
+      <div class="clinical-example">
+        <div class="ce-trigger" onclick="toggleExample(this)">
+          <span class="ce-icon">🏥</span>
+          <div>
+            <div class="ce-label">Ejemplo Clínico</div>
+            <div class="ce-title">La espiral de fusión-evitación en un trastorno de ansiedad</div>
+          </div>
+          <span class="ce-arrow">▼</span>
+        </div>
+        <div class="ce-body">
+          <p>Clara, 28 años, trastorno de ansiedad generalizada. Consulta porque "no puede dejar de preocuparse". Describe que cuanto más intenta no pensar en sus preocupaciones, más intensas se vuelven.</p>
+          <div class="dialogue">
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>Cuando empezás a preocuparte y tratás de parar esos pensamientos, ¿qué pasa?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Clara</div>
+              <div>Es como presionar un resorte. Cuanto más lo aprieto, más fuerza tiene cuando lo suelto. O si no lo suelto, me agota mantenerlo apretado.</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>¿Y qué te decís cuando aparece la preocupación?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Clara</div>
+              <div>"No debería sentir esto. Estoy bien, no tengo razones para preocuparme. ¿Qué me pasa?" Y después me preocupo por preocuparme.</div>
+            </div>
+          </div>
+          <div class="ce-analysis">
+            <strong>Análisis RFT:</strong> Clara está en una espiral de segundo orden: la preocupación original entra en marcos de coordinación con "algo malo en mí", lo que genera nueva preocupación. La regla "no debería sentir esto" activa supresión, que a través del marco de distinción/oposición, amplifica la función de la preocupación. Esto es exactamente el modelo de evitación experiencial basado en RFT. La intervención no es "pensar mejor" sino <strong>cambiar la relación con los pensamientos</strong> — defusión y aceptación.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 5 ======= -->
+    <div id="sec-mod5" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">🔍</span>
+        <div class="mod-number">Módulo 5 · Evaluación Clínica</div>
+        <h1 class="mod-title">RFT en el Análisis Funcional:<br>Cómo incorporar el lenguaje a la evaluación</h1>
+        <p class="mod-intro">El análisis funcional es la herramienta central de la evaluación conductual. Pero si el comportamiento humano está profundamente mediado por procesos verbales, el análisis funcional debe incluir una dimensión verbal. Este módulo muestra cómo hacerlo.</p>
+        <span class="mod-source">📖 Törneke, Cap. 9 · Ramnerö & Törneke, 2008 · Villatte et al., 2016</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Los dos arenas terapéuticos</div>
+        <p>Törneke describe una distinción fundamental para entender cómo funciona la psicoterapia:</p>
+        <div class="concept-grid">
+          <div class="concept-card" style="border-top: 3px solid var(--blue);">
+            <div class="cc-emoji">🛋️</div>
+            <div class="cc-title">Arena 1: La sesión</div>
+            <div class="cc-body">El espacio compartido entre terapeuta y consultante durante las sesiones. Es la única arena a la que el terapeuta tiene acceso directo. Toda influencia terapéutica ocurre aquí — ahora, en este momento.</div>
+          </div>
+          <div class="concept-card" style="border-top: 3px solid var(--celeste);">
+            <div class="cc-emoji">🌍</div>
+            <div class="cc-title">Arena 2: La vida del consultante</div>
+            <div class="cc-body">El resto de la vida del consultante, donde los problemas se expresan y donde el cambio realmente importa. El terapeuta no tiene acceso directo — solo a través del reporte verbal del consultante.</div>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <div class="hb-label">La implicancia clave</div>
+          <p>Lo que el consultante relata sobre la Arena 2 es en sí mismo <em>conducta verbal</em>. Y si la conducta verbal es parte del problema (fusión, evitación, reglas rígidas), entonces hay un problema embebido en la estructura misma de la terapia de conversación. <strong>La psicoterapia necesita una teoría del lenguaje.</strong></p>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">El análisis funcional verbal: más allá del ABC clásico</div>
+        <p>El ABC clásico (Antecedente → Conducta → Consecuencia) sigue siendo la estructura básica. Pero desde la RFT, necesitamos ampliarla para incluir la dimensión verbal:</p>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">A</div><div class="step-connector"></div></div>
+            <div class="step-content">
+              <div class="step-title">¿Este antecedente tiene funciones por condicionamiento directo o por redes verbales?</div>
+              <div class="step-desc">Un antecedente puede activar conducta porque fue condicionado directamente (la silla del dentista), o porque está en una red relacional con algo aversivo (hablar de la silla del dentista). Si es lo segundo, el análisis debe incluir qué redes verbales están activas.</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">B</div><div class="step-connector"></div></div>
+            <div class="step-content">
+              <div class="step-title">¿Esta conducta está gobernada por contingencias o por reglas verbales?</div>
+              <div class="step-desc">¿Es sensible a cambios en las consecuencias actuales? Si es rígida e insensible a las consecuencias actuales, probablemente esté gobernada por reglas (pliance o tracking disfuncional).</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">C</div><div class="step-connector"></div></div>
+            <div class="step-content">
+              <div class="step-title">¿Las consecuencias relevantes son directas o derivadas verbalmente?</div>
+              <div class="step-desc">El reforzador puede ser concreto (aprobar un examen) o verbal/social (ser visto como competente, no ser "un fracasado"). Las consecuencias verbalmente derivadas pueden ser enormemente poderosas.</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-line"><div class="step-dot">V</div><div class="step-connector"></div></div>
+            <div class="step-content">
+              <div class="step-title">¿Qué redes verbales están mediando todo el proceso?</div>
+              <div class="step-desc">Identificar los marcos predominantes: ¿qué marcos de coordinación, causalidad, evaluación o jerarquía están activos? ¿Hay fusión con alguna narrativa de self? ¿Hay evitación de contenido verbal específico?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Preguntas clínicas para identificar procesos relacionales</div>
+        <div class="callout-yellow">
+          <div class="cy-label">🔍 Preguntas para el análisis funcional verbal</div>
+          <p>
+          <strong>Para identificar fusión cognitiva:</strong><br>
+          "¿Cuándo aparece ese pensamiento, es como si fuera un hecho o como si fuera solo un pensamiento?" / "¿Qué tan cierto se siente eso para vos?"<br><br>
+          <strong>Para identificar conducta gobernada por reglas:</strong><br>
+          "¿Notaste alguna vez que seguís haciendo X aunque no te esté dando los resultados que esperabas?" / "¿Hay una parte tuya que dice que debés hacer X de cierta manera?"<br><br>
+          <strong>Para identificar evitación experiencial:</strong><br>
+          "¿Hay pensamientos, recuerdos o sensaciones que intentás evitar tener?" / "¿Qué hacés cuando aparece X?"<br><br>
+          <strong>Para identificar marcos dominantes:</strong><br>
+          "Cuando pensás en X, ¿qué más viene junto?" / "¿Qué significa para vos ser alguien que tiene este problema?"<br><br>
+          <strong>Para detectar redes verbales en las relaciones:</strong><br>
+          "Cuando tu pareja hace Y, ¿qué es lo primero que pensás?" / "¿Hay algo que Y te recuerde de situaciones anteriores?"
+          </p>
+        </div>
+      </div>
+
+      <div class="experiment-box">
+        <div class="exp-header">
+          <span class="exp-emoji">🔬</span>
+          <div>
+            <div class="exp-title">Práctica #6 · Análisis funcional verbal de un caso</div>
+            <div class="exp-subtitle">20 minutos · En grupos de 3 (terapeuta, consultante, observador)</div>
+          </div>
+        </div>
+        <ol class="exp-steps">
+          <li>El "consultante" comparte una situación difícil de su propia vida (algo real pero no devastador).</li>
+          <li>El "terapeuta" hace un ABC clásico y luego intenta extenderlo con la dimensión verbal: ¿Hay reglas operando? ¿Hay fusión con alguna narrativa? ¿Qué redes verbales están activas?</li>
+          <li>El "observador" toma nota de qué preguntas abren más el análisis y cuáles lo cierran.</li>
+          <li>Rotar roles y compartir observaciones al final.</li>
+        </ol>
+        <p class="exp-note">🧠 Según Törneke, el mejor análisis funcional en contexto clínico se construye entre las dos arenas: lo que el consultante relata (Arena 2 via verbal) más lo que ocurre en sesión (Arena 1). Cuando el problema se muestra en la propia interacción terapéutica, hay una oportunidad de oro.</p>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 6 ======= -->
+    <div id="sec-mod6" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">🛠️</span>
+        <div class="mod-number">Módulo 6 · Clínica ACT</div>
+        <h1 class="mod-title">RFT y Técnicas ACT:<br>Defusión, Metáforas y Aceptación</h1>
+        <p class="mod-intro">Ahora que entendemos la arquitectura del sufrimiento verbal, podemos entender por qué funcionan las técnicas de ACT. Cada técnica central de ACT tiene un sustento en procesos relacionales específicos. Este módulo conecta el "qué hacer" con el "por qué funciona".</p>
+        <span class="mod-source">📖 Törneke, Cap. 5, 10-11 · Villatte, Villatte & Hayes (2016)</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Defusión cognitiva: alterando el contexto verbal</div>
+        <p>La <span class="gterm" data-term="defusion">defusión cognitiva</span> es el proceso de reducir el control literal de las redes verbales sobre la conducta. Desde la RFT, la defusión no elimina ni cambia el <em>contenido</em> del pensamiento — trabaja sobre el <em>contexto</em> en el que los pensamientos ocurren.</p>
+        <p>Törneke (Cap. 11) explica que la defusión funciona fundamentalmente modificando las <strong>claves funcionales (Cfunc)</strong>: al cambiar el contexto en el que ocurren los pensamientos, cambia qué funciones de esos pensamientos están activas. El contenido puede ser el mismo; las funciones que controlan la conducta cambian.</p>
+
+        <div class="highlight-box">
+          <div class="hb-label">Por qué funcionan las técnicas de defusión</div>
+          <p>Técnicas como "nombrar el proceso" ("Noto que estoy teniendo el pensamiento de que..."), observar pensamientos como eventos ("ese pensamiento llegó, está ahí"), o marcos deícticos ("yo no SOY mis pensamientos") — todas modifican la relación contextual entre el observador y el contenido verbal, reduciendo el control literal de las redes relacionales.</p>
+        </div>
+
+        <p>En el libro de Villatte (Mastering the Clinical Conversation, 2016), esto se enmarca en la distinción entre <strong>usos literales y no literales del lenguaje</strong>: la terapia trabaja para que el consultante pueda relacionarse con su lenguaje de forma menos literal y más funcional.</p>
+      </div>
+
+      <div class="clinical-example">
+        <div class="ce-trigger" onclick="toggleExample(this)">
+          <span class="ce-icon">🏥</span>
+          <div>
+            <div class="ce-label">Ejemplo Clínico (de Törneke, Cap. 11)</div>
+            <div class="ce-title">El ejercicio del periódico — defusión en sesión</div>
+          </div>
+          <span class="ce-arrow">▼</span>
+        </div>
+        <div class="ce-body">
+          <p>Scott viene a sesión angustiado porque cree que las personas en la sala de espera estaban hablando de él. El terapeuta propone un ejercicio:</p>
+          <div class="dialogue">
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>(toma un periódico y lo acerca a ambos rostros, casi tapándoles la cara) ¿Podés leer esto?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Scott</div>
+              <div>No, no se puede. Está demasiado cerca.</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>(aleja el periódico) ¿Y ahora?</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker c">Scott</div>
+              <div>Ahora sí. Se puede leer perfectamente.</div>
+            </div>
+            <div class="dialogue-line">
+              <div class="speaker t">Terapeuta</div>
+              <div>¿Qué pasa si en lugar del periódico, es el pensamiento "me están mirando"? Cuando lo tenés así de cerca, ¿podés ver algo más?</div>
+            </div>
+          </div>
+          <div class="ce-analysis">
+            <strong>Análisis RFT:</strong> Esta es una metáfora que usa marcos espaciales (cerca/lejos) para modificar la relación funcional con el pensamiento. El terapeuta está estableciendo un marco de analogía entre la distancia física y la distancia psicológica del contenido verbal. Al distanciarse, los pensamientos no desaparecen — pero pueden ser "leídos" (procesados) de forma diferente. Sus funciones de control sobre la conducta se reducen.
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Metáforas: marcos de analogía al servicio del cambio</div>
+        <p>Las metáforas son uno de los vehículos terapéuticos más poderosos en ACT. Desde la RFT, Törneke (Cap. 5) las explica como el uso de <strong>marcos de analogía o coordinación</strong> para transformar las funciones de los estímulos clínicamente relevantes.</p>
+        <p>Cuando decís "tus pensamientos son como nubes que pasan", estás estableciendo un marco de analogía entre "pensamientos" y "nubes". Las funciones de las nubes (efímeras, variables, no puedo controlarlas pero puedo observarlas) se transfieren al dominio de los pensamientos. Sin que el terapeuta le diga al consultante qué hacer, la metáfora ya cambió las funciones del estímulo.</p>
+
+        <div class="callout-yellow">
+          <div class="cy-label">💡 ¿Cómo elegir una metáfora?</div>
+          <p><strong>No necesitás elegir la metáfora por el "tipo de marco"</strong> — eso sería demasiado técnico para la práctica. El criterio más importante es <em>funcional</em>: ¿qué funciones querés transformar? ¿Para qué sirve esta metáfora en este momento, con este consultante?</p>
+          <p>Lo que sí podés preguntarte: ¿las funciones del dominio de origen (nubes, olas, pasajeros del autobús) son las que querés transferir al dominio objetivo (pensamientos, emociones, consultante)? Si la respuesta es sí, la metáfora tiene sustento relacional.</p>
+        </div>
+
+        <table class="frame-table">
+          <thead>
+            <tr>
+              <th>Metáfora ACT</th>
+              <th>Marco relacional implicado</th>
+              <th>Función transferida</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Nubes que pasan</td><td>Analogía / Coordinación</td><td>Impermanencia, observabilidad sin control</td></tr>
+            <tr><td>Pasajeros del autobús</td><td>Analogía + Jerárquico (conductor/pasajeros)</td><td>Agencia del self, desidentificación con pensamientos</td></tr>
+            <tr><td>Arena movediza</td><td>Causalidad / Condicional</td><td>Luchar empeora, no luchar abre opciones</td></tr>
+            <tr><td>Dos escalas</td><td>Comparación + Causalidad</td><td>Bienestar y malestar no son opuestos en una escala</td></tr>
+            <tr><td>El periódico cerca/lejos</td><td>Espacial / Deíctico</td><td>Distancia psicológica del contenido verbal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Aceptación: la alternativa verbal a la evitación</div>
+        <p>La <strong>aceptación</strong> en ACT no es resignación ni pasividad — es un cambio en la relación verbal con los eventos privados. Desde la RFT, la aceptación implica modificar los marcos que organizan la relación con los eventos aversivos: pasar de marcos de <em>oposición</em> ("debo eliminar esto") a marcos de <em>contención jerárquica o deíctica</em> ("puedo tener esto mientras hago lo que importa").</p>
+        <p>Villatte et al. (2016) enfatizan que la aceptación no es un estado pasivo sino una <strong>conducta activa</strong>: el acto de abrir espacio a la experiencia en lugar de luchar contra ella es en sí mismo una conducta con funciones específicas. Y esa conducta puede ser reforzada terapéuticamente.</p>
+      </div>
+
+      <div class="experiment-box">
+        <div class="exp-header">
+          <span class="exp-emoji">🔬</span>
+          <div>
+            <div class="exp-title">Práctica #7 · Defusión vivencial: "Estoy teniendo el pensamiento de que..."</div>
+            <div class="exp-subtitle">5 minutos · En parejas o individual</div>
+          </div>
+        </div>
+        <ol class="exp-steps">
+          <li>Pensá en una creencia negativa sobre vos mismo que sea moderadamente molesta (no la más intensa).</li>
+          <li>Durante 30 segundos, tenela normalmente: créela tal cual. Notá cómo se siente.</li>
+          <li>Ahora reformulala: en lugar de "soy X", decí en voz alta o mentalmente: "Estoy teniendo el pensamiento de que soy X". Repetilo varias veces.</li>
+          <li>Ahora: "Mi mente me está diciendo que soy X". Notá la diferencia.</li>
+          <li>Comparar: ¿cambió algo en la intensidad emocional? ¿En cuánto "creés" el pensamiento?</li>
+        </ol>
+        <p class="exp-note">🧠 Lo que cambió no es el contenido del pensamiento — es el contexto relacional. La adición de "estoy teniendo el pensamiento de que" establece una distancia deíctica (yo — aquí — ahora observando mi pensamiento), que reduce el control literal del contenido verbal sobre la conducta. Eso es defusión.</p>
+      </div>
+    </div>
+
+    <!-- ======= MÓDULO 7 ======= -->
+    <div id="sec-mod7" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">🌐</span>
+        <div class="mod-number">Módulo 7 · Horizonte</div>
+        <h1 class="mod-title">RFT más allá de ACT:<br>DBT, FAP y la Ciencia Conductual Contextual</h1>
+        <p class="mod-intro">La RFT no es patrimonio exclusivo de ACT. Es la base científica de toda la Ciencia Conductual Contextual (CBS), un paraguas que incluye ACT, FAP, DBT, y otras terapias de tercera generación. Entender esto amplía enormemente la utilidad de la RFT en la práctica clínica.</p>
+        <span class="mod-source">📖 Törneke, Cap. 8 · Hayes, Villatte et al. · Linehan, 1993</span>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">La Ciencia Conductual Contextual (CBS) como paraguas</div>
+        <p>La <span class="gterm" data-term="CBS">Ciencia Conductual Contextual</span> (Contextual Behavioral Science) es el marco filosófico y científico más amplio dentro del que opera la RFT. CBS se caracteriza por:</p>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="cc-emoji">🎯</div>
+            <div class="cc-title">Contextualismo funcional</div>
+            <div class="cc-body">La verdad se mide por su utilidad en contexto. No hay hechos decontextualizados. El análisis se centra en la interacción organismo-entorno.</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">🔬</div>
+            <div class="cc-title">Análisis conductual</div>
+            <div class="cc-body">Conducta como unidad de análisis (no mente, no neurona en aislamiento). Enfoque en procesos observables y sus contextos funcionales.</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">🌱</div>
+            <div class="cc-title">Basado en procesos</div>
+            <div class="cc-body">El foco no está en protocolos o diagnósticos, sino en identificar y modificar los procesos psicológicos que mantienen el sufrimiento.</div>
+          </div>
+          <div class="concept-card">
+            <div class="cc-emoji">📏</div>
+            <div class="cc-title">Empirismo pragmático</div>
+            <div class="cc-body">Compromiso con la evidencia, pero evaluada por su utilidad para el propósito (cambio psicológico) en el contexto relevante.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">RFT en DBT: mindfulness como proceso relacional</div>
+        <p>La <strong>Terapia Dialéctico Conductual (DBT)</strong> de Marsha Linehan fue desarrollada paralelamente a ACT, con bases filosóficas zen y conductistas. Aunque Linehan no usó explícitamente el lenguaje RFT, los procesos que trabaja son completamente compatibles:</p>
+        <ul>
+          <li><strong>Mindfulness en DBT</strong> como práctica de observar los eventos privados sin fusión: "Mente sabia", "observar sin juzgar" — estos son procesos deícticos que crean distancia entre el observador y el contenido verbal.</li>
+          <li><strong>Habilidades de regulación emocional</strong> que trabajan la transformación de funciones de los estímulos emocionales a través de re-exposición y re-contextualización.</li>
+          <li><strong>Tolerancia al malestar</strong> como reducción de evitación experiencial: crear disposición a estar en contacto con eventos aversivos sin que controlen la conducta.</li>
+          <li><strong>Efectividad interpersonal</strong>: trabajo con marcos deícticos (yo/tú, perspectiva del otro) que son la base relacional de la empatía.</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">RFT en FAP: la relación terapéutica como arena de aprendizaje</div>
+        <p>La <strong>Psicoterapia Analítico Funcional (FAP)</strong> de Kohlenberg y Tsai trabaja con los <em>Comportamientos Clínicamente Relevantes (CRBs)</em> que aparecen en la propia sesión terapéutica. Desde la RFT:</p>
+        <ul>
+          <li>Los CRBs son en gran parte <strong>conducta verbal</strong>: cómo el consultante habla sobre sí mismo, cómo se relaciona con el terapeuta, qué reglas gobiernan sus interacciones.</li>
+          <li>La relación terapéutica funciona como un contexto de <strong>aprendizaje relacional</strong>: el consultante deriva nuevas relaciones entre "ser visto", "confiar", "mostrarme vulnerable" y sus consecuencias reales en el aquí y ahora.</li>
+          <li>El trabajo con contingencias naturales en sesión <strong>supera la conducta gobernada por reglas rígida</strong>: la experiencia directa con el terapeuta crea tracking genuino, no pliance.</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">RFT y Terapia Basada en Procesos</div>
+        <p>La propuesta más reciente de Hayes y Hofmann (2020) es la <strong>Terapia Basada en Procesos (PBT)</strong>: en lugar de protocolos diagnósticos, identificar y modificar los procesos transdiagnósticos que mantienen el sufrimiento. La RFT provee un mapa de los procesos verbales relevantes:</p>
+        <div class="tag-row">
+          <span class="pill pill-blue">Fusión cognitiva</span>
+          <span class="pill pill-celeste">Evitación experiencial</span>
+          <span class="pill pill-yellow">Pliance rígida</span>
+          <span class="pill pill-orange">Self narrativo inflexible</span>
+          <span class="pill pill-blue">Déficits en perspectiva deíctica</span>
+          <span class="pill pill-celeste">Augmenting disfuncional de valores</span>
+        </div>
+        <p>Todos estos son procesos verbales/relacionales identificables a través del análisis funcional, intervenibles con técnicas de cualquier terapia contextual — ACT, DBT, FAP, o combinadas.</p>
+      </div>
+
+      <div class="callout-yellow">
+        <div class="cy-label">🌐 Respuesta directa: ¿La RFT solo aplica para ACT?</div>
+        <p><strong>No.</strong> La RFT es la ciencia básica del lenguaje humano desde el paradigma conductual contextual. ACT es una de sus aplicaciones clínicas. DBT trabaja con los mismos procesos verbales (mindfulness como defusión, tolerancia al malestar como anti-evitación). FAP trabaja directamente con conducta verbal en sesión. La diferencia es que ACT fue desarrollada <em>explícitamente</em> a partir de RFT, mientras que DBT y FAP llegaron a procesos similares desde otras rutas. Conocer la RFT te permite hacer más consciente lo que ya estás haciendo en cualquiera de estas terapias.</p>
+      </div>
+    </div>
+
+    <!-- ======= FAQ ======= -->
+    <div id="sec-faq" class="section">
+      <div class="mod-header">
+        <span class="mod-emoji">❓</span>
+        <div class="mod-number">Preguntas Frecuentes</div>
+        <h1 class="mod-title">Las Preguntas Reales<br>de Estudiantes de ACT y RFT</h1>
+        <p class="mod-intro">Estas son preguntas reales formuladas por terapeutas y estudiantes que están comenzando con ACT y quieren entender la RFT. Respondidas de forma técnica pero pedagógica, con base en Törneke (2010) y Villatte et al. (2016).</p>
+      </div>
+
+      <!-- FAQ 1 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">1</div>
+          <div class="faq-q-text">Muchas intervenciones de ACT buscan cambiar la relación que las personas tienen con sus pensamientos. ¿Cómo ayuda la RFT a entender por qué técnicas como la defusión pueden funcionar?</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">🧠 RFT · Defusión · Técnica</span>
+          <p>Para entender por qué la defusión funciona, primero necesitamos entender por qué los pensamientos <em>tienen el poder que tienen</em>. Desde la RFT, los pensamientos son estímulos verbales que, a través de marcos relacionales, adquieren las funciones de los eventos reales a los que se refieren. Cuando pensás "voy a fracasar en esa entrevista", este pensamiento está en un marco de coordinación con el fracaso real, y por eso activa respuestas (ansiedad, evitación) similares a las que activaría el fracaso real.</p>
+          <p>Esto es lo que Törneke llama <strong>fusión cognitiva</strong>: el pensamiento tiene tanto control sobre la conducta como si fuera el evento real. La persona no está "siendo irracional" — está siendo literalmente humana: su mente aprendió a relacionar eventos verbalmente, y esa habilidad está funcionando.</p>
+          <p><strong>¿Por qué funciona la defusión?</strong> Porque modifica el <em>contexto</em> en el que ocurren los pensamientos — específicamente, las claves funcionales (Cfunc) que determinan qué funciones de los marcos están activas en un momento dado. Cuando decís "Noto que estoy teniendo el pensamiento de que voy a fracasar", estás:</p>
+          <ul>
+            <li>Estableciendo una distancia deíctica (yo — aquí — ahora — observando el pensamiento)</li>
+            <li>Nombrando el proceso verbal como proceso ("pensamiento de que"), no como hecho</li>
+            <li>Modificando el contexto funcional, lo que reduce el control literal del pensamiento</li>
+          </ul>
+          <p>El pensamiento no desaparece ni cambia su contenido. Lo que cambia es cuánto control tiene sobre la conducta. Y eso es exactamente lo que necesitamos clínicamente: no eliminar el pensamiento, sino reducir su dominancia funcional.</p>
+          <p>Villatte et al. (2016) añaden que la terapia trabaja con dos tipos de usos del lenguaje: el uso <em>literal</em> (lenguaje como ventana a la realidad) y el uso <em>no literal</em> (lenguaje como herramienta, performance, descripción de proceso). La defusión facilita el paso del uso literal al no literal — y eso transforma la relación funcional con los pensamientos.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">2</div>
+          <div class="faq-q-text">¿La RFT solo aplica para ACT o puede ser usado en otras terapias contextuales?</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">🌐 CBS · ACT · DBT · FAP</span>
+          <p>La RFT no es propiedad de ACT — es una <strong>teoría básica del lenguaje humano</strong> dentro del paradigma conductual contextual. ACT fue la primera terapia desarrollada explícitamente a partir de la RFT, pero el alcance de la teoría va mucho más allá.</p>
+          <p><strong>En DBT (Linehan, 1993):</strong> El mindfulness dialéctico — "observar sin juzgar", "mente sabia" — son procesos que desde la RFT reconocemos como trabajo con marcos deícticos: crear una perspectiva observadora que no se fusiona con el contenido verbal. Las habilidades de regulación emocional trabajan directamente la relación con eventos privados, reduciendo la evitación experiencial. La tolerancia al malestar trabaja la insensibilidad a contingencias directas que generan evitación.</p>
+          <p><strong>En FAP (Kohlenberg & Tsai):</strong> La FAP trabaja con conducta clínicamente relevante (CRBs) que ocurre en sesión. Gran parte de esa conducta es verbal — cómo el consultante habla de sí mismo, qué reglas gobiernan sus interacciones, cómo responde a la vulnerabilidad. La relación terapéutica funciona como un contexto de aprendizaje relacional donde se pueden derivar nuevas relaciones entre "ser visto" y sus consecuencias.</p>
+          <p><strong>En Terapia Basada en Procesos (Hayes & Hofmann, 2020):</strong> El movimiento más reciente propone identificar los procesos transdiagnósticos que mantienen el sufrimiento. Los procesos verbales identificados por la RFT (fusión, evitación experiencial, pliance rígida) son transdiagnósticos por naturaleza — aparecen en ansiedad, depresión, TOC, trastornos de personalidad. Esto hace de la RFT una herramienta transversal para cualquier clínico que trabaje desde procesos.</p>
+          <p>En resumen: conocer la RFT te hace mejor terapeuta en <em>cualquier</em> terapia contextual, porque te da el mapa conceptual de <em>por qué</em> los procesos funcionan como funcionan.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">3</div>
+          <div class="faq-q-text">Cuando estás en sesión, ¿qué indicadores te hacen pensar que un problema está siendo mantenido por procesos relacionales más que por contingencias directas del ambiente?</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">🔍 Evaluación · Análisis Funcional · Clínica</span>
+          <p>Esta es una pregunta de evaluación clínica muy práctica. La distinción entre conducta gobernada por contingencias directas vs. procesos verbales/relacionales tiene huella digital propia. Basándonos en Törneke (Cap. 7 y 9), estos son los indicadores más importantes:</p>
+          <p><strong>1. Insensibilidad a las consecuencias actuales:</strong> El consultante sigue repitiendo una conducta aunque las consecuencias claramente no sean las deseadas. Cuando ajustás las contingencias y la conducta no cambia, probablemente está siendo gobernada por reglas más que por contingencias. Un ejemplo clásico: alguien que sigue evitando situaciones sociales aunque reconoce que la evitación empeora su aislamiento.</p>
+          <p><strong>2. El problema se activa verbalmente:</strong> Si el problema aparece con la misma intensidad cuando el consultante <em>habla de</em> la situación que cuando está <em>en</em> la situación, es una huella digital de control verbal. Las contingencias directas solo activan respuestas cuando el estímulo está físicamente presente; los marcos relacionales activan respuestas ante representaciones verbales.</p>
+          <p><strong>3. Rigidez contextual:</strong> La misma respuesta aparece en contextos muy diferentes donde debería variar. Esta falta de discriminación contextual sugiere gobierno por regla (que se aplica indiscriminadamente) más que sensibilidad a contingencias diferenciales.</p>
+          <p><strong>4. Narrativas elaboradas que no generan cambio:</strong> El consultante puede describir muy bien su problema, sus causas, sus consecuencias — pero esta comprensión conceptual no genera cambio conductual. Esto sugiere que el insight verbal tiene poca relación con las contingencias que realmente gobiernan el comportamiento.</p>
+          <p><strong>5. Evitación de contenido verbal específico:</strong> Evitar hablar de X, pensar en X, o estar en situaciones que recuerden verbalmente a X — aunque X no esté presente. Esto es un indicador directo de que las funciones del estímulo están siendo transferidas a través de redes relacionales.</p>
+          <p><strong>6. El problema aparece en la propia sesión:</strong> Cuando la conducta problemática se muestra directamente en la interacción con el terapeuta (Arena 1), hay una oportunidad única para un análisis funcional en tiempo real — y para una intervención directa.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 4 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">4</div>
+          <div class="faq-q-text">¿Cómo podría hacerle saber a mi consultante los marcos relacionales que organizan su comportamiento? O sea, ¿cómo adaptar esos conceptos técnicos para que me entienda por qué su problema se mantiene?</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">💬 Psicoeducación · Comunicación Clínica · Villatte</span>
+          <p>La respuesta corta: <strong>no necesitás explicarle la RFT a tu consultante</strong>. La psicoeducación más efectiva trabaja con su propia experiencia como punto de partida, no con conceptos técnicos. Villatte et al. (2016) enfatizan que la conversación clínica efectiva usa el lenguaje del consultante para generar experiencia directa — no para transferir información.</p>
+          <p>Aquí hay algunas estrategias prácticas:</p>
+          <p><strong>1. Usar la propia experiencia como demostración:</strong> En lugar de explicar "los marcos de coordinación transfieren funciones", podés decir: "Notaste que cuando solo ves el número de teléfono de esa persona, ya sentís ansiedad? ¿Cómo es posible si no está ahí en realidad? Tu mente aprendió a conectar ese número con cosas que pasaron — y ahora el número solo ya activa la misma respuesta."</p>
+          <p><strong>2. Normalizar sin patologizar:</strong> El mensaje de fondo es: "Tu mente no está rota — está haciendo exactamente lo que aprendió a hacer. El problema no es la mente en sí, sino cómo nos relacionamos con lo que produce."</p>
+          <p><strong>3. Metáforas funcionales:</strong> La metáfora correcta ya hace el trabajo. "Tus pensamientos son como alarmas del sistema de incendios — a veces se disparan aunque no hay fuego. El problema no es que el sistema esté roto; el problema es que sonar muy frecuente cansa y hace que ignorés las alarmas reales." Esta metáfora no usa jerga RFT pero muestra exactamente la insensibilidad a contingencias por control verbal.</p>
+          <p><strong>4. Rastrear la historia relacional:</strong> "¿Dónde escuchaste eso por primera vez? ¿A quién se lo escuchaste?" ayuda al consultante a ver que su narrativa actual es una <em>red relacional con historia</em>, no una verdad objetiva. Esto facilita la defusión sin necesitar el concepto técnico.</p>
+          <p>Según Villatte, el objetivo no es que el consultante entienda la RFT — es que experimente su propia mente de forma diferente, con más flexibilidad y menos fusión. La teoría es tu mapa; la metáfora y la experiencia directa son su mapa.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 5 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">5</div>
+          <div class="faq-q-text">Enfocado en uno de los procesos de ACT: aceptación. ¿Cómo se sustenta la aceptación desde la RFT?</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">🌊 Aceptación · Evitación Experiencial · ACT</span>
+          <p>La <strong>aceptación</strong> en ACT es el contrapunto directo de la evitación experiencial. Para entender por qué la aceptación funciona, necesitamos entender primero por qué la evitación no funciona — y ambas tienen una explicación clara en RFT.</p>
+          <p><strong>Por qué la evitación experiencial no funciona:</strong> Cuando intentás suprimir un pensamiento o emoción, el proceso mismo de supresión requiere activar el marco relacional de ese evento ("no pensar en X" requiere representar X). Además, el intento de control entra en coordinación con el evento que se intenta controlar, aumentando su accesibilidad y sus funciones. El famoso experimento del oso blanco de Wegner (1994) lo demuestra empíricamente.</p>
+          <p><strong>Qué hace la aceptación desde la RFT:</strong> La aceptación trabaja sobre los marcos que organizan la relación con los eventos privados. Específicamente, propone un cambio de marcos:</p>
+          <ul>
+            <li>De marcos de <em>oposición/causalidad negativa</em>: "si siento ansiedad, no puedo funcionar" → "ansiedad = obstáculo"</li>
+            <li>A marcos de <em>contención / perspectiva deíctica</em>: "puedo tener ansiedad Y aun así hacer lo que importa" → "ansiedad = evento que puedo observar"</li>
+          </ul>
+          <p>La aceptación no significa que el evento privado desaparezca o pierda todas sus funciones — significa que sus funciones de control sobre la conducta se reducen. El dolor puede estar presente; la conducta ya no está determinada por ese dolor.</p>
+          <p>Además, la aceptación implica un cambio en los augmentales: los valores que orientan la conducta amplían sus funciones reforzantes al punto de que "tener ansiedad y actuar" se convierte en algo valioso — no a pesar del malestar, sino junto con él.</p>
+          <p>Por eso en ACT se trabaja aceptación y valores juntos: los valores son los augmentales que hacen posible que la aceptación tenga sentido. Sin un propósito que la ancle, la aceptación sería solo tolerancia — con propósito, es el camino hacia una vida con vitalidad.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 6 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">6</div>
+          <div class="faq-q-text">¿Cuáles serían las diferencias entre clases de equivalencia y la Teoría de Marcos Relacionales? Creo que la diferencia está en que la TMR es mediada por el lenguaje y la otra no. 🤔</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">🧩 Clases de Equivalencia · RFT · Sidman</span>
+          <p>Muy buena intuición. Estás en la dirección correcta, aunque la distinción es un poco más matizada. Vamos por partes:</p>
+          <p><strong>¿Qué tienen en común?</strong> Las clases de equivalencia (Sidman, 1971) y la RFT describen el mismo fenómeno de base: la capacidad de establecer relaciones entre estímulos de forma no directamente entrenada (relaciones derivadas). Ambas reconocen que los humanos —y en menor medida algunos animales— pueden derivar relaciones que no fueron específicamente reforzadas.</p>
+          <p><strong>¿En qué se diferencian?</strong></p>
+          <p><strong>1. Alcance:</strong> Las clases de equivalencia describen específicamente relaciones de <em>coordinación</em> (equivalencia): reflexividad (A=A), simetría (si A→B, entonces B→A) y transitividad (si A→B y B→C, entonces A→C). La RFT amplía esto a <em>todos los tipos posibles de relaciones arbitrarias</em>: mayor que, opuesto a, antes de, parte de, yo/tú, si/entonces... Las clases de equivalencia son un caso especial de la RFT (marcos de coordinación).</p>
+          <p><strong>2. Explicación del aprendizaje:</strong> El modelo de equivalencia de estímulos describe el fenómeno pero no explica completamente <em>cómo</em> se aprende esa habilidad. La RFT propone que la AARR es un <em>operante generalizado</em> aprendido bajo contingencias sociales — esto es lo que da cuenta de cómo los niños desarrollan esta habilidad gradualmente y cómo puede enseñarse.</p>
+          <p><strong>3. El papel del contexto verbal:</strong> Tenés razón en señalar la mediación lingüística, aunque con un matiz: la RFT propone que lo que hace la diferencia es el control por <em>claves contextuales arbitrarias</em> (Crel y Cfunc) establecidas socialmente. No es que el lenguaje per se esté involucrado — es que el tipo de relación que se establece (coordinación, oposición, comparación) es especificado por señales contextuales que son arbitrarias y aprendidas socialmente. El lenguaje es el vehículo principal de esas claves, pero la RFT las conceptualiza funcionalmente.</p>
+          <p><strong>4. Implicancias clínicas:</strong> El modelo de equivalencia tiene poca aplicación clínica directa. La RFT, con su descripción de múltiples familias de marcos, permite un análisis mucho más fino de los procesos verbales que mantienen el sufrimiento — y orienta intervenciones específicas.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 7 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">7</div>
+          <div class="faq-q-text">No me queda claro cómo podría incorporar la Teoría de Marcos Relacionales en el proceso de evaluación clínica. ¿Cómo haría para considerarlo en un análisis funcional?</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">🔍 Evaluación · Análisis Funcional · Clínica Avanzada</span>
+          <p>El análisis funcional clásico (ABC) es el punto de partida. La RFT te pide que lo amplíes con una dimensión verbal. Aquí va un marco práctico basado en Törneke (Cap. 9):</p>
+          <p><strong>Paso 1: Identifica la conducta problema (B)</strong><br>
+          Define bien qué conducta querés analizar. ¿Es observable directamente o solo reportada verbalmente? Si solo es reportada, eso ya es información: el terapeuta está accediendo a conducta verbal, no al evento en sí.</p>
+          <p><strong>Paso 2: Analiza el antecedente con lente RFT (A verbal)</strong><br>
+          Preguntate: ¿este antecedente activa la conducta por contingencias directas o por redes relacionales? Si la persona reacciona ante el pensamiento de X con la misma intensidad que ante X real, las funciones se transfieren verbalmente. Mapeá qué red relacional está activa: ¿qué marcos de coordinación, causalidad, jerarquía están presentes?</p>
+          <p><strong>Paso 3: Identifica las reglas verbales activas (¿pliance, tracking, augmenting?)</strong><br>
+          ¿Hay una regla que está gobernando la conducta? ¿De dónde viene? ¿Es sensible a las consecuencias actuales (tracking) o rígidamente gobernada por consecuencias sociales históricas (pliance)? Las preguntas "¿hay algo que te decís antes de hacer X?" y "¿qué pasaría si no lo hicieras?" ayudan a identificar las reglas.</p>
+          <p><strong>Paso 4: Analiza las consecuencias con lente verbal (C verbal)</strong><br>
+          ¿Las consecuencias relevantes son directas o verbalmente derivadas? El reforzador de muchas conductas problemáticas no es concreto sino verbal-social: "no ser un fracasado", "ser vistos como capaz", "ser coherente con la identidad". Estas son consecuencias augmentadas verbalmente.</p>
+          <p><strong>Paso 5: Identifica patrones de evitación verbal</strong><br>
+          ¿Hay temas, memorias, emociones o pensamientos que el consultante sistemáticamente evita? Eso mapea la evitación experiencial y señala las redes relacionales con más carga funcional.</p>
+          <p><strong>Paso 6: Observá la Arena 1 (la sesión)</strong><br>
+          ¿El problema se muestra en la propia interacción con vos? Si el consultante hace en sesión algo similar a lo que reporta hacer afuera, tenés la oportunidad de intervenir directamente sobre la conducta, no solo sobre su descripción verbal.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 8 -->
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)">
+          <div class="faq-q-num">8</div>
+          <div class="faq-q-text">¿Las metáforas están basadas en RFT? ¿Si quisiera usar una metáfora en sesión, debería escogerla a partir del tipo de marco o evaluar a qué componente del hexaflex corresponde?</div>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-body">
+          <span class="faq-tag">🎭 Metáforas · Hexaflex · Clínica ACT</span>
+          <p>Sí, las metáforas tienen fundamento directo en la RFT — y Törneke dedica parte del Capítulo 5 a esto. Desde la RFT, una metáfora es el uso de un <strong>marco de analogía</strong> para transferir funciones de un dominio familiar al dominio clínicamente relevante.</p>
+          <p><strong>¿Cómo funciona una metáfora desde la RFT?</strong><br>
+          Cuando decís "tus pensamientos son como nubes que pasan", establecés una analogía entre el dominio "nubes" y el dominio "pensamientos". Las funciones de las nubes (temporales, variables, observables sin necesidad de controlarlas) se transfieren al dominio de los pensamientos. El consultante no necesita "entender" esto conceptualmente — la transformación de funciones ocurre directamente.</p>
+          <p><strong>¿Por qué es poderoso?</strong><br>
+          Porque la metáfora no dice explícitamente qué hacer — establece un contexto relacional donde ciertas conductas se vuelven más probables. "Si los pensamientos son nubes que pasan, quizás no tenga que aferrarme a ninguna" es una conclusión que el consultante puede derivar solo, con más fuerza que si el terapeuta lo dijera directamente.</p>
+          <p><strong>¿Cómo elegirla: ¿por tipo de marco o por componente del hexaflex?</strong><br>
+          Mi recomendación: <strong>primero el componente del hexaflex, luego verificar que el marco sea coherente</strong>. El criterio más clínico es funcional: ¿para qué sirve esta metáfora en este momento, con este consultante?</p>
+          <ul>
+            <li>Si trabajás <strong>defusión</strong>: metáforas que crean distancia deíctica o espacial (periódico cerca/lejos, hojas en el río)</li>
+            <li>Si trabajás <strong>aceptación</strong>: metáforas que transforman la relación con el malestar (arena movediza, invitados inesperados)</li>
+            <li>Si trabajás <strong>valores</strong>: metáforas que augmentan consecuencias a largo plazo (brújula vs. GPS, jardinero)</li>
+            <li>Si trabajás <strong>self como contexto</strong>: metáforas deícticas o jerárquicas (el cielo y las nubes, tablero de ajedrez)</li>
+          </ul>
+          <p>Una vez elegida la metáfora por su función hexaflex, podés verificar coherencia relacional: ¿las funciones del dominio de origen son las que querés transferir? Si la respuesta es sí, la metáfora tiene base RFT. El riesgo de elegir metáforas solo por "sonar bien" es que transfieran funciones no deseadas — por ejemplo, "luchar contra tus pensamientos" activa marcos de oposición que refuerzan la evitación.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ======= GLOSARIO ======= -->
+<button class="glossary-btn" onclick="toggleGlossary()" title="Glosario RFT">📖</button>
+<div id="glossary-panel">
+  <div class="gp-header">
+    <span class="gp-title">📖 Glosario RFT</span>
+    <button class="gp-close" onclick="toggleGlossary()">✕</button>
+  </div>
+  <div class="gp-search">
+    <input type="text" id="gp-search-input" placeholder="Buscar término..." oninput="filterGlossary(this.value)">
+  </div>
+  <div class="gp-list" id="gp-list"></div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const glossaryTerms = [
+  { id: 'RFT', name: 'RFT / TMR', def: 'Teoría de Marcos Relacionales (Relational Frame Theory). Teoría conductual del lenguaje humano que propone que el lenguaje y la cognición son formas de conducta operante generalizada: la habilidad de relacionar estímulos de forma arbitraria, aprendida bajo contingencias sociales.' },
+  { id: 'AARR', name: 'AARR', def: 'Arbitrarily Applicable Relational Responding. Respuesta Relacional Arbitrariamente Aplicable. La conducta de establecer relaciones entre estímulos de forma arbitraria (independiente de sus propiedades físicas), gobernada por claves contextuales del entorno social. Es el núcleo de la RFT.' },
+  { id: 'marco-relacional', name: 'Marco Relacional', def: 'Patrón de conducta relacional aprendida caracterizado por: aplicabilidad arbitraria, entailment mutuo, entailment combinatorio, y transformación de funciones. Unidad básica del lenguaje y la cognición en la RFT.' },
+  { id: 'relacion-derivada', name: 'Relación Derivada', def: 'Relación entre estímulos que emerge sin haber sido específicamente entrenada o reforzada. Aparece a partir de otras relaciones ya establecidas. El fenómeno descubierto por Sidman (1971).' },
+  { id: 'entailment-mutuo', name: 'Entailment Mutuo', def: 'Si se entrena A → B, emerge B → A sin entrenamiento directo. La relación va en ambas direcciones de forma derivada.' },
+  { id: 'entailment-combinatorio', name: 'Entailment Combinatorio', def: 'Si se entrena A → B y B → C, emerge A → C (y C → A) sin entrenamiento directo. La combinación de dos relaciones genera nuevas relaciones derivadas.' },
+  { id: 'transformacion-funciones', name: 'Transformación de Funciones', def: 'Proceso por el cual las funciones psicológicas de un estímulo se transfieren a otros estímulos con los que está en un marco relacional. Explica por qué los pensamientos producen respuestas similares a los eventos reales.' },
+  { id: 'marco-coordinacion', name: 'Marco de Coordinación', def: 'Tipo de marco relacional donde los estímulos se relacionan como "iguales", "equivalentes" o "símbolo de". Es la base de la simbolización: la palabra "perro" está en coordinación con el animal real.' },
+  { id: 'fusion-cognitiva', name: 'Fusión Cognitiva', def: 'Estado en el que los estímulos verbales (pensamientos, reglas) tienen tanto control sobre la conducta que se responde al contenido verbal como si fuera el evento real. Producto del repertorio relacional humano altamente desarrollado.' },
+  { id: 'evitacion-experiencial', name: 'Evitación Experiencial', def: 'Patrón de intentar reducir, eliminar o alterar eventos privados (pensamientos, emociones, sensaciones) no deseados. Paradójicamente, amplifica el problema a través de los marcos de oposición y el aumento de accesibilidad del contenido evitado.' },
+  { id: 'defusion', name: 'Defusión Cognitiva', def: 'Proceso de reducir el control literal de las redes verbales sobre la conducta. No elimina el contenido del pensamiento, sino que modifica el contexto funcional (Cfunc) en el que ocurren los pensamientos, reduciendo su dominancia.' },
+  { id: 'pliance', name: 'Pliance', def: 'Conducta gobernada por reglas bajo el control de una historia de reforzamiento social por la coordinación entre conducta y la regla. "Hacer lo que me dicen" por consecuencias dadas por el emisor de la regla, no por las consecuencias naturales.' },
+  { id: 'tracking', name: 'Tracking', def: 'Conducta gobernada por reglas bajo el control de la correspondencia entre la regla y las contingencias ambientales reales. El reforzador lo dan las consecuencias naturales. Flexible y adaptativo.' },
+  { id: 'augmenting', name: 'Augmenting', def: 'Conducta gobernada por reglas donde las redes verbales alteran el grado en que ciertos eventos funcionan como consecuencias. Actúa en combinación con pliance o tracking, ampliando el valor reforzante de las consecuencias.' },
+  { id: 'red-relacional', name: 'Red Relacional', def: 'Conjunto de estímulos interconectados a través de múltiples marcos relacionales. Las redes pueden ser enormemente complejas — a partir de pocas relaciones entrenadas emergen muchas derivadas. Base de cómo funciona el lenguaje.' },
+  { id: 'CBS', name: 'CBS / Ciencia Conductual Contextual', def: 'Contextual Behavioral Science. Marco filosófico y científico que incluye ACT, FAP y otras terapias de tercera generación. Se basa en el contextualismo funcional y el análisis conductual, con énfasis en procesos más que en protocolos.' },
+  { id: 'Crel', name: 'Crel (Clave Relacional)', def: 'Clave contextual que especifica el tipo de relación que se establece entre estímulos. Palabras como "mayor que", "opuesto a", "antes de" son Crel que gobiernan qué marco relacional se aplica.' },
+  { id: 'Cfunc', name: 'Cfunc (Clave Funcional)', def: 'Clave contextual que especifica qué funciones de los estímulos relacionados se transforman en un momento dado. La defusión y el mindfulness trabajan principalmente modificando Cfunc, cambiando el contexto funcional sin cambiar el contenido.' },
+];
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+let visitedSections = new Set();
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const sec = document.getElementById('sec-' + id);
+  if (sec) {
+    sec.classList.add('active');
+    visitedSections.add(id);
+    updateProgress();
+  }
+
+  // Highlight nav
+  document.querySelectorAll('.nav-item').forEach(item => {
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + id + "'")) {
+      item.classList.add('active');
+    }
+  });
+  document.getElementById('main').scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  const total = 10; // overview + 8 mods + faq
+  const pct = Math.round((visitedSections.size / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+}
+
+// ============================================================
+// LANDING → APP
+// ============================================================
+function startCourse() {
+  document.getElementById('landing').style.display = 'none';
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  app.classList.add('active');
+  showSection('overview');
+}
+
+// ============================================================
+// DARK MODE
+// ============================================================
+function toggleDark() {
+  const html = document.documentElement;
+  const track = document.getElementById('dark-track');
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  track.classList.toggle('on', !isDark);
+}
+
+// ============================================================
+// COLLAPSIBLES
+// ============================================================
+function toggleExample(trigger) {
+  const parent = trigger.parentElement;
+  parent.classList.toggle('open');
+}
+
+function toggleFaq(trigger) {
+  const parent = trigger.parentElement;
+  parent.classList.toggle('open');
+}
+
+// ============================================================
+// GLOSSARY
+// ============================================================
+function renderGlossary(terms) {
+  const list = document.getElementById('gp-list');
+  list.innerHTML = terms.map(t => `
+    <div class="gp-term">
+      <div class="gp-term-name">${t.name}</div>
+      <div class="gp-term-def">${t.def}</div>
+    </div>
+  `).join('');
+}
+
+function filterGlossary(q) {
+  const filtered = q
+    ? glossaryTerms.filter(t =>
+        t.name.toLowerCase().includes(q.toLowerCase()) ||
+        t.def.toLowerCase().includes(q.toLowerCase()))
+    : glossaryTerms;
+  renderGlossary(filtered);
+}
+
+function toggleGlossary() {
+  const panel = document.getElementById('glossary-panel');
+  panel.classList.toggle('open');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderGlossary(glossaryTerms);
+  // Make inline gterms open glossary
+  document.querySelectorAll('.gterm').forEach(el => {
+    el.addEventListener('click', () => {
+      const termId = el.getAttribute('data-term');
+      const term = glossaryTerms.find(t => t.id === termId);
+      if (term) {
+        document.getElementById('glossary-panel').classList.add('open');
+        document.getElementById('gp-search-input').value = term.name;
+        filterGlossary(term.name);
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>

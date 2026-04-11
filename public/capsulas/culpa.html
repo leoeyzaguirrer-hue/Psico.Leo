@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trabajando la Culpa en Sesión — Entrenamiento Clínico</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--amarillo:#F9BC15;--azul:#1B4F8A;--celeste:#2B9ED4;--naranja:#E8720A;--cream:#F2EDE8;--blanco:#FFFFFF;--fondo:#FAFAFA;--verde:#2ECC71;--verde-dark:#1A7A4A;--rojo:#E74C3C;--rojo-dark:#A93226;--texto:#2C3E50;--max-w:520px}
+@media(min-width:768px){:root{--max-w:680px}}
+body{font-family:'Poppins',sans-serif;background:var(--fondo);color:var(--texto);line-height:1.6;overflow:hidden;height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ===== STEPPER ===== */
+.stepper{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--blanco);box-shadow:0 2px 12px rgba(27,79,138,.1);padding:10px 16px}
+.stepper-inner{max-width:var(--max-w);margin:0 auto;display:flex;align-items:center;gap:4px}
+.step{flex:1;height:6px;border-radius:3px;background:#E0E8F0;transition:background .4s}
+.step.active{background:var(--celeste)}
+.step.done{background:var(--verde)}
+.stepper-label{font-size:11px;font-weight:700;color:var(--azul);text-align:center;margin-top:6px;max-width:var(--max-w);margin-left:auto;margin-right:auto}
+
+/* ===== SCREEN SYSTEM ===== */
+.screens-container{position:fixed;top:0;left:0;right:0;bottom:0;overflow:hidden;padding-top:52px}
+.screen{position:absolute;top:52px;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:hidden;padding:0 0 100px;opacity:0;transform:translateX(100%);transition:all .45s cubic-bezier(.25,.8,.25,1);pointer-events:none;-webkit-overflow-scrolling:touch}
+.screen.active{opacity:1;transform:translateX(0);pointer-events:auto}
+.screen.exit-left{transform:translateX(-100%);opacity:0}
+
+.scr-content{max-width:var(--max-w);margin:0 auto;padding:16px}
+@media(min-width:768px){.scr-content{padding:24px}}
+
+/* ===== NAV BUTTONS ===== */
+.nav-buttons{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--blanco);box-shadow:0 -2px 12px rgba(27,79,138,.08);padding:12px 16px;display:flex;gap:10px;justify-content:center}
+.nav-btn{flex:1;max-width:220px;padding:13px;border:none;border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.nav-btn.prev{background:#EEF4FB;color:var(--azul)}
+.nav-btn.prev:hover{background:#D8E8F8}
+.nav-btn.next{background:var(--azul);color:#fff}
+.nav-btn.next:hover{background:#164172}
+.nav-btn:disabled{opacity:.4;cursor:default}
+.nav-btn.next:disabled:hover{background:var(--azul)}
+
+/* ===== PORTADA ===== */
+.portada-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 152px);text-align:center;padding:32px 20px!important}
+.portada-badge{display:inline-block;background:rgba(27,79,138,.1);color:var(--azul);padding:6px 18px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.portada-screen h1{font-size:28px;font-weight:900;color:var(--azul);line-height:1.25;margin-bottom:12px}
+@media(min-width:768px){.portada-screen h1{font-size:34px}}
+.portada-screen .sub{font-size:14px;color:#5A6B7D;margin-bottom:24px;max-width:400px}
+.portada-meta{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;font-size:13px;color:var(--azul);font-weight:600}
+.portada-meta span{display:flex;align-items:center;gap:5px;background:#EEF4FB;padding:6px 14px;border-radius:20px}
+.portada-start{margin-top:32px;padding:16px 40px;background:var(--azul);color:#fff;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(27,79,138,.25)}
+.portada-start:hover{background:#164172;transform:translateY(-2px);box-shadow:0 6px 20px rgba(27,79,138,.3)}
+
+/* ===== SECTION HEADERS ===== */
+.sec-header{position:relative;overflow:hidden;padding:24px 20px;border-radius:16px;margin-bottom:20px;color:#fff}
+.sec-header.azul{background:var(--azul)}.sec-header.celeste{background:var(--celeste)}.sec-header.naranja{background:var(--naranja)}.sec-header.amarillo{background:var(--amarillo);color:var(--azul)}.sec-header.verde{background:var(--verde-dark)}
+.sec-header h2{font-size:20px;font-weight:800;position:relative;z-index:2}
+.sec-header p{font-size:13px;opacity:.85;margin-top:4px;position:relative;z-index:2}
+.hex-o{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hex-o svg{width:100%;height:100%;opacity:.1}
+
+/* ===== CARDS ===== */
+.card{background:var(--blanco);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(27,79,138,.07);border:1px solid rgba(27,79,138,.06)}
+.card.completed{border-color:rgba(46,204,113,.3)}
+
+/* ===== CONCEPT CARDS ===== */
+.concept{display:flex;gap:14px;align-items:flex-start}
+.concept-icon{font-size:26px;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:#F0F6FF;border-radius:12px}
+.concept h3{font-size:15px;font-weight:700;color:var(--azul);margin-bottom:4px}
+.concept p,.concept ul{font-size:14px;line-height:1.55}
+.concept ul{padding-left:18px;margin-top:6px}
+.concept li{margin-bottom:4px}
+
+/* ===== ACCORDION ===== */
+.acc{overflow:hidden;transition:border-color .3s}
+.acc-head{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;transition:background .2s}
+.acc-head:hover{background:#F7F9FC}
+.acc-head h3{font-size:14px;font-weight:700;color:var(--azul);display:flex;align-items:center;gap:8px}
+.acc-arrow{font-size:16px;color:var(--celeste);transition:transform .3s;font-weight:700}
+.acc.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;padding:0 20px}
+.acc.open .acc-body{max-height:2000px;padding:0 20px 20px}
+
+/* ===== TABLES ===== */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;font-size:13px;margin:10px 0}
+.tbl thead th{background:var(--azul);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.tbl td{padding:10px 12px;border-bottom:1px solid #EEF2F7;vertical-align:top;line-height:1.5}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:nth-child(even){background:#F7F9FC}
+
+/* ===== EXERCISE COMPONENTS ===== */
+.badge{display:inline-block;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:10px}
+.badge-1{background:#EEF4FB;color:var(--azul)}.badge-2{background:#FFF3E0;color:var(--naranja)}.badge-3{background:#E8F7EF;color:var(--verde-dark)}
+.vineta{background:#F7F9FC;border-radius:12px;padding:16px;margin-bottom:16px;border-left:4px solid var(--celeste)}
+.vineta-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.vineta-label{font-size:11px;font-weight:700;color:var(--celeste);text-transform:uppercase;letter-spacing:.5px}
+.ej-num{font-size:11px;color:#8899AA;font-weight:600}
+.vineta-text{font-size:14px;font-style:italic;line-height:1.6}
+.ctx{margin-top:10px;font-size:13px;color:#5A6B7D;padding-top:8px;border-top:1px dashed #D0D8E0}
+.ctx strong{color:var(--azul)}
+.q{font-size:15px;font-weight:700;color:var(--azul);margin:14px 0 12px}
+
+.opt-btn{display:block;width:100%;padding:13px 16px;margin-bottom:8px;background:#F7F9FC;border:2px solid #E0E8F0;border-radius:10px;text-align:left;font-family:'Poppins',sans-serif;font-size:13px;color:var(--azul);cursor:pointer;transition:all .2s;line-height:1.5}
+.opt-btn:hover:not(:disabled){background:#EEF4FB;border-color:var(--celeste)}
+.opt-btn:disabled{cursor:default;opacity:.85}
+.opt-btn.ok{background:#E8F7EF;border-color:var(--verde);color:var(--verde-dark);font-weight:600}
+.opt-btn.no{background:#FEF0F0;border-color:var(--rojo);color:var(--rojo-dark)}
+
+/* Client says */
+.cli{background:#F0F6FF;border-radius:12px;padding:16px;margin-bottom:16px;border-left:4px solid var(--naranja)}
+.cli-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cli-label{font-size:11px;font-weight:700;color:var(--naranja);text-transform:uppercase;letter-spacing:.5px}
+.cli-text{font-size:14px;font-style:italic;line-height:1.6}
+
+.resp-btn{display:block;width:100%;padding:14px 16px;margin-bottom:8px;background:#F7F9FC;border:2px solid #E0E8F0;border-radius:12px;text-align:left;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s}
+.resp-btn:hover:not(:disabled){background:#EEF4FB;border-color:var(--celeste)}
+.resp-btn:disabled{cursor:default;opacity:.85}
+.resp-btn.ok{background:#E8F7EF;border-color:var(--verde)}
+.resp-btn.no{background:#FEF0F0;border-color:var(--rojo)}
+.resp-lbl{display:block;font-size:11px;font-weight:700;color:var(--celeste);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.resp-txt{display:block;font-size:13px;color:var(--texto);line-height:1.5}
+
+/* Feedback */
+.fb{margin-top:14px;padding:16px;border-radius:12px;border-left:4px solid;animation:fadeIn .4s ease;display:none}
+.fb.show{display:block}
+.fb.fb-ok{background:#E8F7EF;border-color:var(--verde)}.fb.fb-no{background:#FEF0F0;border-color:var(--rojo)}.fb.fb-partial{background:#FFF8E1;border-color:var(--amarillo)}
+.fb-title{font-weight:700;margin-bottom:6px;font-size:14px}
+.fb-body{font-size:13px;line-height:1.6}
+.fb-item{padding:12px 14px;border-radius:10px;margin-bottom:8px;font-size:13px;line-height:1.55}
+.fb-item.fbi-ok{background:#E8F7EF;border-left:3px solid var(--verde)}
+.fb-item.fbi-no{background:#FEF0F0;border-left:3px solid var(--rojo)}
+.fb-item strong{display:block;margin-bottom:3px}
+
+/* V/F buttons */
+.vf-group{display:flex;gap:10px;margin:12px 0}
+.vf-btn{flex:1;padding:14px;border:2px solid #E0E8F0;border-radius:12px;background:#F7F9FC;font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.vf-btn:hover:not(:disabled){border-color:var(--celeste);background:#EEF4FB}
+.vf-btn:disabled{cursor:default;opacity:.85}
+.vf-btn.ok{background:#E8F7EF;border-color:var(--verde);color:var(--verde-dark)}
+.vf-btn.no{background:#FEF0F0;border-color:var(--rojo);color:var(--rojo-dark)}
+
+/* Drag */
+.drag-c{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.drag-i{padding:12px 16px;background:#F7F9FC;border:2px solid #E0E8F0;border-radius:10px;cursor:grab;font-size:13px;color:var(--azul);transition:all .2s;user-select:none;display:flex;align-items:center;gap:10px;line-height:1.5}
+.drag-i:active{cursor:grabbing}
+.drag-i.dragging{opacity:.5;border-style:dashed}
+.drag-i.drag-over{border-color:var(--celeste);background:#EEF4FB}
+.drag-i.pos-ok{background:#E8F7EF;border-color:var(--verde)}
+.drag-i.pos-no{background:#FEF0F0;border-color:var(--rojo)}
+.drag-h{font-size:16px;color:#B0BEC5;flex-shrink:0}
+
+.btn-check{display:block;width:100%;padding:13px;background:var(--azul);color:#fff;border:none;border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:6px}
+.btn-check:hover:not(:disabled){background:#164172}
+.btn-check:disabled{background:#B0BEC5;cursor:default}
+
+/* Case questions chain */
+.case-q{margin-top:14px;padding-top:14px;border-top:1px dashed #D0D8E0;display:none}
+.case-q.show{display:block;animation:fadeIn .4s ease}
+
+/* Progress within level */
+.level-progress{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 16px;background:var(--blanco);border-radius:12px;box-shadow:0 1px 6px rgba(27,79,138,.05)}
+.lp-bar{flex:1;height:6px;background:#E0E8F0;border-radius:3px;overflow:hidden}
+.lp-fill{height:100%;background:linear-gradient(90deg,var(--celeste),var(--azul));border-radius:3px;transition:width .5s ease;width:0}
+.lp-text{font-size:12px;font-weight:600;color:var(--azul);white-space:nowrap}
+
+/* Synthesis */
+.synth-score{text-align:center;padding:30px 20px}
+.score-big{font-size:52px;font-weight:900;color:var(--azul)}
+.score-big .tot{color:#B0BEC5}
+.synth-msg{font-size:14px;color:#5A6B7D;margin-top:8px}
+.proc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.proc-tag{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#EEF4FB;color:var(--azul)}
+.firma{text-align:center;font-size:13px;color:#5A6B7D;margin-top:24px;padding-top:20px;border-top:1px solid #E0E8F0}
+.firma strong{color:var(--azul);font-size:14px;display:block;margin-bottom:4px}
+
+/* Confetti */
+.confetti-c{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.conf-p{position:absolute;width:10px;height:10px;top:-20px;animation:confFall 3s ease-in forwards}
+@keyframes confFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Locked overlay */
+.locked-overlay{padding:40px 20px;text-align:center;color:#8899AA}
+.locked-overlay .lock-icon{font-size:48px;margin-bottom:16px}
+.locked-overlay p{font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- STEPPER -->
+<div class="stepper">
+  <div class="stepper-inner">
+    <div class="step done" data-step="0"></div>
+    <div class="step" data-step="1"></div>
+    <div class="step" data-step="2"></div>
+    <div class="step" data-step="3"></div>
+    <div class="step" data-step="4"></div>
+    <div class="step" data-step="5"></div>
+  </div>
+  <div class="stepper-label" id="stepLabel">Portada</div>
+</div>
+
+<!-- SCREENS CONTAINER -->
+<div class="screens-container">
+
+<!-- ====== SCREEN 0: PORTADA ====== -->
+<div class="screen active" id="scr-0">
+  <div class="portada-screen">
+    <span class="portada-badge">Entrenamiento Clínico</span>
+    <h1>🔗 Trabajando la Culpa<br>en Sesión</h1>
+    <p class="sub">Basado en Echeburúa, de Corral y Amor (2001). Estrategias de afrontamiento ante los sentimientos de culpa.</p>
+    <div class="portada-meta">
+      <span>📍 @leo.eyzaguirre</span>
+      <span>⏱ ~40-50 min</span>
+      <span>📝 21 ejercicios</span>
+      <span>📊 3 niveles</span>
+    </div>
+    <button class="portada-start" onclick="goScreen(1)">Comenzar →</button>
+  </div>
+</div>
+
+<!-- ====== SCREEN 1: TEORÍA ====== -->
+<div class="screen" id="scr-1">
+<div class="scr-content">
+  <div class="sec-header celeste">
+    <div class="hex-o"><svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="h1" width="60" height="52" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)"><polygon points="30,2 54,15 54,37 30,50 6,37 6,15" fill="none" stroke="white" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#h1)"/></svg></div>
+    <h2>📖 Marco Teórico</h2>
+    <p>Todo lo que necesitas saber del artículo antes de practicar</p>
+  </div>
+
+  <!-- 1. Definición -->
+  <div class="card concept">
+    <div class="concept-icon">⚡</div>
+    <div>
+      <h3>¿Qué es la culpa?</h3>
+      <p>Un afecto doloroso que surge de la percepción de haber transgredido las normas éticas personales o sociales, sobre todo cuando la conducta (u omisión) ha derivado en daño a otra persona. Consta de tres elementos (Pérez Domínguez et al., 2000):</p>
+      <ul>
+        <li><strong>Acto causal</strong> — real o imaginario</li>
+        <li><strong>Autovaloración negativa</strong> — la "mala conciencia"</li>
+        <li><strong>Remordimiento</strong> — la emoción negativa derivada de ambos</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2. Función -->
+  <div class="card concept">
+    <div class="concept-icon">🔄</div>
+    <div>
+      <h3>Función reguladora de la culpa</h3>
+      <p>Más allá del Código Penal, lo que realmente controla el comportamiento humano es la conciencia moral. La culpa funciona como un <strong>sistema de alarma interno</strong> que suple la necesidad de controles externos. Su función consiste en la evitación de las situaciones que la generan o en las conductas de reparación, cuando se reconoce haber hecho algo mal, para eludir el remordimiento.</p>
+    </div>
+  </div>
+
+  <!-- 3. Conductas generadoras -->
+  <div class="card acc" id="acc-conduct">
+    <div class="acc-head" onclick="toggleAcc('acc-conduct')">
+      <h3>📋 Conductas generadoras de culpa</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:10px">Las conductas que generan culpa son muy variadas. En unos casos hacen referencia a <strong>elementos externos</strong>:</p>
+      <ul style="font-size:13px;padding-left:18px;margin-bottom:12px">
+        <li>Actividad laboral</li>
+        <li>Manejo inadecuado del dinero o de las compras</li>
+        <li>Descontrol en la dieta</li>
+      </ul>
+      <p style="font-size:14px;margin-bottom:10px">En otros, a <strong>elementos más internos</strong>:</p>
+      <ul style="font-size:13px;padding-left:18px;margin-bottom:12px">
+        <li>La actuación como padres</li>
+        <li>La fidelidad con la pareja</li>
+        <li>Las conductas de traición con amigos o compañeros de trabajo</li>
+      </ul>
+      <p style="font-size:13px;color:#5A6B7D">La culpa remite muy frecuentemente a hechos del pasado — incluso del pasado lejano — y aparece más fácilmente cuando las metas que la persona se traza son excesivamente altas.</p>
+    </div>
+  </div>
+
+  <!-- 4. Culpa vs Vergüenza -->
+  <div class="card acc" id="acc-verg">
+    <div class="acc-head" onclick="toggleAcc('acc-verg')">
+      <h3>🔍 Culpa vs. Vergüenza — Distinción clave</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:10px">Aunque suelen confundirse, son funcionalmente distintas (Tangney, 1996). La <strong>culpa</strong> alude a una conducta concreta ("he hecho algo malo"); la <strong>vergüenza</strong> implica una autodescalificación global ("soy mala persona").</p>
+      <table class="tbl">
+        <thead><tr><th>Vergüenza</th><th>Culpa</th></tr></thead>
+        <tbody>
+          <tr><td>Autodescalificación global</td><td>Autocrítica de una conducta concreta</td></tr>
+          <tr><td>Emoción devastadora</td><td>Emoción menos devastadora</td></tr>
+          <tr><td>Preocupación: malestar emocional propio</td><td>Preocupación: dolor por el daño hecho</td></tr>
+          <tr><td>Aislamiento social</td><td>Facilitación de la empatía</td></tr>
+          <tr><td>Depresión como consecuencia</td><td>Intentos de reparación</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:#5A6B7D;margin-top:8px"><strong>Implicación clínica:</strong> La vergüenza, al poner el foco en uno mismo, es un obstáculo en el camino hacia el cambio. La culpa, al poner el foco en los demás, facilita la reparación. Un acto culpable puede ser reparado, pero la culpabilidad intrínseca de la persona, no.</p>
+    </div>
+  </div>
+
+  <!-- 5. Culpa espuria -->
+  <div class="card acc" id="acc-espuria">
+    <div class="acc-head" onclick="toggleAcc('acc-espuria')">
+      <h3>🎭 Culpa espuria — Cuando la culpa es inducida externamente</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:10px">Cabe hacer un uso espurio de la culpa cuando se procede a inducir externamente una responsabilidad excesiva a alguien, sobre todo a niños o a personas dependientes emocionalmente. Una persona se siente culpable cuando sabe que ha hecho algo mal, pero también cuando <strong>se le hace sentir así a modo de chantaje emocional</strong>, por no seguir determinadas normas sociales o morales.</p>
+      <p style="font-size:13px;color:#5A6B7D">Es el caso de personas que hacen sentir culpable a alguien por no acceder a sus deseos: "¡cómo puedes ser tan egoísta!", "tenía otro concepto de ti". En este caso, se trata de una <strong>inducción artificial</strong> del sentimiento de culpa para conseguir la sumisión del sujeto (Etxebarría, 2000).</p>
+    </div>
+  </div>
+
+  <!-- 6. Desarrollo evolutivo -->
+  <div class="card acc" id="acc-desarrollo">
+    <div class="acc-head" onclick="toggleAcc('acc-desarrollo')">
+      <h3>🌱 Desarrollo evolutivo de la culpa</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:10px">La aparición de la culpa está vinculada al desarrollo de la conciencia moral. Las personas introvertidas y con rasgos obsesivos tienden a vivir la culpa con más intensidad.</p>
+      <p style="font-size:14px;margin-bottom:10px"><strong>Estilos educativos y culpa:</strong></p>
+      <ul style="font-size:13px;padding-left:18px;margin-bottom:12px">
+        <li>Los castigos <strong>físicos</strong> provocan respuestas agresivas</li>
+        <li>Los castigos <strong>psicológicos</strong> ("ya no te quiero", "no ves cómo sufrimos", "así correspondes a los sacrificios hechos por ti") suscitan sentimientos de culpa intensos</li>
+      </ul>
+      <p style="font-size:14px;margin-bottom:10px"><strong>De la empatía a la culpa:</strong></p>
+      <p style="font-size:13px;margin-bottom:10px">Desde una fase temprana de socialización, los niños adquieren la capacidad de empatía. No se trata solo de <em>empatía cognitiva</em> (comprender lo que le ocurre al otro), sino de una auténtica <em>empatía emocional</em> (sentir lo que le sucede). Hacer algo indebido — o no hacerlo — le hace a una persona sentirse culpable. Si esto no ocurre, hay una anomalía en el funcionamiento.</p>
+      <p style="font-size:14px;margin-bottom:10px"><strong>Evolución sana:</strong></p>
+      <p style="font-size:13px">El sentimiento de culpa es sano cuando evoluciona del <strong>miedo al castigo o al malestar personal</strong> → al <strong>remordimiento por haber causado daño</strong>, lo que incita a la rectificación y a la reparación. Se trata de una culpa sana cuando el sujeto siente pesar y arrepentimiento por las transgresiones cometidas y plantea subsanarlas para <em>lavar</em> las culpas.</p>
+    </div>
+  </div>
+
+  <!-- 7. Tres formas de arrepentimiento -->
+  <div class="card acc" id="acc-arrepent">
+    <div class="acc-head" onclick="toggleAcc('acc-arrepent')">
+      <h3>🔑 Tres formas de arrepentimiento (Laín Entralgo, 1976)</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="card concept" style="box-shadow:none;border:1px solid #EEF2F7;margin-bottom:10px">
+        <div class="concept-icon">1️⃣</div>
+        <div><h3>Arrepentimiento por vergüenza</h3><p>Cuando uno se arrepiente por haber transgredido la tabla de sus principios éticos.</p></div>
+      </div>
+      <div class="card concept" style="box-shadow:none;border:1px solid #EEF2F7;margin-bottom:10px">
+        <div class="concept-icon">2️⃣</div>
+        <div><h3>Arrepentimiento por error</h3><p>Cuando uno se ha equivocado en su conducta respecto a la adecuación de lo que hacía.</p></div>
+      </div>
+      <div class="card concept" style="box-shadow:none;border:1px solid #EEF2F7">
+        <div class="concept-icon">3️⃣</div>
+        <div><h3>Arrepentimiento por deficiencia</h3><p>Cuando no se ha hecho todo lo que se podía y debía hacer para el logro de algo importante.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Culpa anormal -->
+  <div class="card acc" id="acc-anormal">
+    <div class="acc-head" onclick="toggleAcc('acc-anormal')">
+      <h3>⚠️ Culpa anormal — Por exceso y por defecto</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:10px">Desde una perspectiva psicopatológica, la culpa puede ser anormal en dos direcciones. En ambos casos hay una distorsión de la conciencia de la situación.</p>
+      <table class="tbl">
+        <thead><tr><th>Por exceso</th><th>Por defecto</th></tr></thead>
+        <tbody>
+          <tr><td>Depresión / Personalidad obsesiva</td><td>Psicopatía / Personalidad paranoica</td></tr>
+          <tr><td>La persona se siente culpable sin haber hecho nada objetivamente malo</td><td>No hay arrepentimiento ni compasión por las víctimas</td></tr>
+          <tr><td>Ideas de desprecio hacia uno mismo</td><td>La patología se relaciona con la inexistencia de culpa</td></tr>
+          <tr><td>La culpa funciona como autocastigo por errores del pasado</td><td>No se siente arrepentimiento por el daño hecho</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:#5A6B7D;margin-top:8px"><strong>Culpa por exceso en depresión:</strong> Los sentimientos de culpa son muy intensos, basados en incidentes triviales o culpas leves del pasado. La persona convierte lo menor en una montaña de indignidad. La culpa aparece disociada e incluso independiente del acto negativo. La persona <em>se siente</em> culpable sin <em>haber hecho</em> algo objetivamente malo.</p>
+      <p style="font-size:13px;color:#5A6B7D;margin-top:6px"><strong>Culpa anómala paradójica:</strong> Una forma especialmente grave es cuando la culpa la experimenta la víctima de un delito o de una conducta inapropiada (agresiones sexuales, violencia familiar). Casi la mitad de las víctimas se atribuyen a sí mismas la culpa, al menos parcialmente.</p>
+    </div>
+  </div>
+
+  <!-- 9. Culpa en víctimas -->
+  <div class="card acc" id="acc-victimas">
+    <div class="acc-head" onclick="toggleAcc('acc-victimas')">
+      <h3>💔 Culpa en víctimas de violencia</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:10px">En el caso de la violencia familiar, los sentimientos de culpa pueden estar relacionados con el estado de ánimo deprimido, la baja autoestima, y las conductas que la víctima ha realizado para evitar la violencia. La atribución interna de culpa deriva de tres fuentes:</p>
+      <p style="font-size:13px;font-weight:600;color:var(--azul);margin:8px 0 4px">Atribuciones a su personalidad:</p>
+      <p style="font-size:13px">Considerarse estúpidas, verse poco atractivas, sentirse sin valía.</p>
+      <p style="font-size:13px;font-weight:600;color:var(--azul);margin:8px 0 4px">Atribuciones a su conducta:</p>
+      <p style="font-size:13px">Creerse provocadoras de la violencia, haber cedido a chantajes, haber ocultado el problema, haber denunciado al maltratador.</p>
+      <p style="font-size:13px;font-weight:600;color:var(--azul);margin:8px 0 4px">Atribuciones a la transgresión de normas autoimpuestas:</p>
+      <p style="font-size:13px">Considerarse responsable de haber "roto" a la familia, pensar que los problemas del hogar no deben salir al exterior, haber destruido el "principio" de que la pareja debe permanecer unida.</p>
+    </div>
+  </div>
+
+  <!-- 10. Estrategias de afrontamiento -->
+  <div class="card acc" id="acc-estrat">
+    <div class="acc-head" onclick="toggleAcc('acc-estrat')">
+      <h3>🗺️ Mapa completo de estrategias de afrontamiento</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:13px;font-weight:700;color:var(--azul);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">🔴 Antes de la aparición de la culpa — Estrategias evitativas:</p>
+      <ul style="font-size:13px;padding-left:18px;margin-bottom:14px">
+        <li><strong>Negación</strong> — no reconocer la conducta negativa</li>
+        <li><strong>Olvido</strong> — "ni me acuerdo de lo que hice"</li>
+        <li><strong>Minimización</strong> — quitar importancia al daño</li>
+        <li><strong>Justificación</strong> — "los dos nos faltamos al respeto"</li>
+        <li><strong>Atribución de la culpa</strong> — a la víctima, a factores personales ("perdí el control"), o a factores externos ("cuando salgo de copas no soy yo")</li>
+      </ul>
+      <p style="font-size:13px;font-weight:700;color:var(--naranja);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">🟠 Con la culpa presente — Estrategias inadecuadas:</p>
+      <ul style="font-size:13px;padding-left:18px;margin-bottom:14px">
+        <li><strong>Represión emocional</strong> — no afrontar el remordimiento directamente</li>
+        <li><strong>Mero remordimiento</strong> — sentir culpa sin pasar a la acción reparadora</li>
+        <li><strong>Conductas autodestructivas</strong> — conductas excitantes, comportamientos adictivos, intentos de suicidio</li>
+        <li><strong>Conductas abyectas</strong> — degradación personal como autocastigo</li>
+      </ul>
+      <p style="font-size:13px;font-weight:700;color:var(--verde-dark);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">🟢 Con la culpa presente — Estrategias adecuadas:</p>
+      <ul style="font-size:13px;padding-left:18px;margin-bottom:14px">
+        <li><strong>Reparación directa</strong> — hacer frente al daño causado directamente</li>
+        <li><strong>Reparación indirecta</strong> — colaborar con otras víctimas, formar parte de una ONG, alertar a otros</li>
+        <li><strong>Conductas de altruismo</strong> — empatía y altruismo que contribuyen a recuperar la autoestima</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 11. Secuencia de superación -->
+  <div class="card acc" id="acc-secuencia">
+    <div class="acc-head" onclick="toggleAcc('acc-secuencia')">
+      <h3>✅ Secuencia de superación de la culpa (Tabla 8)</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:12px">Lo sano es identificar lo negativo correctamente, tomar conciencia apropiada de la culpa (no de todo lo malo que ocurre es uno responsable), expresarla verbalmente, pedir perdón y asumir las responsabilidades debidas. En último término, se trata de buscar soluciones, de reparar daños o de compensar los efectos negativos.</p>
+      <div class="card concept" style="box-shadow:none;border:2px solid var(--verde);margin-bottom:8px">
+        <div class="concept-icon">1️⃣</div>
+        <div><h3>Identificación de la conducta, conciencia de culpa y remordimiento</h3><p>Reconocer qué se hizo o se dejó de hacer concretamente.</p></div>
+      </div>
+      <div class="card concept" style="box-shadow:none;border:2px solid var(--verde);margin-bottom:8px">
+        <div class="concept-icon">2️⃣</div>
+        <div><h3>Expresión verbal y emocional de arrepentimiento</h3><p>El pesar por lo ocurrido, expresado a veces somáticamente, busca la compasión y el perdón.</p></div>
+      </div>
+      <div class="card concept" style="box-shadow:none;border:2px solid var(--verde);margin-bottom:8px">
+        <div class="concept-icon">3️⃣</div>
+        <div><h3>Solicitud de perdón</h3><p>Pedir perdón a la persona afectada por la conducta culpable.</p></div>
+      </div>
+      <div class="card concept" style="box-shadow:none;border:2px solid var(--verde)">
+        <div class="concept-icon">4️⃣</div>
+        <div><h3>Conductas de reparación: directas / indirectas</h3><p>Siempre hay algo que se puede hacer para reparar el malestar generado. Si no es posible la reparación directa, cabe la indirecta: colaborar con otras víctimas, formar parte de una ONG, alertar a otros, desarrollar conductas de empatía y altruismo.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. Evaluación -->
+  <div class="card acc" id="acc-eval">
+    <div class="acc-head" onclick="toggleAcc('acc-eval')">
+      <h3>📊 Instrumentos de evaluación</h3><span class="acc-arrow">▼</span>
+    </div>
+    <div class="acc-body">
+      <p style="font-size:14px;margin-bottom:10px">Existen pocos instrumentos específicos con buenas propiedades psicométricas. Los más significativos:</p>
+      <table class="tbl">
+        <thead><tr><th>Siglas</th><th>Nombre</th><th>Qué evalúa</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SC-35</strong></td><td>Escala para Medir el Sentimiento de Culpa (Zabalegui, 1993)</td><td>Tendencia a experimentar sentimientos de culpa. 35 ítems. Adaptación española.</td></tr>
+          <tr><td><strong>GI</strong></td><td>Guilt Inventory (Kugler & Jones, 1992)</td><td>Culpa-estado, culpa-rasgo, principios morales. 45 ítems.</td></tr>
+          <tr><td><strong>ICG</strong></td><td>Interpersonal Guilt Questionnaire (O'Connor et al., 1997)</td><td>Culpa interpersonal. 45 ítems.</td></tr>
+          <tr><td><strong>ESC</strong></td><td>Escala de Sentimiento de Culpa (Berrios et al., 1992)</td><td>Sentimiento de culpa en la depresión (cognitiva y afectiva). 7 ítems.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Conclusiones -->
+  <div class="card concept">
+    <div class="concept-icon">🎯</div>
+    <div>
+      <h3>Conclusión clave del artículo</h3>
+      <p>La culpa es, en resumen, cognición (mala conciencia) y emoción (remordimiento), inseparablemente unidas. Tan negativo es no sentirse culpable como sentirse excesivamente culpable. La culpa es normal cuando el sujeto adquiere una conciencia adecuada de la realidad y adopta intentos de reparación. Es anormal cuando se mantiene en secreto, sin ser consciente de la conducta negativa realizada o sin intentar buscar la acción reparadora.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ====== SCREEN 2: NIVEL 1 ====== -->
+<div class="screen" id="scr-2">
+<div class="scr-content">
+  <div class="sec-header azul">
+    <div class="hex-o"><svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="h2" width="60" height="52" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)"><polygon points="30,2 54,15 54,37 30,50 6,37 6,15" fill="none" stroke="white" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#h2)"/></svg></div>
+    <h2>🎯 Nivel 1 — Reconocimiento</h2>
+    <p>3 viñetas clínicas + 3 verdadero/falso</p>
+  </div>
+  <div class="level-progress"><div class="lp-bar"><div class="lp-fill" id="lp1"></div></div><span class="lp-text" id="lp1t">0/6</span></div>
+
+  <!-- V1 -->
+  <div class="card" id="v1" data-done="0"><span class="badge badge-1">Viñeta 1 de 3</span>
+    <div class="vineta"><div class="vineta-head"><span class="vineta-label">📋 Viñeta clínica</span></div>
+      <p class="vineta-text">"Desde que dejé a mi esposo, no puedo dormir. Sé que los niños están sufriendo y es mi culpa. Dejé de salir con mis amigas porque no merezco pasarla bien. Cada vez que me río de algo, me siento horrible. Soy la peor madre del mundo."</p>
+      <div class="ctx"><strong>Contexto:</strong> Mujer de 36 años, separada hace 8 meses. La separación fue iniciativa de ella tras años de conflictos. Los hijos mantienen contacto regular con ambos padres.</div>
+    </div>
+    <p class="q">¿Qué proceso principal opera aquí?</p>
+    <button class="opt-btn" onclick="doV('v1','A','C')">A. Culpa normal adaptativa — reconoce un daño concreto y busca repararlo</button>
+    <button class="opt-btn" onclick="doV('v1','B','C')">B. Vergüenza — autodescalificación global con aislamiento social</button>
+    <button class="opt-btn" onclick="doV('v1','C','C')">C. Culpa anormal por exceso — sentimiento desproporcionado con autocastigo e inhibición conductual</button>
+    <button class="opt-btn" onclick="doV('v1','D','C')">D. Culpa anormal por defecto — ausencia de remordimiento</button>
+    <div class="fb" id="fb-v1"></div>
+  </div>
+
+  <!-- V2 -->
+  <div class="card" id="v2" data-done="0"><span class="badge badge-1">Viñeta 2 de 3</span>
+    <div class="vineta"><div class="vineta-head"><span class="vineta-label">📋 Viñeta clínica</span></div>
+      <p class="vineta-text">"Le dije algo muy feo a mi hermana la semana pasada, delante de toda la familia. Desde ese día no puedo dejar de pensar en eso. Me siento muy mal. Necesito hablar con ella y pedirle disculpas, pero no sé cómo empezar."</p>
+      <div class="ctx"><strong>Contexto:</strong> Hombre de 42 años. Discutió con su hermana en una reunión familiar. Reconoce que se excedió y que el comentario fue hiriente.</div>
+    </div>
+    <p class="q">¿Qué proceso principal opera aquí?</p>
+    <button class="opt-btn" onclick="doV('v2','A','A')">A. Culpa normal adaptativa — reconoce daño concreto, siente remordimiento, se orienta a reparar</button>
+    <button class="opt-btn" onclick="doV('v2','B','A')">B. Culpa anormal por exceso — remordimiento desproporcionado que paraliza</button>
+    <button class="opt-btn" onclick="doV('v2','C','A')">C. Vergüenza — se siente mala persona por lo que dijo</button>
+    <button class="opt-btn" onclick="doV('v2','D','A')">D. Estrategia evitativa de minimización</button>
+    <div class="fb" id="fb-v2"></div>
+  </div>
+
+  <!-- V3 -->
+  <div class="card" id="v3" data-done="0"><span class="badge badge-1">Viñeta 3 de 3</span>
+    <div class="vineta"><div class="vineta-head"><span class="vineta-label">📋 Viñeta clínica</span></div>
+      <p class="vineta-text">"Sé que le grité a mi hijo y no debí hacerlo. Pero estaba insoportable, no me dejaba trabajar. Cualquier padre hubiera reaccionado igual. Tampoco fue para tanto, solo levanté la voz. Al final el niño ni se acordó al día siguiente."</p>
+      <div class="ctx"><strong>Contexto:</strong> Padre de 38 años, consulta por estrés laboral. Al explorar el episodio del grito en sesión, aparece esta narrativa.</div>
+    </div>
+    <p class="q">¿Qué proceso principal opera aquí?</p>
+    <button class="opt-btn" onclick="doV('v3','A','B')">A. Culpa normal adaptativa — reconoce que gritó y siente remordimiento</button>
+    <button class="opt-btn" onclick="doV('v3','B','B')">B. Estrategias evitativas — minimización, justificación y olvido para evitar el remordimiento</button>
+    <button class="opt-btn" onclick="doV('v3','C','B')">C. Culpa anormal por defecto — no siente ningún remordimiento</button>
+    <button class="opt-btn" onclick="doV('v3','D','B')">D. Vergüenza — se siente mal padre a nivel global</button>
+    <div class="fb" id="fb-v3"></div>
+  </div>
+
+  <!-- Separator -->
+  <div class="sec-header celeste" style="margin-top:24px">
+    <h2>✅❌ Verdadero o Falso</h2>
+    <p>Afirmaciones sobre la culpa según el artículo</p>
+  </div>
+
+  <!-- VF1 -->
+  <div class="card" id="vf1" data-done="0"><span class="badge badge-1">V/F 1 de 3</span>
+    <div class="vineta" style="border-left-color:var(--naranja)"><p class="vineta-text" style="font-style:normal;font-weight:600">"La culpa y la vergüenza son funcionalmente equivalentes: ambas llevan a la reparación del daño causado."</p></div>
+    <div class="vf-group">
+      <button class="vf-btn" onclick="doVF('vf1','V','F')">✅ Verdadero</button>
+      <button class="vf-btn" onclick="doVF('vf1','F','F')">❌ Falso</button>
+    </div>
+    <div class="fb" id="fb-vf1"></div>
+  </div>
+
+  <!-- VF2 -->
+  <div class="card" id="vf2" data-done="0"><span class="badge badge-1">V/F 2 de 3</span>
+    <div class="vineta" style="border-left-color:var(--naranja)"><p class="vineta-text" style="font-style:normal;font-weight:600">"La culpa anormal por exceso se asocia principalmente con la psicopatía y la personalidad paranoica."</p></div>
+    <div class="vf-group">
+      <button class="vf-btn" onclick="doVF('vf2','V','F')">✅ Verdadero</button>
+      <button class="vf-btn" onclick="doVF('vf2','F','F')">❌ Falso</button>
+    </div>
+    <div class="fb" id="fb-vf2"></div>
+  </div>
+
+  <!-- VF3 -->
+  <div class="card" id="vf3" data-done="0"><span class="badge badge-1">V/F 3 de 3</span>
+    <div class="vineta" style="border-left-color:var(--naranja)"><p class="vineta-text" style="font-style:normal;font-weight:600">"La función reguladora de la culpa consiste en la evitación de las situaciones que la generan o en las conductas de reparación cuando se reconoce haber hecho algo mal."</p></div>
+    <div class="vf-group">
+      <button class="vf-btn" onclick="doVF('vf3','V','V')">✅ Verdadero</button>
+      <button class="vf-btn" onclick="doVF('vf3','F','V')">❌ Falso</button>
+    </div>
+    <div class="fb" id="fb-vf3"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ====== SCREEN 3: NIVEL 2 ====== -->
+<div class="screen" id="scr-3">
+<div class="scr-content">
+  <div class="sec-header naranja">
+    <div class="hex-o"><svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="h3" width="60" height="52" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)"><polygon points="30,2 54,15 54,37 30,50 6,37 6,15" fill="none" stroke="white" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#h3)"/></svg></div>
+    <h2>🗣️ Nivel 2 — Análisis clínico</h2>
+    <p>3 respuestas terapéuticas + 4 detectar estrategia evitativa</p>
+  </div>
+  <div class="level-progress"><div class="lp-bar"><div class="lp-fill" id="lp2"></div></div><span class="lp-text" id="lp2t">0/7</span></div>
+
+  <div id="n2lock" class="locked-overlay" style="display:none"><div class="lock-icon">🔒</div><p>Completa el Nivel 1 para desbloquear</p></div>
+  <div id="n2content">
+
+  <!-- C1 -->
+  <div class="card" id="c1" data-done="0"><span class="badge badge-2">Respuesta terapéutica 1 de 3</span>
+    <div class="cli"><div class="cli-head"><span style="font-size:22px">👤</span><span class="cli-label">El consultante dice:</span></div>
+      <p class="cli-text">"Hace tres años le presté dinero a mi mejor amigo y nunca me lo devolvió. Cuando le reclamé, se enojó y dejamos de hablarnos. Ahora me enteré de que está pasando por un momento muy difícil, pero no me atrevo a llamarlo. Siento que si lo llamo, le estoy dando la razón de que yo fui el malo."</p>
+    </div>
+    <p class="q">¿Cuál respuesta es más coherente con el trabajo adecuado sobre la culpa?</p>
+    <button class="resp-btn" onclick="doC('c1','A','B')"><span class="resp-lbl">Respuesta A</span><span class="resp-txt">"No tienes por qué sentirte culpable. Tú le prestaste el dinero y él no cumplió. La responsabilidad es de él, no tuya."</span></button>
+    <button class="resp-btn" onclick="doC('c1','B','B')"><span class="resp-lbl">Respuesta B</span><span class="resp-txt">"Parece que hay algo concreto que te genera malestar. ¿Qué fue exactamente lo que hiciste o dejaste de hacer que te pesa? Identificar eso puede ayudarnos a ver si hay algo que puedas hacer al respecto."</span></button>
+    <button class="resp-btn" onclick="doC('c1','C','B')"><span class="resp-lbl">Respuesta C</span><span class="resp-txt">"Lo que sientes es completamente normal. La culpa es una emoción protectora. Déjate sentirla, es parte del proceso."</span></button>
+    <div id="fb-c1"></div>
+  </div>
+
+  <!-- C2 -->
+  <div class="card" id="c2" data-done="0"><span class="badge badge-2">Respuesta terapéutica 2 de 3</span>
+    <div class="cli"><div class="cli-head"><span style="font-size:22px">👤</span><span class="cli-label">La consultante dice:</span></div>
+      <p class="cli-text">"Sé que no fui yo quien provocó el accidente. Todos me lo dicen. Pero no puedo dejar de pensar que si ese día hubiera salido cinco minutos antes, nada habría pasado. A veces siento que no merezco seguir con mi vida cuando mi amiga perdió tanto."</p>
+    </div>
+    <p class="q">¿Cuál respuesta es más coherente?</p>
+    <button class="resp-btn" onclick="doC('c2','A','C')"><span class="resp-lbl">Respuesta A</span><span class="resp-txt">"Tienes que dejar de pensar en eso. El accidente no fue tu culpa y seguir con eso solo te hace daño. Intenta ocupar tu tiempo en otras cosas."</span></button>
+    <button class="resp-btn" onclick="doC('c2','B','C')"><span class="resp-lbl">Respuesta B</span><span class="resp-txt">"Es importante que reconozcas que sientes culpa por algo que no estaba en tu control. A veces la culpa nos protege de sentir la tristeza que hay debajo."</span></button>
+    <button class="resp-btn" onclick="doC('c2','C','C')"><span class="resp-lbl">Respuesta C</span><span class="resp-txt">"Aunque no causaste el accidente, parece que hay algo que te gustaría hacer por tu amiga. ¿Hay alguna acción concreta que sientas que podría ayudarla en este momento?"</span></button>
+    <div id="fb-c2"></div>
+  </div>
+
+  <!-- C3 -->
+  <div class="card" id="c3" data-done="0"><span class="badge badge-2">Respuesta terapéutica 3 de 3</span>
+    <div class="cli"><div class="cli-head"><span style="font-size:22px">👤</span><span class="cli-label">El consultante dice:</span></div>
+      <p class="cli-text">"Engañé a mi pareja hace dos años. Ella nunca lo supo. Ya terminamos por otras razones, pero yo sigo cargando con eso. A veces pienso que todo lo malo que me pasa es un castigo por lo que hice. No merezco estar bien."</p>
+    </div>
+    <p class="q">¿Cuál respuesta es más coherente?</p>
+    <button class="resp-btn" onclick="doC('c3','A','B')"><span class="resp-lbl">Respuesta A</span><span class="resp-txt">"Ya terminaron y ella nunca lo supo. No tiene sentido seguir castigándote por algo del pasado. Tienes que perdonarte a ti mismo y seguir adelante."</span></button>
+    <button class="resp-btn" onclick="doC('c3','B','B')"><span class="resp-lbl">Respuesta B</span><span class="resp-txt">"La infidelidad es la conducta concreta que identificas como fuente de la culpa. La reparación directa con tu expareja puede no ser posible ahora, pero ¿hay alguna forma indirecta en que podrías actuar coherente con lo que aprendiste de esa experiencia?"</span></button>
+    <button class="resp-btn" onclick="doC('c3','C','B')"><span class="resp-lbl">Respuesta C</span><span class="resp-txt">"Parece que sientes mucha vergüenza por lo que hiciste. Es importante trabajar tu autoestima para que puedas superar esto."</span></button>
+    <div id="fb-c3"></div>
+  </div>
+
+  <!-- Separator -->
+  <div class="sec-header celeste" style="margin-top:24px">
+    <h2>🔎 Detectar la estrategia evitativa</h2>
+    <p>¿Qué estrategia está usando el consultante para evitar la culpa?</p>
+  </div>
+
+  <!-- D1 -->
+  <div class="card" id="d1" data-done="0"><span class="badge badge-2">Detectar estrategia 1 de 4</span>
+    <div class="cli"><div class="cli-head"><span style="font-size:22px">👤</span><span class="cli-label">El consultante dice:</span></div>
+      <p class="cli-text">"Mira, lo que pasó en la cena fue que los dos nos faltamos al respeto. Yo le dije cosas feas, sí, pero ella también me provocó. No es justo que yo cargue con toda la culpa cuando ella también tuvo su parte."</p>
+    </div>
+    <p class="q">¿Qué estrategia evitativa predomina aquí?</p>
+    <button class="opt-btn" onclick="doV('d1','A','C')">A. Negación</button>
+    <button class="opt-btn" onclick="doV('d1','B','C')">B. Minimización</button>
+    <button class="opt-btn" onclick="doV('d1','C','C')">C. Justificación y atribución de la culpa a la víctima</button>
+    <button class="opt-btn" onclick="doV('d1','D','C')">D. Olvido</button>
+    <div class="fb" id="fb-d1"></div>
+  </div>
+
+  <!-- D2 -->
+  <div class="card" id="d2" data-done="0"><span class="badge badge-2">Detectar estrategia 2 de 4</span>
+    <div class="cli"><div class="cli-head"><span style="font-size:22px">👤</span><span class="cli-label">El consultante dice:</span></div>
+      <p class="cli-text">"¿La pelea con mi hermano? No, no me acuerdo bien de los detalles. Fue hace tanto tiempo... Creo que ya ni vale la pena hablar de eso. Lo que pasó, pasó."</p>
+    </div>
+    <p class="q">¿Qué estrategia evitativa predomina?</p>
+    <button class="opt-btn" onclick="doV('d2','A','A')">A. Olvido — evitar el recuerdo para que no aparezca la culpa</button>
+    <button class="opt-btn" onclick="doV('d2','B','A')">B. Negación — no reconocer que ocurrió algo negativo</button>
+    <button class="opt-btn" onclick="doV('d2','C','A')">C. Minimización — quitar importancia al daño</button>
+    <button class="opt-btn" onclick="doV('d2','D','A')">D. Atribución a factores externos</button>
+    <div class="fb" id="fb-d2"></div>
+  </div>
+
+  <!-- D3 -->
+  <div class="card" id="d3" data-done="0"><span class="badge badge-2">Detectar estrategia 3 de 4</span>
+    <div class="cli"><div class="cli-head"><span style="font-size:22px">👤</span><span class="cli-label">La consultante dice:</span></div>
+      <p class="cli-text">"Lo único que hice fue empujarla un poco y al resbalarse se cayó al suelo. Tampoco es que le hice tanto daño. Ni siquiera tuvo que ir al médico. La gente exagera todo."</p>
+    </div>
+    <p class="q">¿Qué estrategia evitativa predomina?</p>
+    <button class="opt-btn" onclick="doV('d3','A','B')">A. Justificación</button>
+    <button class="opt-btn" onclick="doV('d3','B','B')">B. Minimización — quitar importancia al daño causado</button>
+    <button class="opt-btn" onclick="doV('d3','C','B')">C. Negación</button>
+    <button class="opt-btn" onclick="doV('d3','D','B')">D. Atribución a factores personales</button>
+    <div class="fb" id="fb-d3"></div>
+  </div>
+
+  <!-- D4 -->
+  <div class="card" id="d4" data-done="0"><span class="badge badge-2">Detectar estrategia 4 de 4</span>
+    <div class="cli"><div class="cli-head"><span style="font-size:22px">👤</span><span class="cli-label">El consultante dice:</span></div>
+      <p class="cli-text">"Cuando salgo de copas con los amigos y regreso a casa, no soy yo. Pierdo el control completamente. Esa noche le grité cosas horribles a mi esposa, pero fue el alcohol. Cuando estoy sobrio jamás haría algo así."</p>
+    </div>
+    <p class="q">¿Qué estrategia evitativa predomina?</p>
+    <button class="opt-btn" onclick="doV('d4','A','D')">A. Minimización</button>
+    <button class="opt-btn" onclick="doV('d4','B','D')">B. Justificación</button>
+    <button class="opt-btn" onclick="doV('d4','C','D')">C. Negación</button>
+    <button class="opt-btn" onclick="doV('d4','D','D')">D. Atribución a factores externos y personales — "no soy yo" / "fue el alcohol"</button>
+    <div class="fb" id="fb-d4"></div>
+  </div>
+
+  </div><!-- n2content -->
+</div>
+</div>
+
+<!-- ====== SCREEN 4: NIVEL 3 ====== -->
+<div class="screen" id="scr-4">
+<div class="scr-content">
+  <div class="sec-header verde">
+    <div class="hex-o"><svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="h4" width="60" height="52" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)"><polygon points="30,2 54,15 54,37 30,50 6,37 6,15" fill="none" stroke="white" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#h4)"/></svg></div>
+    <h2>📐 Nivel 3 — Integración</h2>
+    <p>4 secuencias + 4 casos completos</p>
+  </div>
+  <div class="level-progress"><div class="lp-bar"><div class="lp-fill" id="lp3"></div></div><span class="lp-text" id="lp3t">0/8</span></div>
+
+  <div id="n3lock" class="locked-overlay" style="display:none"><div class="lock-icon">🔒</div><p>Completa el Nivel 2 para desbloquear</p></div>
+  <div id="n3content">
+
+  <!-- SEQ1 -->
+  <div class="card" id="s1" data-done="0"><span class="badge badge-3">Secuencia 1 de 4</span>
+    <div class="vineta"><p class="vineta-text">Un consultante llega con culpa intensa por haber mentido a su hermana sobre un tema económico hace meses. La mentira generó un conflicto familiar que persiste. Ordena la secuencia de superación (Echeburúa et al., 2001).</p></div>
+    <p class="q">Arrastra los pasos en el orden correcto ↕️</p>
+    <div class="drag-c" id="dc-s1">
+      <div class="drag-i" draggable="true" data-id="3"><span class="drag-h">☰</span><span>Solicitar el perdón a la hermana</span></div>
+      <div class="drag-i" draggable="true" data-id="1"><span class="drag-h">☰</span><span>Identificar la conducta (la mentira) y tomar conciencia de la culpa</span></div>
+      <div class="drag-i" draggable="true" data-id="4"><span class="drag-h">☰</span><span>Conductas de reparación — directas o indirectas</span></div>
+      <div class="drag-i" draggable="true" data-id="2"><span class="drag-h">☰</span><span>Expresar verbal y emocionalmente el arrepentimiento</span></div>
+    </div>
+    <button class="btn-check" onclick="doSeq('s1',[1,2,3,4])">✅ Verificar orden</button>
+    <div class="fb" id="fb-s1"></div>
+  </div>
+
+  <!-- SEQ2 -->
+  <div class="card" id="s2" data-done="0"><span class="badge badge-3">Secuencia 2 de 4</span>
+    <div class="vineta"><p class="vineta-text">Una madre siente culpa por haber dejado de asistir a las reuniones escolares de su hijo durante un año por priorizar su trabajo. Ordena la secuencia de superación.</p></div>
+    <p class="q">Arrastra los pasos ↕️</p>
+    <div class="drag-c" id="dc-s2">
+      <div class="drag-i" draggable="true" data-id="4"><span class="drag-h">☰</span><span>Reparación: reorganizar horarios para asistir y compensar la ausencia</span></div>
+      <div class="drag-i" draggable="true" data-id="2"><span class="drag-h">☰</span><span>Expresar arrepentimiento al hijo y reconocer el impacto</span></div>
+      <div class="drag-i" draggable="true" data-id="1"><span class="drag-h">☰</span><span>Identificar la conducta concreta: no haber asistido a las reuniones</span></div>
+      <div class="drag-i" draggable="true" data-id="3"><span class="drag-h">☰</span><span>Pedir perdón al hijo por la ausencia</span></div>
+    </div>
+    <button class="btn-check" onclick="doSeq('s2',[1,2,3,4])">✅ Verificar orden</button>
+    <div class="fb" id="fb-s2"></div>
+  </div>
+
+  <!-- SEQ3 -->
+  <div class="card" id="s3" data-done="0"><span class="badge badge-3">Secuencia 3 de 4</span>
+    <div class="vineta"><p class="vineta-text">Un hombre atropelló accidentalmente al perro de su vecino. El perro sobrevivió pero quedó con una lesión permanente. Ordena la secuencia adecuada.</p></div>
+    <p class="q">Arrastra los pasos ↕️</p>
+    <div class="drag-c" id="dc-s3">
+      <div class="drag-i" draggable="true" data-id="3"><span class="drag-h">☰</span><span>Pedir perdón al vecino</span></div>
+      <div class="drag-i" draggable="true" data-id="1"><span class="drag-h">☰</span><span>Identificar la conducta: el atropello y sus consecuencias</span></div>
+      <div class="drag-i" draggable="true" data-id="2"><span class="drag-h">☰</span><span>Expresar arrepentimiento genuino por lo ocurrido</span></div>
+      <div class="drag-i" draggable="true" data-id="4"><span class="drag-h">☰</span><span>Reparación directa: costear el tratamiento veterinario</span></div>
+    </div>
+    <button class="btn-check" onclick="doSeq('s3',[1,2,3,4])">✅ Verificar orden</button>
+    <div class="fb" id="fb-s3"></div>
+  </div>
+
+  <!-- SEQ4 -->
+  <div class="card" id="s4" data-done="0"><span class="badge badge-3">Secuencia 4 de 4</span>
+    <div class="vineta"><p class="vineta-text">Una enfermera cometió un error de medicación que afectó a un paciente (sin consecuencias graves). El paciente ya fue dado de alta. La reparación directa con él no es posible. Ordena la secuencia.</p></div>
+    <p class="q">Arrastra los pasos ↕️</p>
+    <div class="drag-c" id="dc-s4">
+      <div class="drag-i" draggable="true" data-id="2"><span class="drag-h">☰</span><span>Expresar arrepentimiento ante sus compañeros y superiores</span></div>
+      <div class="drag-i" draggable="true" data-id="4"><span class="drag-h">☰</span><span>Reparación indirecta: mejorar protocolos, alertar a colegas, formarse más</span></div>
+      <div class="drag-i" draggable="true" data-id="1"><span class="drag-h">☰</span><span>Identificar el error concreto y tomar conciencia de la culpa</span></div>
+      <div class="drag-i" draggable="true" data-id="3"><span class="drag-h">☰</span><span>Pedir disculpas a quien corresponda (supervisor, equipo)</span></div>
+    </div>
+    <button class="btn-check" onclick="doSeq('s4',[1,2,3,4])">✅ Verificar orden</button>
+    <div class="fb" id="fb-s4"></div>
+  </div>
+
+  <!-- CASES SEPARATOR -->
+  <div class="sec-header azul" style="margin-top:24px">
+    <h2>📖 Casos completos</h2>
+    <p>Lee el caso y responde las preguntas encadenadas</p>
+  </div>
+
+  <!-- CASE 1 -->
+  <div class="card" id="caso1" data-done="0" data-step="0" data-total="3"><span class="badge badge-3">Caso 1 de 4</span>
+    <div class="vineta"><div class="vineta-head"><span class="vineta-label">📖 Caso completo</span></div>
+      <p class="vineta-text">Lucía, 29 años. Hace un año decidió no asistir al funeral de su abuela porque estaba en otro país y tenía un examen importante al día siguiente. Su familia le dijo que lo entendían, pero desde entonces Lucía siente un peso constante. Dejó de llamar a su madre porque "cada vez que escucho su voz me acuerdo de que no estuve". Ha empezado a enviar dinero excesivo a sus padres como si quisiera "compensar" algo. Dice: "Si hubiera sido mejor nieta, habría encontrado la forma de ir."</p>
+    </div>
+    <div class="case-q show" id="caso1-q1">
+      <p class="q">Pregunta 1: ¿Qué tipo de culpa presenta Lucía?</p>
+      <button class="opt-btn" onclick="doCaso('caso1',1,'A','B')">A. Culpa normal — reconoce un acto concreto y busca reparar</button>
+      <button class="opt-btn" onclick="doCaso('caso1',1,'B','B')">B. Culpa anormal por exceso — desproporcionada, con autocastigo e inhibición</button>
+      <button class="opt-btn" onclick="doCaso('caso1',1,'C','B')">C. Vergüenza — autodescalificación global</button>
+      <div class="fb" id="fb-caso1-q1"></div>
+    </div>
+    <div class="case-q" id="caso1-q2">
+      <p class="q">Pregunta 2: El envío excesivo de dinero, ¿qué tipo de estrategia inadecuada representa?</p>
+      <button class="opt-btn" onclick="doCaso('caso1',2,'A','A')">A. Conducta autodestructiva que enmascara la culpa sin resolverla</button>
+      <button class="opt-btn" onclick="doCaso('caso1',2,'B','A')">B. Reparación directa adecuada</button>
+      <button class="opt-btn" onclick="doCaso('caso1',2,'C','A')">C. Estrategia evitativa de minimización</button>
+      <div class="fb" id="fb-caso1-q2"></div>
+    </div>
+    <div class="case-q" id="caso1-q3">
+      <p class="q">Pregunta 3: ¿Cuál sería una reparación indirecta adecuada para Lucía?</p>
+      <button class="opt-btn" onclick="doCaso('caso1',3,'A','C')">A. Dejar de enviar dinero y olvidar el tema</button>
+      <button class="opt-btn" onclick="doCaso('caso1',3,'B','C')">B. Llamar a su madre y decirle que se siente culpable por no haber ido</button>
+      <button class="opt-btn" onclick="doCaso('caso1',3,'C','C')">C. Implicarse en el cuidado de otros familiares mayores, honrar la memoria de su abuela en acciones concretas</button>
+      <div class="fb" id="fb-caso1-q3"></div>
+    </div>
+  </div>
+
+  <!-- CASE 2 -->
+  <div class="card" id="caso2" data-done="0" data-step="0" data-total="3"><span class="badge badge-3">Caso 2 de 4</span>
+    <div class="vineta"><div class="vineta-head"><span class="vineta-label">📖 Caso completo</span></div>
+      <p class="vineta-text">Roberto, 45 años, gerente de una empresa. Despidió a un empleado de 20 años de antigüedad por recorte presupuestario. El empleado le dijo: "Yo confié en ti". Roberto sabe que la decisión fue empresarial, pero desde entonces no puede comer bien, tiene insomnio, y ha empezado a beber más de lo habitual. Dice: "Destruí la vida de ese hombre. Todo lo malo que me pase, me lo merezco."</p>
+    </div>
+    <div class="case-q show" id="caso2-q1">
+      <p class="q">Pregunta 1: ¿Qué tipo de arrepentimiento (Laín Entralgo) predomina en Roberto?</p>
+      <button class="opt-btn" onclick="doCaso('caso2',1,'A','C')">A. Arrepentimiento por vergüenza — transgredió sus principios éticos</button>
+      <button class="opt-btn" onclick="doCaso('caso2',1,'B','C')">B. Arrepentimiento por error — se equivocó en la adecuación de su conducta</button>
+      <button class="opt-btn" onclick="doCaso('caso2',1,'C','C')">C. Arrepentimiento por deficiencia — siente que no hizo todo lo que podía</button>
+      <div class="fb" id="fb-caso2-q1"></div>
+    </div>
+    <div class="case-q" id="caso2-q2">
+      <p class="q">Pregunta 2: El aumento en el consumo de alcohol, ¿qué estrategia inadecuada representa?</p>
+      <button class="opt-btn" onclick="doCaso('caso2',2,'A','B')">A. Represión emocional</button>
+      <button class="opt-btn" onclick="doCaso('caso2',2,'B','B')">B. Conducta autodestructiva — comportamiento adictivo que enmascara la culpa</button>
+      <button class="opt-btn" onclick="doCaso('caso2',2,'C','B')">C. Mero remordimiento sin acción</button>
+      <div class="fb" id="fb-caso2-q2"></div>
+    </div>
+    <div class="case-q" id="caso2-q3">
+      <p class="q">Pregunta 3: ¿Cuál sería el primer paso de la secuencia de superación?</p>
+      <button class="opt-btn" onclick="doCaso('caso2',3,'A','A')">A. Identificar la conducta concreta: el despido y cómo se manejó</button>
+      <button class="opt-btn" onclick="doCaso('caso2',3,'B','A')">B. Pedir perdón al empleado despedido</button>
+      <button class="opt-btn" onclick="doCaso('caso2',3,'C','A')">C. Buscar reparación indirecta inmediatamente</button>
+      <div class="fb" id="fb-caso2-q3"></div>
+    </div>
+  </div>
+
+  <!-- CASE 3 -->
+  <div class="card" id="caso3" data-done="0" data-step="0" data-total="3"><span class="badge badge-3">Caso 3 de 4</span>
+    <div class="vineta"><div class="vineta-head"><span class="vineta-label">📖 Caso completo</span></div>
+      <p class="vineta-text">Marta, 52 años, víctima de violencia doméstica durante 15 años. Logró separarse hace dos años. Ahora dice: "Yo tengo la culpa de todo. Si hubiera denunciado antes, mis hijos no habrían visto todo eso. Me casé con él en contra del consejo de mi familia. Debí haberme dado cuenta antes. Soy tan estúpida."</p>
+    </div>
+    <div class="case-q show" id="caso3-q1">
+      <p class="q">Pregunta 1: ¿Qué tipo de atribución de culpa predomina según la tabla 3 del artículo?</p>
+      <button class="opt-btn" onclick="doCaso('caso3',1,'A','C')">A. Solo atribuciones a su personalidad</button>
+      <button class="opt-btn" onclick="doCaso('caso3',1,'B','C')">B. Solo atribuciones a la transgresión de normas autoimpuestas</button>
+      <button class="opt-btn" onclick="doCaso('caso3',1,'C','C')">C. Las tres fuentes: personalidad ("soy estúpida"), conducta ("debí denunciar antes"), y transgresión de normas ("me casé contra el consejo")</button>
+      <div class="fb" id="fb-caso3-q1"></div>
+    </div>
+    <div class="case-q" id="caso3-q2">
+      <p class="q">Pregunta 2: "Soy tan estúpida" es más indicativo de:</p>
+      <button class="opt-btn" onclick="doCaso('caso3',2,'A','B')">A. Culpa normal — autocrítica de una conducta concreta</button>
+      <button class="opt-btn" onclick="doCaso('caso3',2,'B','B')">B. Vergüenza — autodescalificación global que obstaculiza el cambio</button>
+      <button class="opt-btn" onclick="doCaso('caso3',2,'C','B')">C. Culpa por defecto</button>
+      <div class="fb" id="fb-caso3-q2"></div>
+    </div>
+    <div class="case-q" id="caso3-q3">
+      <p class="q">Pregunta 3: Según los autores, ¿qué papel juegan las normas sociales en la culpa de Marta?</p>
+      <button class="opt-btn" onclick="doCaso('caso3',3,'A','A')">A. La interiorización de normas sociales ("el matrimonio es para siempre") contribuye a que la víctima se atribuya la culpa de lo ocurrido</button>
+      <button class="opt-btn" onclick="doCaso('caso3',3,'B','A')">B. Las normas sociales no tienen relación con la culpa en víctimas</button>
+      <button class="opt-btn" onclick="doCaso('caso3',3,'C','A')">C. Las normas sociales protegen a la víctima de sentir culpa</button>
+      <div class="fb" id="fb-caso3-q3"></div>
+    </div>
+  </div>
+
+  <!-- CASE 4 -->
+  <div class="card" id="caso4" data-done="0" data-step="0" data-total="3"><span class="badge badge-3">Caso 4 de 4</span>
+    <div class="vineta"><div class="vineta-head"><span class="vineta-label">📖 Caso completo</span></div>
+      <p class="vineta-text">Andrés, 33 años, médico. Hace seis meses un paciente falleció después de una cirugía compleja. La junta médica determinó que no hubo negligencia, pero Andrés no puede quitarse de la cabeza que "debió haber hecho algo diferente". Ha dejado de operar, se ofrece como voluntario en una clínica gratuita los fines de semana, y dice: "Si salvo suficientes vidas, quizás pueda compensar la que perdí."</p>
+    </div>
+    <div class="case-q show" id="caso4-q1">
+      <p class="q">Pregunta 1: ¿Qué forma de arrepentimiento predomina?</p>
+      <button class="opt-btn" onclick="doCaso('caso4',1,'A','C')">A. Arrepentimiento por vergüenza</button>
+      <button class="opt-btn" onclick="doCaso('caso4',1,'B','C')">B. Arrepentimiento por error</button>
+      <button class="opt-btn" onclick="doCaso('caso4',1,'C','C')">C. Arrepentimiento por deficiencia — siente que no hizo todo lo que podía y debía</button>
+      <div class="fb" id="fb-caso4-q1"></div>
+    </div>
+    <div class="case-q" id="caso4-q2">
+      <p class="q">Pregunta 2: El voluntariado, ¿es reparación indirecta adecuada o estrategia inadecuada?</p>
+      <button class="opt-btn" onclick="doCaso('caso4',2,'A','B')">A. Reparación indirecta adecuada sin más</button>
+      <button class="opt-btn" onclick="doCaso('caso4',2,'B','B')">B. Tiene elementos de reparación indirecta, pero la forma en que lo vive ("compensar la que perdí") sugiere culpa por exceso — la acción altruista está al servicio del autocastigo, no de la reparación</button>
+      <button class="opt-btn" onclick="doCaso('caso4',2,'C','B')">C. Conducta abyecta</button>
+      <div class="fb" id="fb-caso4-q2"></div>
+    </div>
+    <div class="case-q" id="caso4-q3">
+      <p class="q">Pregunta 3: ¿Cuál sería el enfoque adecuado para el trabajo con Andrés?</p>
+      <button class="opt-btn" onclick="doCaso('caso4',3,'A','B')">A. Decirle que no fue su culpa y que debe volver a operar</button>
+      <button class="opt-btn" onclick="doCaso('caso4',3,'B','B')">B. Ayudarle a identificar si hay una conducta concreta que le genera culpa (más allá del resultado) y, si no la hay, trabajar la transición de la culpa anormal por exceso hacia una culpa normal que pueda canalizarse en acciones de reparación genuinas</button>
+      <button class="opt-btn" onclick="doCaso('caso4',3,'C','B')">C. Fomentar más voluntariado para aliviar la culpa</button>
+      <div class="fb" id="fb-caso4-q3"></div>
+    </div>
+  </div>
+
+  </div><!-- n3content -->
+</div>
+</div>
+
+<!-- ====== SCREEN 5: SÍNTESIS ====== -->
+<div class="screen" id="scr-5">
+<div class="scr-content">
+  <div class="sec-header amarillo">
+    <div class="hex-o"><svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="h5" width="60" height="52" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)"><polygon points="30,2 54,15 54,37 30,50 6,37 6,15" fill="none" stroke="white" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#h5)"/></svg></div>
+    <h2>🏁 Síntesis final</h2>
+  </div>
+  <div class="card synth-score">
+    <div class="score-big"><span id="finalScore">0</span><span class="tot">/21</span></div>
+    <p class="synth-msg" id="finalMsg">Completa todos los ejercicios para ver tu síntesis.</p>
+  </div>
+  <div class="card" id="finalProcs" style="display:none">
+    <h3 style="font-size:16px;font-weight:700;color:var(--azul);margin-bottom:12px">🔗 Conceptos entrenados</h3>
+    <div class="proc-tags">
+      <span class="proc-tag">Culpa normal vs. anormal</span>
+      <span class="proc-tag">Culpa vs. vergüenza</span>
+      <span class="proc-tag">Estrategias evitativas</span>
+      <span class="proc-tag">Estrategias inadecuadas</span>
+      <span class="proc-tag">Reparación directa e indirecta</span>
+      <span class="proc-tag">Secuencia de superación</span>
+      <span class="proc-tag">Culpa en víctimas</span>
+      <span class="proc-tag">Formas de arrepentimiento</span>
+      <span class="proc-tag">Culpa espuria</span>
+    </div>
+  </div>
+  <div class="firma">
+    <strong>@leo.eyzaguirre · Psicología Contextual</strong>
+    Basado en: Echeburúa, E., de Corral, P. y Amor, P.J. (2001). Estrategias de afrontamiento ante los sentimientos de culpa. <em>Análisis y Modificación de Conducta, 27</em>(116).
+  </div>
+</div>
+</div>
+
+</div><!-- screens-container -->
+
+<!-- NAV BUTTONS -->
+<div class="nav-buttons">
+  <button class="nav-btn prev" id="btnPrev" onclick="goPrev()" disabled>← Anterior</button>
+  <button class="nav-btn next" id="btnNext" onclick="goNext()">Siguiente →</button>
+</div>
+
+<script>
+// ===== NAVIGATION =====
+let curScreen=0;const totalScreens=6;
+const stepLabels=['Portada','Marco Teórico','Nivel 1 — Reconocimiento','Nivel 2 — Análisis Clínico','Nivel 3 — Integración','Síntesis'];
+const levelReqs={3:6,4:7}; // screen 3 needs 6 (level1), screen 4 needs 7 (level2)
+let levelDone={1:0,2:0,3:0};
+
+function goScreen(n){
+  if(n<0||n>=totalScreens)return;
+  const old=document.getElementById('scr-'+curScreen);
+  const nw=document.getElementById('scr-'+n);
+  if(n>curScreen){old.classList.remove('active');old.classList.add('exit-left');nw.classList.add('active')}
+  else{old.classList.remove('active');nw.classList.remove('exit-left');nw.classList.add('active')}
+  setTimeout(()=>{old.classList.remove('exit-left')},500);
+  nw.scrollTop=0;curScreen=n;updateNav();
+}
+function goNext(){goScreen(curScreen+1)}
+function goPrev(){goScreen(curScreen-1)}
+
+function updateNav(){
+  document.getElementById('btnPrev').disabled=curScreen===0;
+  const nextBtn=document.getElementById('btnNext');
+  if(curScreen===totalScreens-1){nextBtn.disabled=true;nextBtn.textContent='Completado ✓'}
+  else if(curScreen===2&&levelDone[1]<6){nextBtn.disabled=true;nextBtn.textContent='Completa Nivel 1 ('+levelDone[1]+'/6)'}
+  else if(curScreen===3&&levelDone[2]<7){nextBtn.disabled=true;nextBtn.textContent='Completa Nivel 2 ('+levelDone[2]+'/7)'}
+  else{nextBtn.disabled=false;nextBtn.textContent='Siguiente →'}
+  // Steps
+  document.querySelectorAll('.step').forEach((s,i)=>{s.classList.remove('active','done');if(i<curScreen)s.classList.add('done');if(i===curScreen)s.classList.add('active')});
+  document.getElementById('stepLabel').textContent=stepLabels[curScreen];
+  // Lock overlays
+  if(curScreen===3){
+    if(levelDone[1]<6){document.getElementById('n2lock').style.display='block';document.getElementById('n2content').style.display='none'}
+    else{document.getElementById('n2lock').style.display='none';document.getElementById('n2content').style.display='block'}
+  }
+  if(curScreen===4){
+    if(levelDone[2]<7){document.getElementById('n3lock').style.display='block';document.getElementById('n3content').style.display='none'}
+    else{document.getElementById('n3lock').style.display='none';document.getElementById('n3content').style.display='block'}
+  }
+}
+
+function updateLevelProgress(level){
+  const maxes={1:6,2:7,3:8};
+  const fill=document.getElementById('lp'+level);
+  const txt=document.getElementById('lp'+level+'t');
+  if(fill){fill.style.width=(levelDone[level]/maxes[level]*100)+'%'}
+  if(txt){txt.textContent=levelDone[level]+'/'+maxes[level]}
+  document.getElementById('finalScore').textContent=levelDone[1]+levelDone[2]+levelDone[3];
+  updateNav();
+  if(levelDone[1]+levelDone[2]+levelDone[3]===21)showFinal();
+}
+
+// ===== FEEDBACKS =====
+const FB={
+  v1:{A:{t:'incorrecto',h:'❌ Culpa normal — No aplica aquí',b:'En la culpa normal la persona se orienta a la reparación. Aquí la consultante se autocastiga, se priva de placer, y su remordimiento no lleva a acción reparadora. La culpa ha perdido su función reguladora.'},B:{t:'parcial',h:'⚠️ Vergüenza — Presente pero secundaria',b:'Hay elementos de vergüenza ("soy la peor madre"), pero el foco sigue en el daño a los hijos, no en una autodescalificación global. El aislamiento social funciona como autocastigo, no como respuesta a la vergüenza.'},C:{t:'correcto',h:'✅ Culpa anormal por exceso',b:'Correcto. Sentimientos intensos, desproporcionados, con autocastigo (privarse de placer), inhibición conductual (dejar de salir), y remordimiento que no lleva a acción reparadora. La culpa ha dejado de funcionar como señal reguladora.'},D:{t:'incorrecto',h:'❌ Culpa por defecto — Lo opuesto',b:'La culpa por defecto se caracteriza por ausencia de arrepentimiento. Aquí ocurre exactamente lo contrario: la consultante siente demasiada culpa.'}},
+  v2:{A:{t:'correcto',h:'✅ Culpa normal adaptativa',b:'Correcto. Identifica conducta concreta, siente remordimiento genuino, y se orienta a la reparación. La secuencia funcional que describen los autores: del malestar al remordimiento, y de ahí a la acción reparadora.'},B:{t:'incorrecto',h:'❌ No hay desproporcionalidad',b:'El remordimiento es proporcionado al acto y el consultante SÍ se orienta a reparar. La dificultad práctica ("no sé cómo empezar") es diferente de la parálisis.'},C:{t:'incorrecto',h:'❌ El foco no es la autodescalificación',b:'En la vergüenza el foco es "soy malo". Aquí el foco es "hice algo malo" — conducta concreta, no evaluación global de sí mismo.'},D:{t:'incorrecto',h:'❌ Sucede lo opuesto',b:'La minimización quita importancia al daño. Aquí el consultante reconoce plenamente que lo que dijo fue hiriente.'}},
+  v3:{A:{t:'incorrecto',h:'❌ No hay reconocimiento real del daño',b:'Aunque dice "sé que no debí", inmediatamente despliega estrategias para evitar la culpa. No hay remordimiento real, hay evitación del remordimiento.'},B:{t:'correcto',h:'✅ Estrategias evitativas',b:'Correcto. Se ven tres estrategias simultáneamente: justificación ("estaba insoportable, cualquiera hubiera reaccionado igual"), minimización ("no fue para tanto, solo levanté la voz"), y olvido atribuido al hijo ("ni se acordó"). Buscan impedir la aparición de la culpa.'},C:{t:'incorrecto',h:'❌ No es ausencia total de conciencia',b:'SÍ muestra reconocimiento inicial ("sé que no debí"). Lo que opera son estrategias activas para evitar que ese reconocimiento se convierta en remordimiento.'},D:{t:'incorrecto',h:'❌ No hay autodescalificación',b:'No dice "soy mal padre". De hecho parece cómodo con su imagen de sí mismo. Opera evitación de la culpa, no vergüenza.'}},
+  vf1:{V:{t:'incorrecto',h:'❌ Falso',b:'Según Tangney (1996), citada por los autores, la culpa y la vergüenza son funcionalmente distintas. La vergüenza implica autodescalificación global y tiende al aislamiento social y la depresión. La culpa se focaliza en una conducta concreta y facilita la empatía y la reparación. Solo la culpa orienta hacia conductas reparadoras.'},F:{t:'correcto',h:'✅ Correcto — Es falso',b:'La culpa y la vergüenza no son equivalentes. La vergüenza ("soy mala persona") obstaculiza el cambio porque el foco es uno mismo. La culpa ("hice algo malo") lo facilita porque el foco son los demás y orienta a la reparación.'}},
+  vf2:{V:{t:'incorrecto',h:'❌ Falso — Es al revés',b:'La culpa por EXCESO se asocia con la depresión y la personalidad obsesiva (sentirse culpable sin haber hecho nada objetivamente malo). La culpa por DEFECTO es la que se asocia con la psicopatía y la personalidad paranoica (ausencia de arrepentimiento y compasión).'},F:{t:'correcto',h:'✅ Correcto — Es falso',b:'La asociación es: exceso → depresión y personalidad obsesiva. Defecto → psicopatía y personalidad paranoica. Es un error frecuente invertirlas.'}},
+  vf3:{V:{t:'correcto',h:'✅ Correcto — Es verdadero',b:'Esta es la definición textual de la función reguladora de la culpa según el artículo: la culpa funciona como sistema de alarma interno cuya función consiste en la evitación de las situaciones que la generan o en las conductas de reparación.'},F:{t:'incorrecto',h:'❌ Verdadero',b:'Esta afirmación corresponde textualmente a la definición funcional de la culpa que presentan Echeburúa et al. (2001).'}},
+  d1:{A:{t:'incorrecto',h:'❌ Negación implica no reconocer la conducta',b:'Aquí sí reconoce que dijo cosas feas. La negación sería "yo no hice nada".'},B:{t:'incorrecto',h:'❌ Minimización implica quitar importancia al daño',b:'Aquí no minimiza el daño — lo distribuye. Es diferente.'},C:{t:'correcto',h:'✅ Justificación + atribución a la víctima',b:'Correcto. "Los dos nos faltamos al respeto" es justificación. "Ella también me provocó" y "ella también tuvo su parte" son atribución de la culpa a la víctima. Según el artículo, estas estrategias evitativas buscan evitar que aparezca el sentimiento de culpa, pero no resuelven el daño.'},D:{t:'incorrecto',h:'❌ Olvido sería no recordar el episodio',b:'El consultante recuerda claramente lo ocurrido. No está usando el olvido.'}},
+  d2:{A:{t:'correcto',h:'✅ Olvido como estrategia evitativa',b:'Correcto. "No me acuerdo bien", "fue hace tanto tiempo", "ya ni vale la pena". El consultante evita el recuerdo detallado de lo que hizo para impedir que aparezca el remordimiento. El artículo identifica el olvido como una de las estrategias evitativas de la responsabilidad.'},B:{t:'incorrecto',h:'❌ Negación sería negar que ocurrió',b:'El consultante sí reconoce que hubo una pelea. No la niega, la diluye en el olvido.'},C:{t:'incorrecto',h:'❌ No quita importancia al daño explícitamente',b:'Minimizar sería "no fue para tanto". Aquí evita el recuerdo, no minimiza la gravedad.'},D:{t:'incorrecto',h:'❌ No atribuye a nada externo',b:'No menciona factores externos como causa.'}},
+  d3:{A:{t:'incorrecto',h:'❌ Justificación es dar razones para la conducta',b:'Justificar sería "ella me provocó" o "se lo merecía". Aquí no justifica el acto sino que quita importancia al resultado.'},B:{t:'correcto',h:'✅ Minimización',b:'Correcto. "Lo único que hice fue empujarla un poco", "tampoco es que le hice tanto daño", "ni siquiera tuvo que ir al médico", "la gente exagera". Cada frase busca reducir la percepción de gravedad del daño causado. El artículo cita como ejemplo exacto de minimización: "lo único que hice fue empujarla y al resbalarse se cayó al suelo".'},C:{t:'incorrecto',h:'❌ Negación sería no reconocer que ocurrió',b:'La consultante sí reconoce que empujó a la otra persona. No niega el acto.'},D:{t:'incorrecto',h:'❌ No atribuye a factores personales',b:'No dice "perdí el control" ni "no era yo". Minimiza el resultado, no atribuye causas.'}},
+  d4:{A:{t:'incorrecto',h:'❌ No quita importancia al daño',b:'El consultante sí reconoce que dijo "cosas horribles". No minimiza la gravedad.'},B:{t:'parcial',h:'⚠️ Hay justificación pero no es lo principal',b:'Hay un elemento de justificación, pero la estrategia dominante es la atribución a factores externos ("fue el alcohol") y personales ("no soy yo").'},C:{t:'incorrecto',h:'❌ Sí reconoce la conducta',b:'No niega que ocurrió. Reconoce que gritó cosas horribles.'},D:{t:'correcto',h:'✅ Atribución a factores externos y personales',b:'Correcto. "No soy yo" y "fue el alcohol" son los ejemplos que el artículo utiliza textualmente para ilustrar estas estrategias. "Cuando salgo de copas con los amigos y regreso a casa, no soy yo" aparece literalmente en la tabla 7 del artículo como ejemplo de atribución a factores externos.'}},
+  // Comparativos
+  c1:{ok:'B',A:{n:'Atribución externa de responsabilidad',b:'Atribuye toda la responsabilidad al amigo. Es una estrategia evitativa que impide que el consultante identifique si hay algo concreto en su propia conducta que le genera malestar legítimo.'},B:{n:'Identificación de la conducta concreta',b:'Coherente con el primer paso de la secuencia: identificar la conducta específica que genera la culpa. No invalida la emoción ni la refuerza — la dirige hacia la discriminación funcional.'},C:{n:'Validación inespecífica sin orientar a la acción',b:'Valida la emoción genéricamente pero no orienta a ninguna acción. Puede perpetuar un mero remordimiento sin acción, que es una estrategia inadecuada.'}},
+  c2:{ok:'C',A:{n:'Represión emocional + olvido',b:'Combina represión emocional ("deja de pensar") y olvido ("ocupa tu tiempo en otras cosas"). Son estrategias inadecuadas que enmascaran la culpa sin resolverla.'},B:{n:'Psicoeducación que no orienta a reparación',b:'La primera parte identifica correctamente que la culpa no corresponde a un acto real, pero la segunda introduce interpretación innecesaria y no orienta hacia la reparación indirecta que propone el artículo.'},C:{n:'Orientación hacia reparación indirecta',b:'Valida sin invalidar, reconoce que el acto no fue responsabilidad de la consultante, y orienta hacia una acción concreta de reparación indirecta. Cuando la reparación directa no es posible, las conductas de apoyo funcionan como reparación indirecta.'}},
+  c3:{ok:'B',A:{n:'Represión + olvido + minimización temporal',b:'"Ya terminaron" minimiza la relevancia temporal. "Perdónate a ti mismo" sugiere represión. No facilita la identificación de la conducta ni la orientación a reparación posible.'},B:{n:'Identificación de conducta + reparación indirecta',b:'Identifica la conducta concreta, reconoce que la reparación directa puede no ser posible, y abre la posibilidad de reparación indirecta: actuar coherente con lo aprendido de la experiencia. Sigue la secuencia del artículo.'},C:{n:'Confusión culpa-vergüenza + desvío',b:'Reencuadra como vergüenza cuando lo que presenta es culpa (foco en la conducta concreta, no en autodescalificación global). Desvía hacia "autoestima" sin abordar la reparación.'}},
+  // Casos
+  caso1:{q1:{A:{t:'incorrecto',b:'No está buscando reparar activamente. Se autocastiga y evita el contacto con su madre.'},B:{t:'correcto',b:'Correcto. Culpa intensa y desproporcionada, con autocastigo (evitar a la madre), inhibición (dejar de llamar), y la frase "si hubiera sido mejor nieta" sugiere una autoevaluación que va más allá de la conducta concreta.'},C:{t:'incorrecto',b:'Hay elementos ("mejor nieta") pero el foco principal es el daño a la familia por no haber ido, no una autodescalificación global.'}},q2:{A:{t:'correcto',b:'Correcto. El envío excesivo de dinero funciona como una conducta que enmascara la culpa sin resolverla. No es una reparación del daño real (no haber ido al funeral) sino una sustitución compulsiva. Los autores señalan que estas conductas sirven para eludir un malestar que en estado de lucidez atenaza a la persona.'},B:{t:'incorrecto',b:'No repara el daño concreto (no haber ido al funeral). Es una sustitución que no aborda la culpa real.'},C:{t:'incorrecto',b:'No minimiza. De hecho, la culpa está muy presente.'}},q3:{A:{t:'incorrecto',b:'El olvido es una estrategia evitativa, no una solución.'},B:{t:'parcial',b:'Expresar el arrepentimiento es el paso 2 de la secuencia, pero no es reparación indirecta en sí misma.'},C:{t:'correcto',b:'Correcto. Cuando la reparación directa no es posible (la abuela falleció), los autores proponen reparación indirecta: colaborar con otras personas, implicarse en actividades que honren la relación perdida. Cuidar a otros familiares mayores y honrar la memoria de la abuela son formas de reparación indirecta.'}}},
+  caso2:{q1:{A:{t:'incorrecto',b:'El arrepentimiento por vergüenza implica haber transgredido principios éticos propios. Roberto siente que la decisión fue empresarial, no que violó sus principios.'},B:{t:'incorrecto',b:'El arrepentimiento por error implica haberse equivocado en la adecuación de la conducta. Roberto no cree que la decisión fue errónea desde lo empresarial.'},C:{t:'correcto',b:'Correcto. Roberto siente que no hizo todo lo que podía y debía hacer: "debí haber hecho algo diferente", "destruí la vida de ese hombre". Es el arrepentimiento por deficiencia de Laín Entralgo — la percepción de no haber agotado todas las posibilidades para un logro importante.'}},q2:{A:{t:'incorrecto',b:'La represión emocional es no afrontar el remordimiento. Roberto sí lo afronta, pero de forma inadecuada.'},B:{t:'correcto',b:'Correcto. El aumento en el consumo de alcohol es un comportamiento adictivo que funciona como conducta autodestructiva. Los autores señalan que tratar de ahogar el remordimiento en el alcohol es una estrategia inadecuada que enmascara la culpa sin resolverla.'},C:{t:'incorrecto',b:'Hay remordimiento, pero también hay acción (beber). El mero remordimiento es pasivo — solo sentir culpa sin hacer nada.'}},q3:{A:{t:'correcto',b:'Correcto. El primer paso de la secuencia de Echeburúa et al. (2001) es siempre identificar la conducta concreta y tomar conciencia real de la culpa. Roberto necesita discriminar: ¿hay algo que hizo o dejó de hacer específicamente? ¿O la culpa está operando disociada del acto?'},B:{t:'incorrecto',b:'Pedir perdón es el paso 3. Antes debe identificar la conducta y expresar arrepentimiento.'},C:{t:'incorrecto',b:'La reparación es el paso 4. Antes deben completarse los pasos previos.'}}},
+  caso3:{q1:{A:{t:'incorrecto',b:'Hay atribuciones a la personalidad ("soy estúpida") pero no es la única fuente.'},B:{t:'incorrecto',b:'Hay transgresión de normas ("me casé contra el consejo") pero no es la única fuente.'},C:{t:'correcto',b:'Correcto. Marta presenta las tres fuentes de la tabla 3 del artículo: atribuciones a su personalidad ("soy tan estúpida"), a su conducta ("debí denunciar antes"), y a la transgresión de normas autoimpuestas ("me casé contra el consejo de mi familia").'}},q2:{A:{t:'incorrecto',b:'La culpa normal se focaliza en una conducta concreta. "Soy tan estúpida" es una evaluación global de sí misma, no de una conducta.'},B:{t:'correcto',b:'Correcto. Según Tangney (1996), citada por los autores, "soy mala persona" (o "soy estúpida") es vergüenza, no culpa. La vergüenza implica autodescalificación global y es un obstáculo para el cambio porque el foco es uno mismo, no la conducta.'},C:{t:'incorrecto',b:'La culpa por defecto es ausencia de culpa. Marta siente demasiada, no poca.'}},q3:{A:{t:'correcto',b:'Correcto. Los autores señalan que en la violencia familiar las normas sociales desempeñan un papel importante en la interiorización de la culpa. Las víctimas tienden a atribuirse parte de la culpa influidas por normas como "el matrimonio es para siempre" o "los problemas del hogar no deben salir al exterior".'},B:{t:'incorrecto',b:'Los autores explican que las normas sociales SÍ contribuyen a la autoatribución de culpa en víctimas.'},C:{t:'incorrecto',b:'Las normas sociales, paradójicamente, contribuyen a que la víctima se culpe, no la protegen.'}}},
+  caso4:{q1:{A:{t:'incorrecto',b:'No transgredió principios éticos — la junta determinó que no hubo negligencia.'},B:{t:'incorrecto',b:'No se equivocó en la adecuación — la cirugía fue compleja y el resultado no fue por error técnico.'},C:{t:'correcto',b:'Correcto. "Debió haber hecho algo diferente" refleja la sensación de no haber hecho todo lo posible. El arrepentimiento por deficiencia de Laín Entralgo es exactamente esto: la percepción de no haber agotado todas las posibilidades.'}},q2:{A:{t:'incorrecto',b:'El voluntariado puede ser reparación indirecta, pero la forma en que Andrés lo vive sugiere otra cosa.'},B:{t:'correcto',b:'Correcto. La acción en sí (voluntariado) puede ser reparación indirecta, pero la motivación ("si salvo suficientes vidas quizás pueda compensar") indica que está al servicio de la culpa por exceso, no de una reparación genuina. Los autores señalan que la culpa anormal referida a conductas que están más allá del control del sujeto es destructiva.'},C:{t:'incorrecto',b:'Las conductas abyectas implican degradación. El voluntariado no es degradación.'}},q3:{A:{t:'incorrecto',b:'Decirle "no fue tu culpa" es una forma de represión que no aborda la experiencia del consultante.'},B:{t:'correcto',b:'Correcto. El artículo indica que el primer paso es siempre identificar si hay una conducta concreta. Si no la hay (como determinó la junta médica), entonces la culpa opera disociada del acto — que es culpa anormal por exceso. El trabajo es facilitar la transición hacia una relación funcional con la experiencia que permita acciones reparadoras genuinas, no al servicio del autocastigo.'},C:{t:'incorrecto',b:'Fomentar más voluntariado reforzaría la función de autocastigo que la conducta tiene actualmente.'}}}
+};
+
+// ===== EXERCISE HANDLERS =====
+function doV(id,ans,ok){
+  const card=document.getElementById(id);
+  if(card.dataset.done==='1')return;
+  card.querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;if(b.textContent.startsWith(ok+'.'))b.classList.add('ok');else if(b.textContent.startsWith(ans+'.')&&ans!==ok)b.classList.add('no')});
+  const f=FB[id]?.[ans];if(!f)return;
+  const fd=document.getElementById('fb-'+id);
+  fd.className='fb show fb-'+(f.t==='correcto'?'ok':f.t==='parcial'?'partial':'no');
+  fd.innerHTML='<div class="fb-title">'+f.h+'</div><div class="fb-body">'+f.b+'</div>';
+  card.dataset.done='1';card.classList.add('completed');
+  const lvl=card.closest('#scr-2')?1:card.closest('#scr-3')?2:3;
+  levelDone[lvl]++;updateLevelProgress(lvl);
+}
+
+function doVF(id,ans,ok){
+  const card=document.getElementById(id);
+  if(card.dataset.done==='1')return;
+  card.querySelectorAll('.vf-btn').forEach(b=>{b.disabled=true;
+    if((b.textContent.includes('Verdadero')&&ok==='V')||(b.textContent.includes('Falso')&&ok==='F'))b.classList.add('ok');
+    else if((b.textContent.includes('Verdadero')&&ans==='V'&&ok!=='V')||(b.textContent.includes('Falso')&&ans==='F'&&ok!=='F'))b.classList.add('no');
+  });
+  const f=FB[id]?.[ans];if(!f)return;
+  const fd=document.getElementById('fb-'+id);
+  fd.className='fb show fb-'+(f.t==='correcto'?'ok':'no');
+  fd.innerHTML='<div class="fb-title">'+f.h+'</div><div class="fb-body">'+f.b+'</div>';
+  card.dataset.done='1';card.classList.add('completed');
+  levelDone[1]++;updateLevelProgress(1);
+}
+
+function doC(id,ans,ok){
+  const card=document.getElementById(id);
+  if(card.dataset.done==='1')return;
+  card.querySelectorAll('.resp-btn').forEach(b=>{b.disabled=true;if(b.querySelector('[data-value]')){}
+    if(b.onclick.toString().includes("'"+ok+"'")){/* find correct */}
+  });
+  // Mark buttons
+  const btns=card.querySelectorAll('.resp-btn');
+  btns.forEach(b=>{b.disabled=true;const v=b.querySelector('.resp-lbl').textContent.trim().slice(-1);
+    if(v===ok)b.classList.add('ok');else if(v===ans&&ans!==ok)b.classList.add('no')});
+  const info=FB[id];if(!info)return;
+  const fd=document.getElementById('fb-'+id);
+  let h='';
+  h+='<div class="fb-item fbi-ok"><strong>✅ Respuesta '+info.ok+' — '+info[info.ok].n+'</strong>'+info[info.ok].b+'</div>';
+  ['A','B','C'].forEach(l=>{if(l!==info.ok)h+='<div class="fb-item fbi-no"><strong>❌ Respuesta '+l+' — '+info[l].n+'</strong>'+info[l].b+'</div>'});
+  fd.innerHTML=h;fd.style.display='block';fd.style.animation='fadeIn .4s ease';
+  card.dataset.done='1';card.classList.add('completed');
+  levelDone[2]++;updateLevelProgress(2);
+}
+
+function doCaso(id,qNum,ans,ok){
+  const qDiv=document.getElementById(id+'-q'+qNum);
+  const btns=qDiv.querySelectorAll('.opt-btn');
+  if(btns[0].disabled)return;
+  btns.forEach(b=>{b.disabled=true;if(b.textContent.startsWith(ok+'.'))b.classList.add('ok');else if(b.textContent.startsWith(ans+'.')&&ans!==ok)b.classList.add('no')});
+  const f=FB[id]?.['q'+qNum]?.[ans];
+  const fd=document.getElementById('fb-'+id+'-q'+qNum);
+  if(f){fd.className='fb show fb-'+(f.t==='correcto'?'ok':f.t==='parcial'?'partial':'no');fd.innerHTML='<div class="fb-title">'+(f.t==='correcto'?'✅':'❌')+' '+(f.t==='correcto'?'Correcto':'Revisa')+'</div><div class="fb-body">'+f.b+'</div>'}
+  const card=document.getElementById(id);
+  const total=parseInt(card.dataset.total);
+  const nextQ=qNum+1;
+  if(nextQ<=total){const nq=document.getElementById(id+'-q'+nextQ);if(nq){nq.classList.add('show');setTimeout(()=>nq.scrollIntoView({behavior:'smooth',block:'nearest'}),300)}}
+  if(qNum===total){card.dataset.done='1';card.classList.add('completed');levelDone[3]++;updateLevelProgress(3)}
+}
+
+// ===== DRAG & DROP =====
+document.querySelectorAll('.drag-c').forEach(dc=>{
+  let dragged=null;
+  dc.addEventListener('dragstart',e=>{if(e.target.classList.contains('drag-i')){dragged=e.target;e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move'}});
+  dc.addEventListener('dragend',e=>{if(e.target.classList.contains('drag-i')){e.target.classList.remove('dragging');dc.querySelectorAll('.drag-i').forEach(i=>i.classList.remove('drag-over'));dragged=null}});
+  dc.addEventListener('dragover',e=>{e.preventDefault();if(!dragged)return;const after=getDragAfter(dc,e.clientY);if(!after)dc.appendChild(dragged);else dc.insertBefore(dragged,after)});
+  dc.addEventListener('dragenter',e=>{if(e.target.classList.contains('drag-i')&&e.target!==dragged)e.target.classList.add('drag-over')});
+  dc.addEventListener('dragleave',e=>{if(e.target.classList.contains('drag-i'))e.target.classList.remove('drag-over')});
+  // Touch
+  let touchItem=null;
+  dc.addEventListener('touchstart',e=>{const it=e.target.closest('.drag-i');if(it){touchItem=it;it.classList.add('dragging')}},{passive:true});
+  dc.addEventListener('touchmove',e=>{if(!touchItem)return;e.preventDefault();const y=e.touches[0].clientY;const after=getDragAfter(dc,y);if(!after)dc.appendChild(touchItem);else dc.insertBefore(touchItem,after)},{passive:false});
+  dc.addEventListener('touchend',()=>{if(touchItem){touchItem.classList.remove('dragging');touchItem=null}});
+});
+
+function getDragAfter(container,y){
+  const els=[...container.querySelectorAll('.drag-i:not(.dragging)')];
+  return els.reduce((closest,child)=>{const box=child.getBoundingClientRect();const offset=y-box.top-box.height/2;return offset<0&&offset>closest.offset?{offset,element:child}:closest},{offset:Number.NEGATIVE_INFINITY}).element;
+}
+
+function doSeq(id,correctOrder){
+  const card=document.getElementById(id);
+  if(card.dataset.done==='1')return;
+  const dc=document.getElementById('dc-'+id);
+  const items=dc.querySelectorAll('.drag-i');
+  let allOk=true,count=0;
+  items.forEach((item,i)=>{const iid=parseInt(item.dataset.id);
+    if(iid===correctOrder[i]){item.classList.add('pos-ok');count++}
+    else{item.classList.add('pos-no');allOk=false}
+    item.setAttribute('draggable','false');item.style.cursor='default'});
+  const fd=document.getElementById('fb-'+id);
+  if(allOk){fd.className='fb show fb-ok';fd.innerHTML='<div class="fb-title">✅ ¡Secuencia correcta!</div><div class="fb-body">Los cuatro pasos de Echeburúa et al. (2001): (1) Identificar la conducta → (2) Expresar arrepentimiento → (3) Solicitar perdón → (4) Reparación. Cada paso construye sobre el anterior.</div>'}
+  else if(count>=2){fd.className='fb show fb-partial';fd.innerHTML='<div class="fb-title">⚠️ Parcialmente correcto ('+count+'/4)</div><div class="fb-body">El orden correcto es: (1) Identificar la conducta concreta → (2) Expresar arrepentimiento → (3) Solicitar perdón → (4) Conductas de reparación. No se puede pedir perdón sin haber expresado arrepentimiento, ni reparar sin haber identificado qué se hizo.</div>'}
+  else{fd.className='fb show fb-no';fd.innerHTML='<div class="fb-title">❌ Revisa el orden</div><div class="fb-body">La secuencia es: (1) Identificar → (2) Expresar arrepentimiento → (3) Pedir perdón → (4) Reparar. Lógica progresiva: primero reconocer, luego expresar, después pedir perdón, finalmente reparar.</div>'}
+  card.querySelector('.btn-check').disabled=true;
+  card.dataset.done='1';card.classList.add('completed');
+  levelDone[3]++;updateLevelProgress(3);
+}
+
+// ===== ACCORDION =====
+function toggleAcc(id){document.getElementById(id).classList.toggle('open')}
+
+// ===== FINAL =====
+function showFinal(){
+  document.getElementById('finalMsg').textContent='¡Has completado todos los ejercicios!';
+  document.getElementById('finalProcs').style.display='block';
+  setTimeout(()=>{
+    const c=document.createElement('div');c.className='confetti-c';document.body.appendChild(c);
+    const cols=['#F9BC15','#1B4F8A','#2B9ED4','#E8720A','#2ECC71'];
+    for(let i=0;i<60;i++){const p=document.createElement('div');p.className='conf-p';p.style.left=Math.random()*100+'%';p.style.background=cols[Math.floor(Math.random()*cols.length)];p.style.animationDelay=Math.random()*2+'s';p.style.animationDuration=(2+Math.random()*2)+'s';p.style.borderRadius=Math.random()>.5?'50%':'2px';p.style.width=(6+Math.random()*8)+'px';p.style.height=(6+Math.random()*8)+'px';c.appendChild(p)}
+    setTimeout(()=>c.remove(),5000);
+  },500);
+}
+
+// Init
+updateNav();
+</script>
+</body>
+</html>
