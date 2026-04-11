@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TRAP → TRAC | Activación Conductual</title>
+  <meta name="description" content="Aprende a reconocer las trampas de la depresión y construir salidas efectivas con el modelo TRAP-TRAC de Activación Conductual.">
+  <meta name="theme-color" content="#D0E8F7">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪤</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+    #root { min-height: 100vh; }
+  </style>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+
+// ==================== DATA ====================
+const LEVELS_META = [
+  { id: 1, title: "Reconoce la Trampa", emoji: "🪤", color: "#E74C3C", desc: "Identifica los componentes del ciclo TRAP" },
+  { id: 2, title: "Distingue el Camino", emoji: "🔍", color: "#1A9B78", desc: "Diferencia TRAP de TRAC y detecta evitación encubierta" },
+  { id: 3, title: "Construye la Salida", emoji: "🔧", color: "#D4880F", desc: "Genera afrontamientos alternativos efectivos" },
+  { id: 4, title: "Consulta Simulada", emoji: "🎯", color: "#8E44AD", desc: "Aplica todo en un caso clínico interactivo" },
+];
+
+// ====== LEVEL 1 CONTENT ======
+const L1_THEORY = [
+  {
+    title: "¿Por qué estás aquí? 🤔",
+    content: `Cuando una persona está deprimida, su primer instinto es **retirarse**: quedarse en cama, cancelar planes, evitar llamadas. Esto es completamente comprensible.\n\nPero aquí está el problema: **esa retirada mantiene la depresión**. No la causa, pero la alimenta.\n\nLa Activación Conductual nos dice algo poderoso: **no necesitas sentirte mejor para empezar a actuar**. Puedes actuar primero, y el estado de ánimo cambia después.\n\nPero para salir del ciclo, primero necesitas **ver la trampa**. Eso es exactamente lo que vas a aprender aquí.`,
+  },
+  {
+    title: "El Modelo TRAP 🪤",
+    content: `TRAP significa **trampa** en inglés, y es un acrónimo perfecto porque describe cómo quedamos atrapados:\n\n**T — Trigger (Desencadenante)** 💥\nUn evento o situación que inicia todo. Puede ser externo (una pelea, perder el trabajo) o interno (un pensamiento, un recuerdo).\n\n**R — Response (Respuesta emocional)** 😔\nCómo te sientes ante ese desencadenante: tristeza, ansiedad, vacío, irritabilidad, fatiga.\n\n**AP — Avoidance Pattern (Patrón de Evitación)** 🔄\nLo que HACES para lidiar con esa emoción: quedarte en cama, cancelar planes, aislarte, scrollear redes sin parar, "maratón" de series.\n\nEl truco cruel es que la evitación **funciona a corto plazo** (sientes alivio), pero **a largo plazo te aleja de las fuentes de bienestar** y la depresión se mantiene o empeora.`,
+  },
+  {
+    title: "¿Por qué la evitación es una trampa? ⚠️",
+    content: `Imagina esto:\n\nTu amigo te invita a salir → Te sientes sin energía → Cancelas y te quedas en cama.\n\n¿Qué pasa?\n✅ **Alivio inmediato** — ya no tienes que esforzarte\n❌ **Pierdes** contacto social, actividad, la posibilidad de disfrutar\n❌ **Confirmas** la idea de que "no puedes"\n❌ **Mañana** es aún más difícil aceptar una invitación\n\nEsto es un **ciclo que se retroalimenta**: menos actividad → menos reforzadores → más depresión → menos actividad.\n\nLa evitación es lógica, es comprensible... pero es una trampa. Y el primer paso para salir es **reconocerla**.`,
+  },
+];
+
+const L1_EXERCISES = [
+  {
+    type: "identify_component",
+    instruction: "Lee el escenario y selecciona qué componente del TRAP representa cada elemento señalado.",
+    scenario: `María recibe un mensaje de su jefa pidiéndole una reunión urgente 📱. Inmediatamente siente un nudo en el estómago y piensa "seguro me van a despedir" 😰. En vez de responder, silencia el teléfono y se acuesta a ver TikTok durante 3 horas 📵.`,
+    questions: [
+      {
+        text: "\"Recibe un mensaje de su jefa pidiéndole una reunión urgente\" es...",
+        options: ["Trigger (Desencadenante)", "Response (Respuesta)", "Avoidance Pattern (Evitación)"],
+        correct: 0,
+        feedback: {
+          correct: "¡Exacto! 🎯 El mensaje de la jefa es el evento externo que desencadena todo. Es la situación antecedente.",
+          wrong: "No del todo. Este es el **Trigger** (Desencadenante): es el evento externo que inicia la cadena. No es lo que siente ni lo que hace, sino lo que PASA."
+        }
+      },
+      {
+        text: "\"Siente un nudo en el estómago y piensa 'seguro me van a despedir'\" es...",
+        options: ["Trigger (Desencadenante)", "Response (Respuesta)", "Avoidance Pattern (Evitación)"],
+        correct: 1,
+        feedback: {
+          correct: "¡Bien! 🎯 El nudo en el estómago y el pensamiento catastrófico son la respuesta emocional/cognitiva al desencadenante.",
+          wrong: "Esto es la **Response** (Respuesta): es cómo reacciona emocionalmente María al trigger. Incluye tanto sensaciones físicas como pensamientos asociados al malestar."
+        }
+      },
+      {
+        text: "\"Silencia el teléfono y se acuesta a ver TikTok durante 3 horas\" es...",
+        options: ["Trigger (Desencadenante)", "Response (Respuesta)", "Avoidance Pattern (Evitación)"],
+        correct: 2,
+        feedback: {
+          correct: "¡Perfecto! 🎯 Silenciar el teléfono y refugiarse en TikTok es el patrón de evitación: la conducta que alivia a corto plazo pero mantiene el problema.",
+          wrong: "Esto es el **Avoidance Pattern** (Patrón de Evitación): es la CONDUCTA que María hace para escapar del malestar. Funciona a corto plazo (alivio) pero no resuelve nada."
+        }
+      },
+    ],
+  },
+  {
+    type: "identify_component",
+    instruction: "Identifica cada componente del TRAP en este nuevo escenario.",
+    scenario: `Carlos ve que sus compañeros de universidad subieron fotos de una fiesta a la que no lo invitaron 📸. Se siente rechazado y con ganas de llorar 💔. Decide dejar de seguirlos en redes y no ir a clases la próxima semana 🚫.`,
+    questions: [
+      {
+        text: "\"Ve fotos de una fiesta a la que no lo invitaron\" es...",
+        options: ["Trigger (Desencadenante)", "Response (Respuesta)", "Avoidance Pattern (Evitación)"],
+        correct: 0,
+        feedback: {
+          correct: "¡Correcto! 🎯 Ver las fotos es el desencadenante: el evento que activa la cadena emocional.",
+          wrong: "Este es el **Trigger**: el evento (ver las fotos) que pone en marcha la respuesta emocional. No es la emoción ni la conducta de escape."
+        }
+      },
+      {
+        text: "\"Se siente rechazado y con ganas de llorar\" es...",
+        options: ["Trigger (Desencadenante)", "Response (Respuesta)", "Avoidance Pattern (Evitación)"],
+        correct: 1,
+        feedback: {
+          correct: "¡Sí! 🎯 El sentimiento de rechazo es la respuesta emocional ante lo que vio.",
+          wrong: "Esto es la **Response**: el dolor emocional que aparece ante el desencadenante. Sentirse rechazado es la reacción natural."
+        }
+      },
+      {
+        text: "\"Deja de seguirlos y no va a clases\" es...",
+        options: ["Trigger (Desencadenante)", "Response (Respuesta)", "Avoidance Pattern (Evitación)"],
+        correct: 2,
+        feedback: {
+          correct: "¡Exacto! 🎯 Dejar de seguirlos y faltar a clases es la evitación: reduce el dolor a corto plazo pero lo aísla más.",
+          wrong: "Esto es el **Avoidance Pattern**: la acción de escape. Dejar de seguirlos y faltar a clases reduce el contacto con lo que duele, pero también con lo que podría ayudar."
+        }
+      },
+    ],
+  },
+  {
+    type: "classify_full",
+    instruction: "Para cada escenario, arrastra los elementos a su categoría correcta del TRAP.",
+    scenario: "Clasifica cada frase en la categoría que corresponde del modelo TRAP:",
+    items: [
+      { text: "Tu pareja te dice que necesitan hablar 📞", correct: "T", emoji: "💥" },
+      { text: "Sientes pánico y el corazón se acelera 💓", correct: "R", emoji: "😰" },
+      { text: "Le dices que estás ocupado/a y evitas la conversación 🏃", correct: "AP", emoji: "🔄" },
+      { text: "Recibes una factura inesperada de $500 💸", correct: "T", emoji: "💥" },
+      { text: "Te sientes abrumado/a y sin esperanza 😩", correct: "R", emoji: "😰" },
+      { text: "La guardas en un cajón sin abrirla y ves Netflix 📺", correct: "AP", emoji: "🔄" },
+    ],
+  },
+  {
+    type: "expert_trap",
+    instruction: "⚡ TRAMPA DEL EXPERTO ⚡\nCuidado: la respuesta obvia NO siempre es la correcta. Piensa funcionalmente.",
+    scenario: `Después de una discusión fuerte con su hermano, Lucía se siente muy triste. Decide ir al gimnasio y hacer ejercicio intenso durante 2 horas, pensando: "Necesito sacarme esto de encima y no pensar en eso".`,
+    question: "El ejercicio intenso de Lucía en este contexto es...",
+    options: [
+      { text: "Afrontamiento saludable — está haciendo ejercicio, eso siempre es bueno", isCorrect: false },
+      { text: "Patrón de evitación — está usando el ejercicio para escapar de la emoción y evitar abordar el conflicto", isCorrect: true },
+      { text: "Ni lo uno ni lo otro — es simplemente una actividad neutral", isCorrect: false },
+    ],
+    feedback: {
+      correct: "¡EXCELENTE! 🏆 Esta es la clave del análisis funcional: no importa QUÉ haces, importa PARA QUÉ lo haces. El ejercicio es generalmente saludable, pero si su FUNCIÓN es escapar de una emoción y evitar resolver el conflicto con su hermano, entonces está funcionando como patrón de evitación. La misma conducta puede ser afrontamiento o evitación dependiendo de su función en el contexto.",
+      wrong: "🪤 ¡Caíste en la trampa del experto! La clave es: **no importa QUÉ haces, importa PARA QUÉ lo haces**. Lucía dice explícitamente \"no pensar en eso\" — el ejercicio aquí funciona como escape de la emoción y evitación del conflicto con su hermano. La misma conducta (hacer ejercicio) puede ser afrontamiento O evitación según su FUNCIÓN en ese contexto."
+    },
+  },
+];
+
+// ====== LEVEL 2 CONTENT ======
+const L2_THEORY = [
+  {
+    title: "De TRAP a TRAC: La salida existe 🚪",
+    content: `Ahora que puedes reconocer la trampa, es momento de conocer la salida.\n\nTRAC comparte dos componentes con TRAP:\n\n**T — Trigger (Desencadenante)** 💥 — El mismo evento\n**R — Response (Respuesta)** 😔 — La misma emoción\n\nPero el tercer componente cambia todo:\n\n**AC — Alternative Coping (Afrontamiento Alternativo)** 💪\n\nEn vez de evitar, la persona **hace algo diferente**: algo que la acerca a sus valores, que rompe el patrón, que la pone en contacto con fuentes de bienestar.\n\n⚠️ **Importante**: NO se trata de "sentirte bien primero". Se trata de actuar según un plan o valor, no según el estado de ánimo. La emoción cambia DESPUÉS.`,
+  },
+  {
+    title: "¡Cuidado con la evitación disfrazada! 🎭",
+    content: `Aquí viene lo difícil: no toda acción es afrontamiento real. A veces hacemos cosas que PARECEN activas pero en el fondo son evitación.\n\n**Señales de evitación disfrazada:**\n\n🎭 "Necesito pensar más antes de actuar" — cuando ya llevas semanas "pensando" (rumiación)\n🎭 "Voy a esperar a sentirme mejor" — posponer condicionado al estado de ánimo\n🎭 "Investigo mucho sobre depresión" — leer sobre el problema para no HACER nada al respecto\n🎭 "Hago ejercicio para no pensar" — actividad como escape, no como acercamiento\n🎭 "Le mandé un mensaje en vez de llamar" — acción mínima que evita lo que realmente importa\n\n**La pregunta clave siempre es:**\n"¿Esta conducta me ACERCA a lo que valoro o me ALEJA del malestar?"\n\nSi solo te aleja del malestar → probablemente es evitación.\nSi te acerca a lo que importa → es afrontamiento.`,
+  },
+  {
+    title: "¿Cómo saber si es TRAP o TRAC? 🧭",
+    content: `Para distinguirlos, hazte estas preguntas sobre la conducta final:\n\n**1. ¿Cuál es su función?**\n→ ¿Escapar/evitar? = TRAP\n→ ¿Acercarse/resolver? = TRAC\n\n**2. ¿Qué pasa después?**\n→ ¿Alivio momentáneo pero nada cambia? = TRAP\n→ ¿Quizás incomodidad pero avance real? = TRAC\n\n**3. ¿Está alineada con sus valores?**\n→ ¿Va en contra de lo que le importa? = TRAP\n→ ¿Es coherente con lo que valora? = TRAC\n\n**4. ¿Rompe el patrón o lo mantiene?**\n→ ¿Es lo mismo de siempre? = TRAP\n→ ¿Es algo diferente a lo habitual? = TRAC\n\nRecuerda: **la misma conducta puede ser TRAP o TRAC según el contexto y la función**. No juzgamos la forma, analizamos la función.`,
+  },
+];
+
+const L2_EXERCISES = [
+  {
+    type: "trap_or_trac",
+    instruction: "Lee cada escenario completo y decide: ¿es TRAP o TRAC?",
+    scenarios: [
+      {
+        text: `Pedro se siente ansioso por una presentación de trabajo 😰. Decide preparar sus diapositivas esa noche aunque no tiene ganas, porque sabe que su carrera es importante para él 💼.`,
+        correct: "TRAC",
+        feedback: {
+          correct: "¡Sí! 🎯 Pedro actúa según sus valores (carrera) a pesar de la ansiedad. No espera a sentirse mejor: actúa desde un plan. Eso es TRAC.",
+          wrong: "Este es TRAC: Pedro siente ansiedad pero actúa según sus valores (su carrera importa). No espera a sentirse bien; actúa según un plan, no según su estado de ánimo."
+        }
+      },
+      {
+        text: `Ana se siente culpable por no visitar a su mamá 😟. "Le mando un WhatsApp y ya", piensa, y le envía un emoji de corazón. Luego se distrae con redes sociales 📱.`,
+        correct: "TRAP",
+        feedback: {
+          correct: "¡Exacto! 🎯 El mensaje mínimo funciona como evitación disfrazada. Ana hace lo MÍNIMO para aliviar la culpa sin realmente acercarse a lo que valora (la relación con su mamá).",
+          wrong: "Esto es TRAP: aunque Ana 'hace algo' (enviar emoji), su función es aliviar la culpa, no conectar con su mamá. Es acción mínima que evita lo importante. El emoji NO equivale a una visita o llamada real."
+        }
+      },
+      {
+        text: `Diego se entera de que no lo seleccionaron para un ascenso 😞. Se siente decepcionado pero agenda una reunión con su jefe para entender qué puede mejorar 📋.`,
+        correct: "TRAC",
+        feedback: {
+          correct: "¡Muy bien! 🎯 Diego siente la decepción pero actúa hacia la resolución. Buscar feedback es afrontamiento activo alineado con su valor de crecimiento profesional.",
+          wrong: "Esto es TRAC: a pesar de la decepción, Diego toma acción orientada a resolver (pedir feedback). Esto rompe el patrón de evitación y se alinea con sus valores de crecimiento."
+        }
+      },
+      {
+        text: `Sofía se siente abrumada por las deudas 😩. Se pasa toda la noche leyendo artículos sobre "cómo salir de deudas" y viendo videos de finanzas, pero no hace un presupuesto ni llama al banco 📚.`,
+        correct: "TRAP",
+        feedback: {
+          correct: "¡Bien visto! 🎯 Informarse PARECE productivo, pero su función es evitar la acción concreta (hacer presupuesto, llamar al banco). Es evitación intelectualizada.",
+          wrong: "Esto es TRAP: aunque parece que Sofía está 'haciendo algo' (investigar), la función real es evitar las acciones concretas que resolverían el problema. Leer sobre deudas no es lo mismo que abordarlas."
+        }
+      },
+    ],
+  },
+  {
+    type: "unmask_avoidance",
+    instruction: "🎭 Detecta la evitación encubierta. En cada par de conductas ante la MISMA situación, identifica cuál es evitación disfrazada y cuál es afrontamiento real.",
+    pairs: [
+      {
+        situation: "Trigger: Tu amigo te confronta por algo que le molestó 😤\nResponse: Te sientes incómodo/a y a la defensiva 😣",
+        optionA: "Le dices \"tienes razón, perdón\" rápidamente para que se termine la conversación",
+        optionB: "Le dices \"entiendo que te molestó, cuéntame más\" aunque te incomoda",
+        avoidance: "A",
+        feedback: {
+          correct: "¡Exacto! 🎯 La opción A parece madura (pedir perdón), pero su FUNCIÓN es terminar la incomodidad lo antes posible, sin realmente escuchar ni resolver. La opción B mantiene la incomodidad pero abre el diálogo real.",
+          wrong: "La opción A es evitación disfrazada: decir \"perdón\" rápido PARECE maduro, pero su función es escapar de la incomodidad, no resolver el conflicto. La B es incómoda pero es afrontamiento real."
+        }
+      },
+      {
+        situation: "Trigger: Llevas semanas sin buscar trabajo después de ser despedido 💼\nResponse: Te sientes ansioso/a y avergonzado/a 😰",
+        optionA: "Actualizas tu perfil de LinkedIn y pasas 2 horas arreglando la foto y el diseño",
+        optionB: "Envías 3 currículums a ofertas concretas aunque tu CV no esté perfecto",
+        avoidance: "A",
+        feedback: {
+          correct: "¡Bien! 🎯 Arreglar LinkedIn PARECE productivo, pero perfeccionar la foto y el diseño funciona como procrastinación sofisticada. Enviar CVs imperfectos es acción real que contacta con reforzadores potenciales.",
+          wrong: "La opción A es evitación disfrazada: \"arreglar el perfil\" da sensación de productividad pero evita la acción que realmente importa (aplicar a trabajos). La B es imperfecta pero es afrontamiento real."
+        }
+      },
+      {
+        situation: "Trigger: Tu psicólogo/a te sugirió hacer actividades sociales 👥\nResponse: Te sientes ansioso/a y sin ganas 😓",
+        optionA: "Vas a un café pero te sientas solo/a con audífonos puestos durante 1 hora",
+        optionB: "Llamas a un amigo para tomar un café juntos aunque te sientas sin energía",
+        avoidance: "A",
+        feedback: {
+          correct: "¡Perfecto! 🎯 Ir al café con audífonos cumple 'técnicamente' con la indicación pero evita completamente la interacción social. Es la forma más sofisticada de evitación: hacer lo mínimo para decir 'lo intenté'.",
+          wrong: "La opción A es evitación encubierta brillante: puedes decir \"fui a un café\" pero con audífonos evitaste toda interacción. La función era cumplir 'en papel' sin exponerte realmente."
+        }
+      },
+    ],
+  },
+  {
+    type: "expert_trap",
+    instruction: "⚡ TRAMPA DEL EXPERTO ⚡\nEste requiere pensar con mucho cuidado.",
+    scenario: `Marcos se siente deprimido y su terapeuta le recomendó activación conductual. Marcos decide crear un plan detallado: arma una hoja de cálculo con 15 actividades clasificadas por tipo, horarios óptimos, y un sistema de puntos para medir su progreso. Dedica todo el fin de semana a perfeccionar el plan. El lunes, se siente cansado y no hace ninguna actividad del plan.`,
+    question: "La conducta de Marcos de armar el plan elaborado es...",
+    options: [
+      { text: "Afrontamiento — está siguiendo las recomendaciones de su terapeuta y organizándose", isCorrect: false },
+      { text: "Evitación disfrazada — la planificación excesiva reemplazó a la acción real y funcionó como escape", isCorrect: true },
+      { text: "Un paso necesario — siempre hay que planificar antes de actuar", isCorrect: false },
+    ],
+    feedback: {
+      correct: "🏆 ¡BRILLANTE! La planificación excesiva es una de las formas más elegantes de evitación. Marcos pasa de \"necesito activarme\" a \"necesito el plan perfecto para activarme\", lo cual es una TRAMPA dentro de la trampa. La AC dice: empieza con algo PEQUEÑO y FACTIBLE, no con el sistema perfecto. La función del plan era dar sensación de control sin asumir el riesgo real de actuar.",
+      wrong: "🪤 ¡La trampa clásica de la planificación! Marcos convirtió la activación en otro proyecto de evitación. Dedicar un fin de semana entero a un plan que nunca ejecuta revela la función real: la planificación REEMPLAZÓ la acción. En AC, es mejor un plan imperfecto que se ejecuta que un plan perfecto que se admira."
+    },
+  },
+];
+
+// ====== LEVEL 3 CONTENT ======
+const L3_THEORY = [
+  {
+    title: "El arte de construir afrontamientos alternativos 🔧",
+    content: `Ya sabes identificar TRAPs y distinguir TRAP de TRAC. Ahora viene la habilidad más importante: **construir buenos afrontamientos alternativos**.\n\nNo cualquier acción es un buen afrontamiento. Un buen afrontamiento alternativo cumple con criterios específicos que vamos a aprender.\n\n**¿Para qué sirve esto?**\nEn la práctica clínica, el terapeuta ayuda al cliente a generar alternativas. Pero no vale cualquier sugerencia. Un mal afrontamiento alternativo puede ser tan inútil como la evitación misma.\n\nAprender a construir buenos afrontamientos es lo que separa un análisis superficial de uno que realmente mueve al cliente hacia el cambio.`,
+  },
+  {
+    title: "Los 4 criterios de un buen Afrontamiento Alternativo ✅",
+    content: `Para que un afrontamiento alternativo sea efectivo, debe cumplir:\n\n**1. 🎯 Rompe el patrón de evitación**\nDebe ser algo DIFERENTE a lo que la persona hace habitualmente. Si siempre se aísla, el afrontamiento debe implicar contacto. Si siempre pospone, debe implicar acción inmediata.\n\n**2. 💎 Está alineado con los valores de la persona**\nDebe conectar con lo que la persona considera importante: familia, trabajo, salud, amistad. Si no conecta con un valor, se siente vacío y no se mantiene.\n\n**3. 🌱 Contacta con fuentes de reforzamiento positivo**\nDebe poner a la persona en situaciones donde pueda recibir algo positivo: reconocimiento, logro, placer, conexión. La evitación aleja de los reforzadores; el afrontamiento acerca.\n\n**4. 📏 Es específico, concreto y factible**\nNada de "voy a ser más positivo" o "intentaré salir más". Debe ser una acción concreta que se pueda hacer HOY o ESTA SEMANA: "Llamaré a Elena el martes a las 6pm".`,
+  },
+  {
+    title: "Errores comunes al construir afrontamientos 🚫",
+    content: `Conocer los errores te ayudará a evitarlos:\n\n**❌ Error 1: Demasiado ambicioso**\n"Voy a empezar a ir al gimnasio todos los días" cuando no sales de casa hace un mes. La AC dice: **empieza pequeño**. Un paseo de 10 minutos es mejor punto de partida.\n\n**❌ Error 2: Depende del estado de ánimo**\n"Cuando me sienta mejor, llamaré a mi amigo." Esto NO es afrontamiento, es posponer condicionado a la emoción. El afrontamiento se hace A PESAR de cómo te sientes.\n\n**❌ Error 3: Es vago e inespecífico**\n"Voy a intentar ser más social." ¿Qué significa eso? ¿Cuándo? ¿Con quién? Sin especificidad no hay compromiso real.\n\n**❌ Error 4: No conecta con valores**\n"Voy a limpiar la casa" como afrontamiento para alguien cuyo valor es la conexión social. Puede ser útil, pero no ataca el núcleo del problema.\n\n**❌ Error 5: Es evitación reempaquetada**\n"Voy a meditar para no pensar en el problema." Si la función es no pensar (escapar), sigue siendo evitación con disfraz de mindfulness.`,
+  },
+];
+
+const L3_EXERCISES = [
+  {
+    type: "choose_best_coping",
+    instruction: "Dado el TRAP completo, elige el MEJOR afrontamiento alternativo. ¡Cuidado con las trampas!",
+    cases: [
+      {
+        trap: {
+          T: "Laura no recibió invitación a la boda de su prima 💌",
+          R: "Se siente herida y rechazada por su familia 💔",
+          AP: "Dejó de asistir a las reuniones familiares y borró el chat grupal 🚪",
+        },
+        value: "Laura valora profundamente las relaciones familiares",
+        options: [
+          { text: "Publicar una indirecta en redes sociales sobre la familia tóxica", isCorrect: false, reason: "Esto es agresión pasiva, otra forma de evitación del conflicto real. No se acerca a lo que valora." },
+          { text: "Llamar a su prima para expresar cómo se siente y preguntar si hubo un malentendido", isCorrect: true, reason: "Rompe el patrón (en vez de aislarse, busca contacto). Está alineada con su valor (familia). Es específica y concreta. Contacta con reforzadores potenciales (resolver el conflicto)." },
+          { text: "Ir a la boda sin invitación para demostrar que no le afecta", isCorrect: false, reason: "Parece 'valiente' pero su función es demostrar algo, no resolver. Además es impositivo y puede generar más conflicto." },
+          { text: "Esperar a que se le pase el enojo y luego decidir qué hacer", isCorrect: false, reason: "Clásico 'esperar a sentirme mejor'. Esto es evitar condicionado al estado de ánimo. En AC actuamos según valores, no según emociones." },
+        ],
+      },
+      {
+        trap: {
+          T: "Jorge fue despedido de su trabajo hace 3 meses 💼",
+          R: "Se siente avergonzado, inútil y sin motivación 😞",
+          AP: "Se queda en casa todo el día, no busca empleo, les dice a todos que 'está descansando' 🛋️",
+        },
+        value: "Jorge valora la estabilidad económica y sentirse productivo",
+        options: [
+          { text: "Inscribirse en un curso online de 6 meses sobre una nueva carrera", isCorrect: false, reason: "Demasiado ambicioso y lejano. Un curso de 6 meses puede funcionar como evitación sofisticada: 'estoy estudiando' sin buscar empleo. No rompe el patrón inmediato." },
+          { text: "Enviar su CV a 2 ofertas laborales esta semana, aunque no se sienta listo", isCorrect: true, reason: "Específico (2 ofertas, esta semana). Factible (no 20, sino 2). Rompe el patrón (sale de la inacción). Se hace A PESAR de no sentirse listo. Alineado con sus valores." },
+          { text: "Ir al gimnasio para sentirse mejor consigo mismo primero", isCorrect: false, reason: "El gimnasio no es malo, pero aquí funciona como 'necesito sentirme bien antes de actuar'. No aborda el problema central ni conecta con su valor de productividad." },
+          { text: "Contarle la verdad a su familia sobre el despido", isCorrect: false, reason: "Puede ser útil eventualmente, pero no es el afrontamiento más directo a su patrón de evitación laboral. El problema central es la inactividad en la búsqueda, no el secreto." },
+        ],
+      },
+      {
+        trap: {
+          T: "Valentina tuvo una discusión fuerte con su mejor amiga 😡",
+          R: "Se siente triste, ansiosa y con miedo de perder la amistad 😢",
+          AP: "Evita todos los lugares donde podría encontrársela y no responde sus mensajes 📵",
+        },
+        value: "Valentina valora la lealtad y las amistades profundas",
+        options: [
+          { text: "Responder el último mensaje de su amiga proponiendo verse para conversar el jueves", isCorrect: true, reason: "Específico (responder, proponer fecha). Rompe el patrón (en vez de evitar, inicia contacto). Alineado con su valor (amistad). Factible (un mensaje, una fecha). Pone en contacto con reforzadores (reconexión)." },
+          { text: "Escribirle una carta larga explicando todos sus sentimientos", isCorrect: false, reason: "Parece profundo pero puede funcionar como forma de controlar la interacción: dice todo SIN escuchar. El afrontamiento real implica diálogo bidireccional, no monólogo." },
+          { text: "Buscar nuevas amistades para no depender tanto de una sola persona", isCorrect: false, reason: "Suena razonable pero es evitación: en vez de afrontar ESTE conflicto, busca reemplazar la relación. No está alineado con su valor de lealtad." },
+          { text: "Esperar unos días hasta que ambas se calmen", isCorrect: false, reason: "La trampa del 'esperar': suena prudente pero es evitación temporal. ¿Cuántos días? ¿Y si nunca se 'calma' lo suficiente? El afrontamiento no depende de la emoción." },
+        ],
+      },
+    ],
+  },
+  {
+    type: "justify_criteria",
+    instruction: "Se te presenta un afrontamiento alternativo ya elegido. Identifica CUÁLES criterios cumple y cuáles NO.",
+    cases: [
+      {
+        context: "Persona que evita hablar en reuniones de trabajo por miedo al rechazo. Valora el crecimiento profesional.",
+        coping: "Preparar una intervención de 2 minutos para la próxima reunión y decirla aunque sienta nervios.",
+        criteria: [
+          { name: "Rompe el patrón", met: true, explanation: "En vez de callarse (lo habitual), habla. Es lo opuesto a la evitación." },
+          { name: "Alineado con valores", met: true, explanation: "Su valor es el crecimiento profesional, y participar activamente contribuye a eso." },
+          { name: "Contacta con reforzadores", met: true, explanation: "Puede recibir reconocimiento, feedback, sensación de logro." },
+          { name: "Específico y factible", met: true, explanation: "2 minutos, próxima reunión, preparado. Concreto y realizable." },
+        ],
+      },
+      {
+        context: "Persona que dejó de cocinar y solo come comida chatarra/delivery desde que se deprimió. Valora su salud.",
+        coping: "Proponerse cocinar todos los días de la semana comidas saludables desde cero.",
+        criteria: [
+          { name: "Rompe el patrón", met: true, explanation: "Sí, cambiar de delivery a cocinar es diferente a lo habitual." },
+          { name: "Alineado con valores", met: true, explanation: "Conecta con su valor de salud." },
+          { name: "Contacta con reforzadores", met: true, explanation: "Puede sentir logro, mejor salud, placer de cocinar." },
+          { name: "Específico y factible", met: false, explanation: "❌ 'Todos los días, desde cero' es demasiado ambicioso para alguien que no cocina hace meses. Mejor: 'cocinar UNA cena el miércoles con receta simple'." },
+        ],
+      },
+    ],
+  },
+  {
+    type: "expert_trap",
+    instruction: "⚡ TRAMPA DEL EXPERTO ⚡\nEste ejercicio pone a prueba tu comprensión funcional.",
+    scenario: `Rodrigo está deprimido y aislado. Su terapeuta le propone como afrontamiento alternativo: "Ir a un parque cercano y sentarse en un banco 30 minutos". Rodrigo cumple: va al parque, se sienta 30 minutos con audífonos escuchando música triste, mirando el piso, y se va. Cumplió con la tarea.`,
+    question: "¿Rodrigo realmente hizo un afrontamiento alternativo?",
+    options: [
+      { text: "Sí — cumplió la tarea tal como se la propusieron, fue al parque", isCorrect: false },
+      { text: "No — la forma en que lo hizo convirtió el afrontamiento en evitación: estaba presente físicamente pero ausente conductualmente", isCorrect: true },
+      { text: "Parcialmente — hizo el esfuerzo de salir y eso ya cuenta", isCorrect: false },
+    ],
+    feedback: {
+      correct: "🏆 ¡MAESTRO del análisis funcional! La conducta TOPOGRÁFICA (ir al parque) se cumplió, pero la conducta FUNCIONAL no. Rodrigo llevó su evitación AL parque: audífonos = barrera social, música triste = mantenimiento del estado de ánimo, mirar el piso = evitar contacto con el entorno. Este es un ejemplo perfecto de por qué en AC analizamos la FUNCIÓN, no solo la FORMA. Un buen seguimiento sería: ir al parque SIN audífonos y observar activamente lo que hay alrededor.",
+      wrong: "🪤 Aquí está la lección más importante del análisis funcional: **la forma no es la función**. Rodrigo fue al parque (forma), pero mantuvo toda su evitación (función): audífonos como barrera, música triste, cero contacto con el entorno. Llevó su aislamiento consigo. En AC miramos QUÉ FUNCIÓN cumple la conducta, no solo si se ejecutó."
+    },
+  },
+];
+
+// ====== LEVEL 4 CONTENT ======
+const L4_INTRO = {
+  title: "Bienvenido/a a la Consulta Simulada 🎯",
+  content: `Has llegado al nivel final. Aquí no hay teoría nueva: vas a **usar todo lo aprendido** en un caso clínico que se desarrolla en tiempo real.\n\nVas a conocer a **Camila**, y a lo largo de varias etapas vas a:\n\n1. 🔍 Identificar sus TRAPs\n2. 🧠 Analizar las funciones de sus conductas\n3. 🔧 Proponer rutas TRAC\n4. ⚡ Manejar complicaciones y recaídas\n\n**Tus decisiones importan**: según lo que elijas, el caso evoluciona diferente.\n\nEsto es lo más cercano a una interacción clínica real. No hay respuestas obvias. Piensa funcionalmente.\n\n¿Listo/a? Conoce a Camila. 👇`,
+};
+
+const L4_CASE = {
+  intro: `**Camila, 28 años** 👩\n\nCamila era una diseñadora gráfica freelance muy activa hasta hace 6 meses, cuando terminó una relación de 4 años. Desde entonces:\n\n😔 Dejó de aceptar proyectos de diseño ("no tengo creatividad")\n🛋️ Pasa la mayor parte del día en su departamento viendo series\n📱 Revisa obsesivamente las redes de su ex\n🚫 Canceló planes con amigas más de 10 veces\n😴 Duerme entre 12-14 horas diarias\n\nCamila dice: "No es que no quiera hacer cosas... es que no me sale. Me siento vacía. Es como si todo lo que me gustaba ya no tuviera color."`,
+  
+  stages: [
+    {
+      id: "identify_traps",
+      title: "Etapa 1: Identifica los TRAPs de Camila 🔍",
+      description: "Camila tiene MÚLTIPLES patrones de evitación operando al mismo tiempo. Identifica el TRAP más importante para abordar primero.",
+      question: "¿Cuál es el TRAP prioritario para trabajar primero con Camila?",
+      options: [
+        {
+          text: "T: Ruptura → R: Vacío → AP: Revisar redes del ex",
+          feedback: "Revisar las redes del ex es problemático, pero no es el TRAP más estratégico para abordar primero. Es un patrón de evitación, sí, pero trabajar en este directamente podría ser demasiado emocionalmente cargado al inicio. Además, si Camila retoma actividades y contacto social, este patrón puede reducirse naturalmente.",
+          isOptimal: false,
+          consequence: "suboptimal_path",
+        },
+        {
+          text: "T: Ruptura → R: Vacío/Tristeza → AP: Dejar de aceptar proyectos y aislarse",
+          feedback: "¡Excelente elección clínica! 🎯 Este TRAP es el más estratégico porque: abarca las DOS áreas más afectadas (trabajo y social), es donde más reforzadores se han perdido, y generar activación aquí puede tener efecto cascada en los otros patrones. El letargo produce letargo, pero la actividad también produce actividad.",
+          isOptimal: true,
+          consequence: "optimal_path",
+        },
+        {
+          text: "T: Ruptura → R: Fatiga → AP: Dormir 12-14 horas",
+          feedback: "El sueño excesivo es un síntoma importante, pero en AC lo abordamos indirectamente. Si Camila empieza a activarse durante el día (proyectos, contacto social), el patrón de sueño suele regularse. Atacar el sueño directamente ('duerme menos') sin darle algo que hacer es frustrante y poco efectivo.",
+          isOptimal: false,
+          consequence: "suboptimal_path",
+        },
+      ],
+    },
+    {
+      id: "propose_trac_optimal",
+      title: "Etapa 2: Propón el primer paso TRAC 🔧",
+      description: "Buen análisis. Ahora necesitas proponer un afrontamiento alternativo para Camila. Recuerda: empieza pequeño, específico y alineado con sus valores.",
+      question: "¿Cuál sería el mejor primer afrontamiento alternativo para Camila?",
+      options: [
+        {
+          text: "Que retome un proyecto de diseño grande para un cliente anterior",
+          feedback: "Demasiado ambicioso para alguien que lleva 6 meses inactiva. Un proyecto grande puede ser abrumador y si no lo completa, confirma su creencia de 'no tengo creatividad'. En AC empezamos PEQUEÑO para garantizar éxito.",
+          isOptimal: false,
+          next: "complication_overwhelm",
+        },
+        {
+          text: "Que haga un diseño pequeño y personal (no para cliente) + que invite a UNA amiga a tomar café esta semana",
+          feedback: "🎯 ¡Perfecto manejo clínico! Dos acciones pequeñas que cubren las dos áreas afectadas. El diseño personal quita la presión del cliente (reduce barrera), y una amiga (no todas) es factible. Ambas son específicas, concretas, y contactan con reforzadores.",
+          isOptimal: true,
+          next: "complication_partial",
+        },
+        {
+          text: "Que empiece por regular el sueño: poner alarma a las 8am y no volver a la cama",
+          feedback: "Buena intención pero abordar el sueño sin actividades alternativas es como decir 'despiértate temprano... ¿para qué?' Sin algo que hacer, Camila estará despierta, sola, y deprimida. Primero las actividades, el sueño se ajusta después.",
+          isOptimal: false,
+          next: "complication_no_purpose",
+        },
+      ],
+    },
+    {
+      id: "complication_partial",
+      title: "Etapa 3: La complicación ⚡",
+      description: `Camila regresa la siguiente semana:\n\n"Hice el diseño... bueno, empecé uno. Hice un bosquejo y me gustó, pero después pensé 'esto no es tan bueno como lo que hacía antes' y lo dejé. Con lo del café... le escribí a mi amiga Daniela pero me dijo que estaba ocupada. No le escribí a nadie más. Me sentí peor. Creo que esto no funciona."`,
+      question: "¿Cómo respondes a esta situación?",
+      options: [
+        {
+          text: "Validar su frustración y señalar que dejó el diseño y no intentó con otra amiga como patrones de evitación que debemos trabajar",
+          feedback: "Entendible, pero en este momento Camila necesita primero sentir que SÍ logró cosas. Si vas directo a señalar la evitación sin validar los logros, puedes perder su motivación y la alianza terapéutica.",
+          isOptimal: false,
+        },
+        {
+          text: "Destacar que SÍ empezó un bosquejo y SÍ escribió a Daniela (reforzar conducta de acercamiento), y luego analizar qué pasó con el pensamiento 'no es tan bueno' y con no escribir a alguien más",
+          feedback: "🎯 ¡Manejo experto! Primero refuerzas las conductas de acercamiento (empezó a diseñar, escribió a Daniela) — esto es crucial en AC. Luego, analizas los dos puntos de quiebre: el pensamiento autocrítico que funcionó como trigger de un nuevo TRAP, y el patrón de 'un intento y me rindo'. Validas Y desafías.",
+          isOptimal: true,
+        },
+        {
+          text: "Decirle que es normal y que la próxima semana intente de nuevo lo mismo",
+          feedback: "Repetir exactamente lo mismo sin analizar qué pasó es perder información valiosa. Lo que pasó esta semana NOS DICE COSAS: el pensamiento autocrítico es un nuevo trigger, y el patrón de 'un intento' es evitación. Sin ajustar, la próxima semana probablemente sea igual.",
+          isOptimal: false,
+        },
+      ],
+    },
+    {
+      id: "complication_next",
+      title: "Etapa 4: Ajustar y avanzar 📈",
+      description: `Después de analizar juntos lo que pasó, Camila dice:\n\n"Ok, entiendo que el pensamiento 'no es tan bueno' me hizo parar. Y sí, cuando Daniela dijo que no, me rendí. Pero es que... ¿y si realmente mis diseños ya no son buenos? ¿Y si a mis amigas ya no les importo?"\n\nEstos pensamientos están funcionando como nuevos desencadenantes de evitación.`,
+      question: "¿Cuál es la mejor respuesta desde la AC?",
+      options: [
+        {
+          text: "Reestructurar los pensamientos: ayudarle a ver que no son verdad, que sus diseños sí son buenos y sus amigas sí la quieren",
+          feedback: "La AC NO se centra en cambiar el contenido de los pensamientos. En AC, los pensamientos son conductas que tienen función. Decirle 'tus diseños sí son buenos' no cambia el patrón. La pregunta no es si el pensamiento es verdad, sino qué HACE Camila cuando lo tiene.",
+          isOptimal: false,
+        },
+        {
+          text: "Reconocer los pensamientos como conductas con función de evitación, y preguntarle: '¿Qué haces cuando aparece ese pensamiento? ¿Y qué pasa después?'",
+          feedback: "🎯 ¡Exactamente AC! En vez de debatir si los pensamientos son verdad, los tratas como conductas que tienen antecedentes, funciones y consecuencias. La rumiación ('¿y si no soy buena?') funciona como un nuevo patrón de evitación: mientras piensa, no actúa. La pregunta la ayuda a ver ESA conexión.",
+          isOptimal: true,
+        },
+        {
+          text: "Sugerirle que practique mindfulness para aceptar esos pensamientos sin juzgarlos",
+          feedback: "No está mal como complemento, pero en este momento de la terapia lo más importante es conectar los pensamientos con la evitación conductual, no introducir una técnica nueva. Primero que entienda QUÉ FUNCIÓN tienen esos pensamientos en su ciclo.",
+          isOptimal: false,
+        },
+      ],
+    },
+    {
+      id: "final",
+      title: "Etapa Final: El cierre 🏁",
+      description: `Tres semanas después, Camila reporta:\n\n"Terminé el bosquejo y lo publiqué en Instagram. No es mi mejor trabajo pero lo hice. Una ex-clienta lo vio y me preguntó si estoy disponible para un proyecto pequeño. Y con Daniela nos vimos el jueves — fue raro al principio pero después estuvo bien. Todavía reviso las redes de mi ex a veces, pero menos. Sigo sintiéndome triste algunos días, pero ya no todos los días."\n\nCamila aún tiene camino por recorrer, pero los patrones están cambiando.`,
+      question: "Para la prevención de recaídas, ¿qué es lo más importante que Camila debe entender?",
+      options: [
+        {
+          text: "Que ya está curada y debe mantener las actividades para no recaer",
+          feedback: "No está 'curada' — la tristeza sigue ahí algunos días y eso es normal. Además, el marco de 'si paras recaes' genera presión. Lo importante no es la perfección sino el proceso.",
+          isOptimal: false,
+        },
+        {
+          text: "Que habrá días difíciles y que los TRAPs volverán, pero ahora tiene la habilidad de reconocerlos y elegir un TRAC en vez de quedar atrapada automáticamente",
+          feedback: "🎯 ¡Cierre perfecto! La prevención de recaídas en AC no es 'nunca más te sentirás mal'. Es: cuando la trampa aparezca (y aparecerá), ahora tienes herramientas. Puedes reconocer el TRAP, elegir un TRAC, y saber que la acción viene ANTES de la motivación. El objetivo no es eliminar las emociones difíciles sino cambiar la relación con ellas a través de la acción.",
+          isOptimal: true,
+        },
+        {
+          text: "Que debe dejar de seguir a su ex en redes como paso final de la terapia",
+          feedback: "Puede ser útil eventualmente, pero no es 'el paso final'. Lo más importante en prevención de recaídas es que Camila internalice el modelo: reconocer TRAPs → elegir TRACs. El tema del ex es UN patrón entre varios.",
+          isOptimal: false,
+        },
+      ],
+    },
+  ],
+};
+
+// ==================== COMPONENTS ====================
+
+// Animated background particles
+const Particles = () => {
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", overflow: "hidden", zIndex: 0 }}>
+      {Array.from({ length: 20 }).map((_, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            width: `${6 + Math.random() * 12}px`,
+            height: `${6 + Math.random() * 12}px`,
+            borderRadius: "50%",
+            background: ["#FF6B6B30", "#2EAF7030", "#E8A81730", "#9B59B630", "#E67E2230"][i % 5],
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animation: `floatParticle ${8 + Math.random() * 12}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 5}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Skill thermometer
+const SkillThermometer = ({ skills }) => {
+  return (
+    <div style={{ background: "#FFFFFF", borderRadius: 16, padding: 16, marginBottom: 20, boxShadow: "0 4px 16px #00000012" }}>
+      <div style={{ fontSize: 14, fontWeight: 700, color: "#0d1b2a", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+        🌡️ Termómetro de Habilidad
+      </div>
+      {skills.map((s, i) => (
+        <div key={i} style={{ marginBottom: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#4A6274", marginBottom: 4 }}>
+            <span>{s.emoji} {s.name}</span>
+            <span style={{ color: s.unlocked ? "#1A7A4A" : "#999" }}>{s.unlocked ? "✅" : "🔒"}</span>
+          </div>
+          <div style={{ height: 6, background: "#D0DDE6", borderRadius: 3, overflow: "hidden" }}>
+            <div
+              style={{
+                height: "100%",
+                width: `${s.progress}%`,
+                background: s.unlocked ? `linear-gradient(90deg, ${s.color}, ${s.color}dd)` : "#444",
+                borderRadius: 3,
+                transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Theory card with rich text
+const TheoryCard = ({ section, index, onNext, isLast }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
+
+  const renderContent = (text) => {
+    return text.split("\n").map((line, i) => {
+      if (!line.trim()) return <br key={i} />;
+      let processed = line;
+      // Bold
+      processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4880F">$1</strong>');
+      // Emoji bullets
+      if (/^[✅❌🎭⚠️🎯💎🌱📏]/.test(processed.trim())) {
+        return <p key={i} style={{ margin: "6px 0", paddingLeft: 8, fontSize: 15, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: processed }} />;
+      }
+      return <p key={i} style={{ margin: "8px 0", fontSize: 15, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: processed }} />;
+    });
+  };
+
+  return (
+    <div style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(30px)",
+      transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+      background: "linear-gradient(145deg, #FFFFFF, #F5FAFF)",
+      borderRadius: 20,
+      padding: 24,
+      marginBottom: 16,
+      border: "1px solid #C0D8E8",
+      boxShadow: "0 4px 20px #00000010",
+    }}>
+      <div style={{ fontSize: 11, color: "#1A7A4A", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+        📖 Teoría · Sección {index + 1}
+      </div>
+      <h3 style={{ fontSize: 22, fontWeight: 800, color: "#0d1b2a", marginBottom: 16, lineHeight: 1.3 }}>
+        {section.title}
+      </h3>
+      <div style={{ color: "#2C3E50" }}>
+        {renderContent(section.content)}
+      </div>
+      <button
+        onClick={onNext}
+        style={{
+          marginTop: 20,
+          width: "100%",
+          padding: "14px 24px",
+          background: "linear-gradient(135deg, #4ECDC4, #44B3A8)",
+          color: "#000",
+          border: "none",
+          borderRadius: 12,
+          fontSize: 16,
+          fontWeight: 700,
+          cursor: "pointer",
+          transition: "transform 0.2s",
+        }}
+        onMouseDown={e => e.target.style.transform = "scale(0.97)"}
+        onMouseUp={e => e.target.style.transform = "scale(1)"}
+      >
+        {isLast ? "¡A practicar! 💪" : "Siguiente →"}
+      </button>
+    </div>
+  );
+};
+
+// Multiple choice exercise
+const MCExercise = ({ question, options, onAnswer, answered, selectedIdx }) => {
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <p style={{ fontSize: 15, fontWeight: 600, color: "#0d1b2a", marginBottom: 12, lineHeight: 1.5 }}>{question.text || question}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {options.map((opt, i) => {
+          const optText = typeof opt === "string" ? opt : opt.text;
+          const isSelected = selectedIdx === i;
+          const isCorrectOpt = typeof opt === "object" ? opt.isCorrect : (question.correct === i);
+          let bg = "linear-gradient(145deg, #F0F6FC, #E6F0F9)";
+          let border = "1px solid #ffffff20";
+          if (answered) {
+            if (isCorrectOpt) {
+              bg = "linear-gradient(145deg, #D4F5E0, #C2EDCF)";
+              border = "2px solid #4ECDC4";
+            } else if (isSelected && !isCorrectOpt) {
+              bg = "linear-gradient(145deg, #FDDEDE, #F9CCCC)";
+              border = "2px solid #FF6B6B";
+            }
+          }
+          return (
+            <button
+              key={i}
+              onClick={() => !answered && onAnswer(i)}
+              disabled={answered}
+              style={{
+                padding: "14px 16px",
+                background: bg,
+                border,
+                borderRadius: 12,
+                color: "#0d1b2a",
+                fontSize: 14,
+                textAlign: "left",
+                cursor: answered ? "default" : "pointer",
+                transition: "all 0.3s",
+                lineHeight: 1.5,
+                opacity: answered && !isSelected && !isCorrectOpt ? 0.5 : 1,
+              }}
+            >
+              <span style={{ fontWeight: 700, marginRight: 8, color: "#FFE66D" }}>
+                {String.fromCharCode(65 + i)}.
+              </span>
+              {optText}
+              {answered && isCorrectOpt && " ✅"}
+              {answered && isSelected && !isCorrectOpt && " ❌"}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// Feedback display
+const FeedbackBox = ({ text, isCorrect }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
+  return (
+    <div style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(20px)",
+      transition: "all 0.5s ease-out",
+      padding: 16,
+      borderRadius: 14,
+      background: isCorrect
+        ? "linear-gradient(145deg, #D4F5E0, #C2EDCF)"
+        : "linear-gradient(145deg, #FDDEDE, #F9CCCC)",
+      border: `2px solid ${isCorrect ? "#2EAF70" : "#E74C3C"}`,
+      marginTop: 12,
+      marginBottom: 16,
+    }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: isCorrect ? "#1A7A4A" : "#C0392B", marginBottom: 6 }}>
+        {isCorrect ? "✨ ¡Correcto!" : "💡 Retroalimentación:"}
+      </div>
+      <div style={{ fontSize: 14, color: "#2C3E50", lineHeight: 1.6 }}
+        dangerouslySetInnerHTML={{ __html: text.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4880F">$1</strong>') }}
+      />
+    </div>
+  );
+};
+
+// Classify / drag exercise (tap-based for mobile)
+const ClassifyExercise = ({ exercise, onComplete }) => {
+  const [assignments, setAssignments] = useState({});
+  const [currentItem, setCurrentItem] = useState(null);
+  const [checked, setChecked] = useState(false);
+  const [score, setScore] = useState(0);
+  const categories = ["T", "R", "AP"];
+  const catLabels = { T: "💥 Trigger", R: "😰 Response", AP: "🔄 Avoidance Pattern" };
+  const catColors = { T: "#E74C3C", R: "#D4880F", AP: "#8E44AD" };
+
+  const handleAssign = (cat) => {
+    if (currentItem === null || checked) return;
+    setAssignments(prev => ({ ...prev, [currentItem]: cat }));
+    setCurrentItem(null);
+  };
+
+  const handleCheck = () => {
+    let correct = 0;
+    exercise.items.forEach((item, i) => {
+      if (assignments[i] === item.correct) correct++;
+    });
+    setScore(correct);
+    setChecked(true);
+  };
+
+  const allAssigned = Object.keys(assignments).length === exercise.items.length;
+
+  return (
+    <div>
+      <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 16 }}>Toca una frase y luego toca la categoría donde pertenece:</p>
+      
+      {/* Categories */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => handleAssign(cat)}
+            disabled={currentItem === null || checked}
+            style={{
+              flex: 1,
+              padding: "12px 8px",
+              background: currentItem !== null ? `${catColors[cat]}20` : "#FFFFFF",
+              border: `2px solid ${currentItem !== null ? catColors[cat] : "#C0D0DA"}`,
+              borderRadius: 12,
+              color: catColors[cat],
+              fontSize: 11,
+              fontWeight: 700,
+              cursor: currentItem !== null ? "pointer" : "default",
+              transition: "all 0.3s",
+              textAlign: "center",
+            }}
+          >
+            {catLabels[cat]}
+          </button>
+        ))}
+      </div>
+
+      {/* Items */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {exercise.items.map((item, i) => {
+          const assigned = assignments[i];
+          const isActive = currentItem === i;
+          const isWrong = checked && assigned !== item.correct;
+          const isRight = checked && assigned === item.correct;
+          return (
+            <button
+              key={i}
+              onClick={() => !checked && !assigned && setCurrentItem(i)}
+              style={{
+                padding: "12px 14px",
+                background: isRight ? "#D4F5E0" : isWrong ? "#FDDEDE" : isActive ? "#E0EFFF" : assigned ? "#F5FAFF" : "#EDF4FA",
+                border: `2px solid ${isRight ? "#2EAF70" : isWrong ? "#E74C3C" : isActive ? "#3498DB" : assigned ? catColors[assigned] + "80" : "#C0D0DA"}`,
+                borderRadius: 12,
+                color: "#0d1b2a",
+                fontSize: 13,
+                textAlign: "left",
+                cursor: assigned || checked ? "default" : "pointer",
+                transition: "all 0.3s",
+                lineHeight: 1.5,
+                position: "relative",
+              }}
+            >
+              {item.text}
+              {assigned && (
+                <span style={{
+                  position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+                  fontSize: 11, fontWeight: 700, color: catColors[assigned],
+                  background: `${catColors[assigned]}18`, padding: "2px 8px", borderRadius: 6,
+                }}>
+                  {catLabels[assigned]}
+                  {checked && (isRight ? " ✅" : " ❌")}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {!checked && allAssigned && (
+        <button onClick={handleCheck} style={{
+          marginTop: 16, width: "100%", padding: "14px",
+          background: "linear-gradient(135deg, #E8A817, #D4960F)", color: "#FFFFFF",
+          border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+        }}>
+          Verificar respuestas ✔️
+        </button>
+      )}
+
+      {checked && (
+        <div style={{ marginTop: 16 }}>
+          <FeedbackBox
+            text={score === exercise.items.length
+              ? "¡Todas correctas! Ya manejas los componentes del TRAP con soltura. 🎉"
+              : `Acertaste ${score} de ${exercise.items.length}. Revisa los elementos marcados en rojo — fíjate en la diferencia entre lo que PASA (Trigger), lo que SIENTES (Response) y lo que HACES (Avoidance Pattern).`}
+            isCorrect={score === exercise.items.length}
+          />
+          <button onClick={onComplete} style={{
+            width: "100%", padding: "14px",
+            background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+            border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          }}>
+            Continuar →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// TRAP or TRAC exercise (Level 2)
+const TrapOrTracExercise = ({ exercise, onComplete }) => {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [correctCount, setCorrectCount] = useState(0);
+  const scenario = exercise.scenarios[currentIdx];
+  const isLast = currentIdx === exercise.scenarios.length - 1;
+
+  const handleAnswer = (answer) => {
+    setSelected(answer);
+    setAnswered(true);
+    if (answer === scenario.correct) setCorrectCount(c => c + 1);
+  };
+
+  const handleNext = () => {
+    if (isLast) { onComplete(correctCount + (selected === scenario.correct ? 1 : 0)); return; }
+    setCurrentIdx(i => i + 1);
+    setAnswered(false);
+    setSelected(null);
+  };
+
+  return (
+    <div>
+      <div style={{ fontSize: 12, color: "#1A7A4A", fontWeight: 700, marginBottom: 8 }}>
+        Escenario {currentIdx + 1} de {exercise.scenarios.length}
+      </div>
+      <div style={{
+        background: "#EDF4FA", borderRadius: 14, padding: 16, marginBottom: 16,
+        border: "1px solid #D0E0EA", fontSize: 15, color: "#2C3E50", lineHeight: 1.7,
+      }}
+        dangerouslySetInnerHTML={{ __html: scenario.text.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4880F">$1</strong>') }}
+      />
+      
+      {!answered ? (
+        <div style={{ display: "flex", gap: 12 }}>
+          <button onClick={() => handleAnswer("TRAP")} style={{
+            flex: 1, padding: "16px",
+            background: "linear-gradient(145deg, #FFF0F0, #FFE0E0)", border: "2px solid #E74C3C80",
+            borderRadius: 14, color: "#C0392B", fontSize: 18, fontWeight: 800, cursor: "pointer",
+          }}>
+            🪤 TRAP
+          </button>
+          <button onClick={() => handleAnswer("TRAC")} style={{
+            flex: 1, padding: "16px",
+            background: "linear-gradient(145deg, #E8FAF0, #D4F5E0)", border: "2px solid #2EAF7080",
+            borderRadius: 14, color: "#1A7A4A", fontSize: 18, fontWeight: 800, cursor: "pointer",
+          }}>
+            💪 TRAC
+          </button>
+        </div>
+      ) : (
+        <>
+          <FeedbackBox
+            text={selected === scenario.correct ? scenario.feedback.correct : scenario.feedback.wrong}
+            isCorrect={selected === scenario.correct}
+          />
+          <button onClick={handleNext} style={{
+            width: "100%", padding: "14px",
+            background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+            border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          }}>
+            {isLast ? "Completar ejercicio →" : "Siguiente escenario →"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
+// Unmask avoidance exercise (Level 2)
+const UnmaskExercise = ({ exercise, onComplete }) => {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [correctCount, setCorrectCount] = useState(0);
+  const pair = exercise.pairs[currentIdx];
+  const isLast = currentIdx === exercise.pairs.length - 1;
+
+  const handleAnswer = (answer) => {
+    setSelected(answer);
+    setAnswered(true);
+    if (answer === pair.avoidance) setCorrectCount(c => c + 1);
+  };
+
+  const handleNext = () => {
+    if (isLast) { onComplete(); return; }
+    setCurrentIdx(i => i + 1);
+    setAnswered(false);
+    setSelected(null);
+  };
+
+  return (
+    <div>
+      <div style={{ fontSize: 12, color: "#D4880F", fontWeight: 700, marginBottom: 8 }}>
+        Par {currentIdx + 1} de {exercise.pairs.length}
+      </div>
+      <div style={{
+        background: "#EDF4FA", borderRadius: 14, padding: 14, marginBottom: 16,
+        border: "1px solid #D0E0EA", fontSize: 14, color: "#2C3E50", lineHeight: 1.6,
+      }}>
+        {pair.situation.split("\n").map((l, i) => <p key={i} style={{ margin: "4px 0" }} dangerouslySetInnerHTML={{ __html: l.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4880F">$1</strong>') }} />)}
+      </div>
+      <p style={{ fontSize: 13, color: "#C0392B", fontWeight: 600, marginBottom: 12 }}>¿Cuál es la evitación disfrazada? 🎭</p>
+      
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {["A", "B"].map(letter => {
+          const text = letter === "A" ? pair.optionA : pair.optionB;
+          const isSelected = selected === letter;
+          const isAvoidance = pair.avoidance === letter;
+          let bg = "linear-gradient(145deg, #F0F6FC, #E6F0F9)";
+          let border = "1px solid #ffffff20";
+          if (answered) {
+            if (isAvoidance) { bg = "#FDDEDE"; border = "2px solid #FF6B6B"; }
+            else { bg = "#D4F5E0"; border = "2px solid #4ECDC4"; }
+          }
+          return (
+            <button key={letter} onClick={() => !answered && handleAnswer(letter)} disabled={answered} style={{
+              padding: "14px 16px", background: bg, border, borderRadius: 12,
+              color: "#0d1b2a", fontSize: 14, textAlign: "left", cursor: answered ? "default" : "pointer",
+              transition: "all 0.3s", lineHeight: 1.5,
+            }}>
+              <span style={{ fontWeight: 700, color: "#FFE66D", marginRight: 8 }}>{letter}.</span>
+              {text}
+              {answered && isAvoidance && " 🎭 Evitación"}
+              {answered && !isAvoidance && " 💪 Afrontamiento real"}
+            </button>
+          );
+        })}
+      </div>
+
+      {answered && (
+        <>
+          <FeedbackBox text={selected === pair.avoidance ? pair.feedback.correct : pair.feedback.wrong} isCorrect={selected === pair.avoidance} />
+          <button onClick={handleNext} style={{
+            width: "100%", padding: "14px",
+            background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+            border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          }}>
+            {isLast ? "Completar ejercicio →" : "Siguiente par →"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
+// Choose best coping exercise (Level 3)
+const ChooseCopingExercise = ({ exercise, onComplete }) => {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(null);
+  const [correctCount, setCorrectCount] = useState(0);
+  const caseData = exercise.cases[currentIdx];
+  const isLast = currentIdx === exercise.cases.length - 1;
+
+  const handleAnswer = (i) => {
+    setSelectedIdx(i);
+    setAnswered(true);
+    if (caseData.options[i].isCorrect) setCorrectCount(c => c + 1);
+  };
+
+  const handleNext = () => {
+    if (isLast) { onComplete(); return; }
+    setCurrentIdx(i => i + 1);
+    setAnswered(false);
+    setSelectedIdx(null);
+  };
+
+  return (
+    <div>
+      <div style={{ fontSize: 12, color: "#D4880F", fontWeight: 700, marginBottom: 8 }}>
+        Caso {currentIdx + 1} de {exercise.cases.length}
+      </div>
+      {/* TRAP display */}
+      <div style={{ background: "#FFF5F5", borderRadius: 14, padding: 14, marginBottom: 10, border: "1px solid #E74C3C40" }}>
+        <div style={{ fontSize: 12, color: "#C0392B", fontWeight: 700, marginBottom: 8 }}>🪤 TRAP identificado:</div>
+        {Object.entries(caseData.trap).map(([key, val]) => (
+          <p key={key} style={{ fontSize: 13, color: "#2C3E50", margin: "4px 0", lineHeight: 1.5 }}>
+            <strong style={{ color: key === "T" ? "#E74C3C" : key === "R" ? "#D4880F" : "#8E44AD" }}>
+              {key === "T" ? "💥 T:" : key === "R" ? "😰 R:" : "🔄 AP:"}
+            </strong> {val}
+          </p>
+        ))}
+      </div>
+      <div style={{ fontSize: 13, color: "#1A7A4A", fontStyle: "italic", marginBottom: 14, padding: "0 4px" }}>
+        💎 {caseData.value}
+      </div>
+
+      <p style={{ fontSize: 14, fontWeight: 600, color: "#0d1b2a", marginBottom: 12 }}>Elige el MEJOR afrontamiento alternativo:</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {caseData.options.map((opt, i) => {
+          const isSelected = selectedIdx === i;
+          let bg = "linear-gradient(145deg, #F0F6FC, #E6F0F9)";
+          let border = "1px solid #ffffff20";
+          if (answered) {
+            if (opt.isCorrect) { bg = "#D4F5E0"; border = "2px solid #4ECDC4"; }
+            else if (isSelected) { bg = "#FDDEDE"; border = "2px solid #FF6B6B"; }
+          }
+          return (
+            <button key={i} onClick={() => !answered && handleAnswer(i)} disabled={answered} style={{
+              padding: "14px 16px", background: bg, border, borderRadius: 12,
+              color: "#0d1b2a", fontSize: 14, textAlign: "left", cursor: answered ? "default" : "pointer",
+              transition: "all 0.3s", lineHeight: 1.5, opacity: answered && !isSelected && !opt.isCorrect ? 0.5 : 1,
+            }}>
+              {opt.text}
+              {answered && opt.isCorrect && " ✅"}
+              {answered && isSelected && !opt.isCorrect && " ❌"}
+            </button>
+          );
+        })}
+      </div>
+
+      {answered && (
+        <>
+          <FeedbackBox
+            text={caseData.options[selectedIdx].isCorrect
+              ? caseData.options[selectedIdx].reason
+              : `${caseData.options[selectedIdx].reason}\n\n**La mejor opción era:** "${caseData.options.find(o => o.isCorrect).text}" — ${caseData.options.find(o => o.isCorrect).reason}`}
+            isCorrect={caseData.options[selectedIdx].isCorrect}
+          />
+          <button onClick={handleNext} style={{
+            width: "100%", padding: "14px",
+            background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+            border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          }}>
+            {isLast ? "Completar ejercicio →" : "Siguiente caso →"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
+// Criteria checker exercise (Level 3)
+const CriteriaExercise = ({ exercise, onComplete }) => {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [checked, setChecked] = useState(false);
+  const caseData = exercise.cases[currentIdx];
+  const isLast = currentIdx === exercise.cases.length - 1;
+
+  const handleToggle = (i) => {
+    if (checked) return;
+    setAnswers(prev => ({ ...prev, [i]: !prev[i] }));
+  };
+
+  const handleCheck = () => setChecked(true);
+
+  const handleNext = () => {
+    if (isLast) { onComplete(); return; }
+    setCurrentIdx(i => i + 1);
+    setAnswers({});
+    setChecked(false);
+  };
+
+  return (
+    <div>
+      <div style={{ fontSize: 12, color: "#D4880F", fontWeight: 700, marginBottom: 8 }}>
+        Análisis {currentIdx + 1} de {exercise.cases.length}
+      </div>
+      <div style={{ background: "#EDF4FA", borderRadius: 14, padding: 14, marginBottom: 10, border: "1px solid #D0E0EA" }}>
+        <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 8 }}>📋 Contexto: {caseData.context}</p>
+        <p style={{ fontSize: 14, color: "#4ECDC4", fontWeight: 600 }}>💪 Afrontamiento propuesto: "{caseData.coping}"</p>
+      </div>
+
+      <p style={{ fontSize: 13, color: "#0d1b2a", fontWeight: 600, marginBottom: 12 }}>
+        Marca los criterios que SÍ cumple este afrontamiento:
+      </p>
+
+      {caseData.criteria.map((c, i) => {
+        const userSaysMet = !!answers[i];
+        const isCorrect = checked && userSaysMet === c.met;
+        const isWrong = checked && userSaysMet !== c.met;
+        return (
+          <button
+            key={i}
+            onClick={() => handleToggle(i)}
+            style={{
+              display: "flex", alignItems: "center", gap: 12, width: "100%",
+              padding: "12px 14px", marginBottom: 8,
+              background: isCorrect ? "#D4F5E0" : isWrong ? "#FDDEDE" : userSaysMet ? "#E0EFFF" : "#EDF4FA",
+              border: `2px solid ${isCorrect ? "#2EAF70" : isWrong ? "#E74C3C" : userSaysMet ? "#3498DB80" : "#C0D0DA"}`,
+              borderRadius: 12, color: "#0d1b2a", fontSize: 14, textAlign: "left",
+              cursor: checked ? "default" : "pointer", transition: "all 0.3s",
+            }}
+          >
+            <span style={{
+              width: 24, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center",
+              background: userSaysMet ? "#2EAF70" : "#D0DDE6", color: "#FFFFFF", fontSize: 14, fontWeight: 700, flexShrink: 0,
+            }}>
+              {userSaysMet ? "✓" : ""}
+            </span>
+            <span>{c.name}</span>
+            {checked && (isCorrect ? " ✅" : " ❌")}
+          </button>
+        );
+      })}
+
+      {checked && caseData.criteria.map((c, i) => {
+        const userSaysMet = !!answers[i];
+        if (userSaysMet === c.met) return null;
+        return (
+          <div key={`fb-${i}`} style={{
+            padding: 12, borderRadius: 10, marginBottom: 8,
+            background: "#FFFFFF", border: "1px solid #D0E0EA", boxShadow: "0 2px 8px #00000008",
+            fontSize: 13, color: "#2C3E50", lineHeight: 1.5,
+          }}>
+            <strong style={{ color: "#FFE66D" }}>{c.name}:</strong>{" "}
+            {c.met ? `SÍ lo cumple — ${c.explanation}` : `NO lo cumple — ${c.explanation}`}
+          </div>
+        );
+      })}
+
+      {!checked && (
+        <button onClick={handleCheck} style={{
+          marginTop: 12, width: "100%", padding: "14px",
+          background: "linear-gradient(135deg, #E8A817, #D4960F)", color: "#FFFFFF",
+          border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+        }}>
+          Verificar ✔️
+        </button>
+      )}
+
+      {checked && (
+        <button onClick={handleNext} style={{
+          marginTop: 12, width: "100%", padding: "14px",
+          background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+          border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+        }}>
+          {isLast ? "Completar ejercicio →" : "Siguiente análisis →"}
+        </button>
+      )}
+    </div>
+  );
+};
+
+// Clinical case simulation (Level 4)
+const CaseSimulation = ({ caseData, onComplete }) => {
+  const [stageIdx, setStageIdx] = useState(-1); // -1 = intro
+  const [answered, setAnswered] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(null);
+  const [optimalCount, setOptimalCount] = useState(0);
+  const [history, setHistory] = useState([]);
+
+  const stage = stageIdx >= 0 ? caseData.stages[stageIdx] : null;
+  const isLastStage = stageIdx === caseData.stages.length - 1;
+
+  const handleAnswer = (i) => {
+    setSelectedIdx(i);
+    setAnswered(true);
+    const opt = stage.options[i];
+    if (opt.isOptimal) setOptimalCount(c => c + 1);
+    setHistory(h => [...h, { stage: stage.title, choice: opt.text, optimal: opt.isOptimal }]);
+  };
+
+  const handleNext = () => {
+    if (isLastStage) { onComplete(optimalCount); return; }
+    setStageIdx(i => i + 1);
+    setAnswered(false);
+    setSelectedIdx(null);
+  };
+
+  const renderRichText = (text) => {
+    return text.split("\n").map((line, i) => {
+      if (!line.trim()) return <br key={i} />;
+      let processed = line.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4880F">$1</strong>');
+      return <p key={i} style={{ margin: "6px 0", fontSize: 14, lineHeight: 1.6, color: "#2C3E50" }} dangerouslySetInnerHTML={{ __html: processed }} />;
+    });
+  };
+
+  // Intro screen
+  if (stageIdx === -1) {
+    return (
+      <div>
+        <div style={{ background: "#EDF4FA", borderRadius: 16, padding: 20, border: "1px solid #8E44AD40", marginBottom: 16 }}>
+          {renderRichText(caseData.intro)}
+        </div>
+        <button onClick={() => setStageIdx(0)} style={{
+          width: "100%", padding: "16px",
+          background: "linear-gradient(135deg, #8E44AD, #7D3C98)", color: "#FFFFFF",
+          border: "none", borderRadius: 14, fontSize: 17, fontWeight: 700, cursor: "pointer",
+        }}>
+          Comenzar consulta 🩺
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{
+        display: "flex", gap: 4, marginBottom: 16,
+      }}>
+        {caseData.stages.map((_, i) => (
+          <div key={i} style={{
+            flex: 1, height: 4, borderRadius: 2,
+            background: i <= stageIdx ? "#8E44AD" : "#D0DDE6",
+            transition: "background 0.5s",
+          }} />
+        ))}
+      </div>
+
+      <h4 style={{ fontSize: 17, fontWeight: 800, color: "#7D3C98", marginBottom: 8 }}>{stage.title}</h4>
+      
+      <div style={{ background: "#EDF4FA", borderRadius: 14, padding: 16, marginBottom: 16, border: "1px solid #D0E0EA" }}>
+        {renderRichText(stage.description)}
+      </div>
+
+      <p style={{ fontSize: 15, fontWeight: 600, color: "#0d1b2a", marginBottom: 14 }}>{stage.question}</p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {stage.options.map((opt, i) => {
+          const isSelected = selectedIdx === i;
+          let bg = "linear-gradient(145deg, #F0F6FC, #E6F0F9)";
+          let border = "1px solid #ffffff20";
+          if (answered) {
+            if (opt.isOptimal) { bg = "#D4F5E0"; border = "2px solid #4ECDC4"; }
+            else if (isSelected) { bg = "#FDDEDE"; border = "2px solid #FF8A5C"; }
+          }
+          return (
+            <button key={i} onClick={() => !answered && handleAnswer(i)} disabled={answered} style={{
+              padding: "14px 16px", background: bg, border, borderRadius: 12,
+              color: "#0d1b2a", fontSize: 14, textAlign: "left", cursor: answered ? "default" : "pointer",
+              transition: "all 0.3s", lineHeight: 1.5, opacity: answered && !isSelected && !opt.isOptimal ? 0.5 : 1,
+            }}>
+              {opt.text}
+              {answered && opt.isOptimal && " 🎯"}
+              {answered && isSelected && !opt.isOptimal && " 🔸"}
+            </button>
+          );
+        })}
+      </div>
+
+      {answered && (
+        <>
+          <FeedbackBox
+            text={stage.options[selectedIdx].feedback}
+            isCorrect={stage.options[selectedIdx].isOptimal}
+          />
+          <button onClick={handleNext} style={{
+            width: "100%", padding: "14px",
+            background: `linear-gradient(135deg, ${isLastStage ? "#E8A817" : "#8E44AD"}, ${isLastStage ? "#D4960F" : "#7D3C98"})`,
+            color: "#FFFFFF",
+            border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          }}>
+            {isLastStage ? "Finalizar consulta 🏁" : "Siguiente etapa →"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
+// Summary card at level end
+const LevelSummary = ({ level, principles, onNext }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { setTimeout(() => setVisible(true), 200); }, []);
+
+  return (
+    <div style={{
+      opacity: visible ? 1 : 0, transform: visible ? "scale(1)" : "scale(0.9)",
+      transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+      background: "linear-gradient(145deg, #D4F5E0, #C2EDCF)",
+      borderRadius: 20, padding: 24, border: "2px solid #2EAF70", textAlign: "center",
+    }}>
+      <div style={{ fontSize: 48, marginBottom: 8 }}>🎉</div>
+      <h3 style={{ fontSize: 22, fontWeight: 800, color: "#1A7A4A", marginBottom: 16 }}>
+        ¡Nivel {level} Completado!
+      </h3>
+      <div style={{ textAlign: "left", marginBottom: 20 }}>
+        <p style={{ fontSize: 13, color: "#D4880F", fontWeight: 700, marginBottom: 10 }}>📝 Principios clave para llevar contigo:</p>
+        {principles.map((p, i) => (
+          <div key={i} style={{
+            background: "#ffffff08", borderRadius: 10, padding: 12, marginBottom: 8,
+            fontSize: 14, color: "#2C3E50", lineHeight: 1.5, border: "1px solid #D0E0EA",
+          }}>
+            {p}
+          </div>
+        ))}
+      </div>
+      <button onClick={onNext} style={{
+        width: "100%", padding: "16px",
+        background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+        border: "none", borderRadius: 14, fontSize: 17, fontWeight: 700, cursor: "pointer",
+      }}>
+        {level < 4 ? `Ir al Nivel ${level + 1} →` : "Ver resultados finales 🏆"}
+      </button>
+    </div>
+  );
+};
+
+// ==================== MAIN APP ====================
+function App() {
+  const [screen, setScreen] = useState("home"); // home, level, summary, final
+  const [currentLevel, setCurrentLevel] = useState(1);
+  const [phase, setPhase] = useState("theory"); // theory, exercises
+  const [theoryIdx, setTheoryIdx] = useState(0);
+  const [exerciseIdx, setExerciseIdx] = useState(0);
+  const [completedLevels, setCompletedLevels] = useState([]);
+  const [showSummary, setShowSummary] = useState(false);
+  const containerRef = useRef(null);
+
+  const scrollToTop = () => {
+    if (containerRef.current) containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const skills = [
+    { name: "Reconocer TRAPs", emoji: "🪤", color: "#FF6B6B", unlocked: completedLevels.includes(1), progress: completedLevels.includes(1) ? 100 : currentLevel === 1 ? (phase === "exercises" ? 50 + (exerciseIdx / 4) * 50 : (theoryIdx / 3) * 50) : 0 },
+    { name: "Distinguir TRAP vs TRAC", emoji: "🔍", color: "#4ECDC4", unlocked: completedLevels.includes(2), progress: completedLevels.includes(2) ? 100 : currentLevel === 2 ? (phase === "exercises" ? 50 + (exerciseIdx / 3) * 50 : (theoryIdx / 3) * 50) : 0 },
+    { name: "Construir afrontamientos", emoji: "🔧", color: "#FFE66D", unlocked: completedLevels.includes(3), progress: completedLevels.includes(3) ? 100 : currentLevel === 3 ? (phase === "exercises" ? 50 + (exerciseIdx / 3) * 50 : (theoryIdx / 3) * 50) : 0 },
+    { name: "Aplicación clínica", emoji: "🎯", color: "#A855F7", unlocked: completedLevels.includes(4), progress: completedLevels.includes(4) ? 100 : currentLevel === 4 ? (phase === "exercises" ? 70 : 30) : 0 },
+  ];
+
+  const getTheory = () => {
+    if (currentLevel === 1) return L1_THEORY;
+    if (currentLevel === 2) return L2_THEORY;
+    if (currentLevel === 3) return L3_THEORY;
+    return [];
+  };
+
+  const getExercises = () => {
+    if (currentLevel === 1) return L1_EXERCISES;
+    if (currentLevel === 2) return L2_EXERCISES;
+    if (currentLevel === 3) return L3_EXERCISES;
+    return [];
+  };
+
+  const summaryPrinciples = {
+    1: [
+      "🪤 TRAP = Trigger → Response → Avoidance Pattern. La evitación alivia a corto plazo pero mantiene la depresión.",
+      "🔍 No importa QUÉ haces, importa PARA QUÉ lo haces. La misma conducta puede ser afrontamiento o evitación según su función.",
+      "⚡ La evitación es lógica y comprensible, pero es una trampa. Reconocerla es el primer paso para salir.",
+    ],
+    2: [
+      "💪 TRAC = Trigger → Response → Alternative Coping. La salida de la trampa es actuar diferente, no sentir diferente.",
+      "🎭 La evitación más peligrosa es la que se disfraza de acción: hacer lo mínimo, planificar sin ejecutar, investigar sin actuar.",
+      "🧭 Pregunta clave: '¿Esto me ACERCA a lo que valoro o me ALEJA del malestar?' Si solo te aleja del malestar, probablemente es evitación.",
+    ],
+    3: [
+      "✅ Un buen afrontamiento alternativo: rompe el patrón, se alinea con valores, contacta con reforzadores, y es específico y factible.",
+      "📏 Empieza PEQUEÑO. Un paso imperfecto ejecutado vale más que un plan perfecto admirado.",
+      "🔬 Analiza la FUNCIÓN, no la FORMA. Ir al parque con audífonos puede ser evitación; enviar 2 CVs imperfectos puede ser afrontamiento.",
+    ],
+    4: [
+      "🩺 En la práctica real, los TRAPs son múltiples y simultáneos. Elige estratégicamente cuál abordar primero según el impacto potencial.",
+      "🔄 Las recaídas no son fracasos, son información. Cada 'intento fallido' revela nuevos triggers y patrones.",
+      "🏁 La prevención de recaídas no es 'nunca más te sentirás mal'. Es: cuando la trampa aparezca, tienes herramientas para reconocerla y elegir diferente.",
+    ],
+  };
+
+  const startLevel = (level) => {
+    setCurrentLevel(level);
+    setPhase("theory");
+    setTheoryIdx(0);
+    setExerciseIdx(0);
+    setShowSummary(false);
+    setScreen("level");
+    scrollToTop();
+  };
+
+  const handleTheoryNext = () => {
+    const theory = getTheory();
+    if (theoryIdx < theory.length - 1) {
+      setTheoryIdx(i => i + 1);
+      scrollToTop();
+    } else {
+      setPhase("exercises");
+      setExerciseIdx(0);
+      scrollToTop();
+    }
+  };
+
+  const handleExerciseComplete = () => {
+    const exercises = getExercises();
+    if (exerciseIdx < exercises.length - 1) {
+      setExerciseIdx(i => i + 1);
+      scrollToTop();
+    } else {
+      setShowSummary(true);
+      scrollToTop();
+    }
+  };
+
+  const handleLevelComplete = () => {
+    setCompletedLevels(prev => [...new Set([...prev, currentLevel])]);
+    if (currentLevel < 4) {
+      startLevel(currentLevel + 1);
+    } else {
+      setScreen("final");
+      scrollToTop();
+    }
+  };
+
+  const renderExercise = (ex, idx) => {
+    const wrapStyle = {
+      background: "linear-gradient(145deg, #FFFFFF, #F5FAFF)",
+      borderRadius: 20, padding: 20, marginBottom: 16,
+      border: ex.type === "expert_trap" ? "2px solid #D4880F30" : "1px solid #C0D8E8",
+      boxShadow: "0 4px 20px #00000010",
+    };
+
+    if (ex.type === "identify_component") {
+      return (
+        <div key={idx} style={wrapStyle}>
+          <div style={{ fontSize: 11, color: "#C0392B", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+            🏋️ Ejercicio {idx + 1}
+          </div>
+          <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 12, lineHeight: 1.5 }}>{ex.instruction}</p>
+          <div style={{
+            background: "#EDF4FA", borderRadius: 14, padding: 14, marginBottom: 16,
+            border: "1px solid #D0E0EA", fontSize: 14, color: "#2C3E50", lineHeight: 1.7,
+          }}>
+            {ex.scenario}
+          </div>
+          <IdentifyComponentExercise exercise={ex} onComplete={handleExerciseComplete} />
+        </div>
+      );
+    }
+    if (ex.type === "classify_full") {
+      return (
+        <div key={idx} style={wrapStyle}>
+          <div style={{ fontSize: 11, color: "#C0392B", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+            🏋️ Ejercicio {idx + 1}
+          </div>
+          <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 12, lineHeight: 1.5 }}>{ex.instruction}</p>
+          <ClassifyExercise exercise={ex} onComplete={handleExerciseComplete} />
+        </div>
+      );
+    }
+    if (ex.type === "expert_trap") {
+      return (
+        <div key={idx} style={wrapStyle}>
+          <div style={{
+            fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8,
+            background: "linear-gradient(90deg, #D4880F, #C0392B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>
+            ⚡ Trampa del Experto
+          </div>
+          <p style={{ fontSize: 13, color: "#C0392B", marginBottom: 12, lineHeight: 1.5, whiteSpace: "pre-line" }}>{ex.instruction}</p>
+          <div style={{
+            background: "#EDF4FA", borderRadius: 14, padding: 14, marginBottom: 16,
+            border: "1px solid #D4880F30", fontSize: 14, color: "#2C3E50", lineHeight: 1.7,
+          }}>
+            {ex.scenario}
+          </div>
+          <ExpertTrapExercise exercise={ex} onComplete={handleExerciseComplete} />
+        </div>
+      );
+    }
+    if (ex.type === "trap_or_trac") {
+      return (
+        <div key={idx} style={wrapStyle}>
+          <div style={{ fontSize: 11, color: "#1A7A4A", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+            🏋️ Ejercicio {idx + 1}
+          </div>
+          <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 12, lineHeight: 1.5 }}>{ex.instruction}</p>
+          <TrapOrTracExercise exercise={ex} onComplete={handleExerciseComplete} />
+        </div>
+      );
+    }
+    if (ex.type === "unmask_avoidance") {
+      return (
+        <div key={idx} style={wrapStyle}>
+          <div style={{ fontSize: 11, color: "#C0392B", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+            🏋️ Ejercicio {idx + 1}
+          </div>
+          <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 12, lineHeight: 1.5, whiteSpace: "pre-line" }}>{ex.instruction}</p>
+          <UnmaskExercise exercise={ex} onComplete={handleExerciseComplete} />
+        </div>
+      );
+    }
+    if (ex.type === "choose_best_coping") {
+      return (
+        <div key={idx} style={wrapStyle}>
+          <div style={{ fontSize: 11, color: "#FFE66D", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+            🏋️ Ejercicio {idx + 1}
+          </div>
+          <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 12, lineHeight: 1.5 }}>{ex.instruction}</p>
+          <ChooseCopingExercise exercise={ex} onComplete={handleExerciseComplete} />
+        </div>
+      );
+    }
+    if (ex.type === "justify_criteria") {
+      return (
+        <div key={idx} style={wrapStyle}>
+          <div style={{ fontSize: 11, color: "#1A7A4A", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+            🏋️ Ejercicio {idx + 1}
+          </div>
+          <p style={{ fontSize: 13, color: "#5A7A8A", marginBottom: 12, lineHeight: 1.5 }}>{ex.instruction}</p>
+          <CriteriaExercise exercise={ex} onComplete={handleExerciseComplete} />
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // HOME SCREEN
+  if (screen === "home") {
+    return (
+      <div ref={containerRef} style={{
+        minHeight: "100vh", background: "linear-gradient(180deg, #D0E8F7 0%, #E3F0FA 50%, #C8E1F2 100%)",
+        color: "#0d1b2a", fontFamily: "'Segoe UI', system-ui, sans-serif",
+        overflowY: "auto", position: "relative",
+      }}>
+        <Particles />
+        <div style={{ position: "relative", zIndex: 1, padding: "20px 16px", maxWidth: 480, margin: "0 auto" }}>
+          {/* Header */}
+          <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: 24 }}>
+            <div style={{
+              fontSize: 56, marginBottom: 8,
+              animation: "pulse 2s ease-in-out infinite",
+            }}>🪤</div>
+            <h1 style={{
+              fontSize: 32, fontWeight: 900, lineHeight: 1.2, marginBottom: 8,
+              background: "linear-gradient(135deg, #E74C3C, #E8A817, #2EAF70)",
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            }}>
+              TRAP → TRAC
+            </h1>
+            <p style={{ fontSize: 15, color: "#5A7A8A", lineHeight: 1.5, maxWidth: 320, margin: "0 auto" }}>
+              Aprende a reconocer las trampas de la depresión y construir salidas efectivas
+            </p>
+            <div style={{
+              marginTop: 12, display: "inline-block",
+              background: "#FFFFFF", borderRadius: 20, padding: "6px 14px",
+              fontSize: 12, color: "#1A7A4A", border: "1px solid #2EAF7040", boxShadow: "0 2px 8px #00000008", fontWeight: 600,
+            }}>
+              Basado en Activación Conductual · Martell, Dimidjian & Herman-Dunn
+            </div>
+          </div>
+
+          {/* Skill thermometer */}
+          <SkillThermometer skills={skills} />
+
+          {/* Level cards */}
+          {LEVELS_META.map((level, i) => {
+            const isUnlocked = i === 0 || completedLevels.includes(i);
+            const isCompleted = completedLevels.includes(level.id);
+            return (
+              <button
+                key={level.id}
+                onClick={() => isUnlocked && startLevel(level.id)}
+                disabled={!isUnlocked}
+                style={{
+                  display: "flex", alignItems: "center", gap: 16, width: "100%",
+                  padding: "18px 16px", marginBottom: 12,
+                  background: isCompleted
+                    ? "linear-gradient(145deg, #D4F5E0, #C2EDCF)"
+                    : isUnlocked
+                      ? "linear-gradient(145deg, #FFFFFF, #F5FAFF)"
+                      : "#E0E8EF",
+                  border: `2px solid ${isCompleted ? "#2EAF70" : isUnlocked ? level.color + "60" : "#C0D0DA"}`,
+                  borderRadius: 16,
+                  cursor: isUnlocked ? "pointer" : "not-allowed",
+                  opacity: isUnlocked ? 1 : 0.5,
+                  textAlign: "left",
+                  transition: "all 0.3s",
+                }}
+              >
+                <div style={{
+                  width: 50, height: 50, borderRadius: 14,
+                  background: `${level.color}25`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 28, flexShrink: 0,
+                }}>
+                  {isCompleted ? "✅" : isUnlocked ? level.emoji : "🔒"}
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: level.color, fontWeight: 700, letterSpacing: 1 }}>
+                    NIVEL {level.id}
+                  </div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0d1b2a", marginTop: 2 }}>
+                    {level.title}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#5A7A8A", marginTop: 2, lineHeight: 1.4 }}>
+                    {level.desc}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+
+          <div style={{ textAlign: "center", padding: "24px 0 40px", fontSize: 12, color: "#8A9DAB" }}>
+            Creado con 💜 para tu crecimiento profesional
+            <br />@leo.eyzaguirre
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes floatParticle {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(20px, -30px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-10px, -60px) scale(0.8); opacity: 0.4; }
+            75% { transform: translate(30px, -30px) scale(1.1); opacity: 0.5; }
+          }
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+          }
+          @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          button { font-family: inherit; }
+          textarea { font-family: inherit; }
+        `}</style>
+      </div>
+    );
+  }
+
+  // LEVEL SCREEN
+  if (screen === "level") {
+    const theory = getTheory();
+    const exercises = getExercises();
+    const levelMeta = LEVELS_META[currentLevel - 1];
+
+    return (
+      <div ref={containerRef} style={{
+        minHeight: "100vh", background: "linear-gradient(180deg, #D0E8F7 0%, #E3F0FA 50%, #C8E1F2 100%)",
+        color: "#0d1b2a", fontFamily: "'Segoe UI', system-ui, sans-serif",
+        overflowY: "auto", position: "relative",
+      }}>
+        <Particles />
+        <div style={{ position: "relative", zIndex: 1, padding: "16px", maxWidth: 480, margin: "0 auto" }}>
+          {/* Top bar */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+            <button onClick={() => setScreen("home")} style={{
+              background: "#ffffff10", border: "none", borderRadius: 10, padding: "8px 12px",
+              color: "#0d1b2a", fontSize: 14, cursor: "pointer",
+            }}>
+              ← Inicio
+            </button>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 11, color: levelMeta.color, fontWeight: 700, letterSpacing: 1 }}>
+                NIVEL {currentLevel} {levelMeta.emoji}
+              </div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#0d1b2a" }}>{levelMeta.title}</div>
+            </div>
+          </div>
+
+          {/* Phase indicator */}
+          <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
+            {theory.map((_, i) => (
+              <div key={`t${i}`} style={{
+                flex: 1, height: 4, borderRadius: 2,
+                background: phase === "theory" && i <= theoryIdx ? levelMeta.color : phase === "exercises" ? levelMeta.color : "#333",
+                transition: "background 0.5s",
+              }} />
+            ))}
+            <div style={{ width: 2, background: "#ffffff30" }} />
+            {(currentLevel < 4 ? exercises : [1]).map((_, i) => (
+              <div key={`e${i}`} style={{
+                flex: 1, height: 4, borderRadius: 2,
+                background: phase === "exercises" && i <= exerciseIdx ? "#4ECDC4" : "#333",
+                transition: "background 0.5s",
+              }} />
+            ))}
+          </div>
+
+          {/* THEORY */}
+          {phase === "theory" && !showSummary && currentLevel < 4 && (
+            <TheoryCard
+              section={theory[theoryIdx]}
+              index={theoryIdx}
+              onNext={handleTheoryNext}
+              isLast={theoryIdx === theory.length - 1}
+            />
+          )}
+
+          {/* LEVEL 4 INTRO */}
+          {phase === "theory" && currentLevel === 4 && !showSummary && (
+            <div style={{
+              background: "linear-gradient(145deg, #FFFFFF, #F5FAFF)",
+              borderRadius: 20, padding: 24, marginBottom: 16,
+              border: "1px solid #8E44AD40",
+            }}>
+              <h3 style={{ fontSize: 22, fontWeight: 800, color: "#A855F7", marginBottom: 16 }}>
+                {L4_INTRO.title}
+              </h3>
+              <div style={{ color: "#2C3E50", fontSize: 15, lineHeight: 1.7 }}>
+                {L4_INTRO.content.split("\n").map((line, i) => {
+                  if (!line.trim()) return <br key={i} />;
+                  let p = line.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4880F">$1</strong>');
+                  return <p key={i} style={{ margin: "6px 0" }} dangerouslySetInnerHTML={{ __html: p }} />;
+                })}
+              </div>
+              <button onClick={() => { setPhase("exercises"); scrollToTop(); }} style={{
+                marginTop: 20, width: "100%", padding: "16px",
+                background: "linear-gradient(135deg, #8E44AD, #7D3C98)", color: "#FFFFFF",
+                border: "none", borderRadius: 14, fontSize: 17, fontWeight: 700, cursor: "pointer",
+              }}>
+                Comenzar la consulta simulada 🩺
+              </button>
+            </div>
+          )}
+
+          {/* EXERCISES */}
+          {phase === "exercises" && !showSummary && currentLevel < 4 && (
+            renderExercise(exercises[exerciseIdx], exerciseIdx)
+          )}
+
+          {/* LEVEL 4 CASE */}
+          {phase === "exercises" && !showSummary && currentLevel === 4 && (
+            <div style={{
+              background: "linear-gradient(145deg, #FFFFFF, #F5FAFF)",
+              borderRadius: 20, padding: 20,
+              border: "1px solid #8E44AD40",
+            }}>
+              <CaseSimulation caseData={L4_CASE} onComplete={() => setShowSummary(true)} />
+            </div>
+          )}
+
+          {/* SUMMARY */}
+          {showSummary && (
+            <LevelSummary
+              level={currentLevel}
+              principles={summaryPrinciples[currentLevel]}
+              onNext={handleLevelComplete}
+            />
+          )}
+        </div>
+
+        <style>{`
+          @keyframes floatParticle {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(20px, -30px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-10px, -60px) scale(0.8); opacity: 0.4; }
+            75% { transform: translate(30px, -30px) scale(1.1); opacity: 0.5; }
+          }
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+          }
+          @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          button { font-family: inherit; }
+          textarea { font-family: inherit; }
+        `}</style>
+      </div>
+    );
+  }
+
+  // FINAL SCREEN
+  if (screen === "final") {
+    return (
+      <div ref={containerRef} style={{
+        minHeight: "100vh", background: "linear-gradient(180deg, #D0E8F7 0%, #E3F0FA 50%, #C8E1F2 100%)",
+        color: "#0d1b2a", fontFamily: "'Segoe UI', system-ui, sans-serif",
+        overflowY: "auto", position: "relative",
+      }}>
+        <Particles />
+        <div style={{ position: "relative", zIndex: 1, padding: "40px 16px 20px", maxWidth: 480, margin: "0 auto", textAlign: "center" }}>
+          <div style={{ fontSize: 72, marginBottom: 16, animation: "pulse 2s ease-in-out infinite" }}>🏆</div>
+          <h1 style={{
+            fontSize: 28, fontWeight: 900, lineHeight: 1.2, marginBottom: 12,
+            background: "linear-gradient(135deg, #E8A817, #E74C3C, #2EAF70, #8E44AD)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>
+            ¡Completaste todos los niveles!
+          </h1>
+          <p style={{ fontSize: 15, color: "#2C3E50", lineHeight: 1.6, marginBottom: 24, maxWidth: 360, margin: "0 auto 24px" }}>
+            Ahora tienes las herramientas para reconocer TRAPs, distinguir evitación de afrontamiento, construir salidas efectivas y aplicar todo en contextos reales.
+          </p>
+          
+          <SkillThermometer skills={skills} />
+
+          <div style={{
+            background: "#FFFFFF", borderRadius: 16, padding: 20, marginBottom: 24,
+            border: "1px solid #C0D8E8", textAlign: "left",
+          }}>
+            <p style={{ fontSize: 14, color: "#D4880F", fontWeight: 700, marginBottom: 12 }}>
+              🧠 Recuerda siempre:
+            </p>
+            <p style={{ fontSize: 14, color: "#2C3E50", lineHeight: 1.7 }}>
+              La activación conductual no pide que te sientas bien para actuar. Pide que actúes para tener la oportunidad de sentirte bien. Los TRAPs aparecerán siempre — lo que cambia es tu habilidad para reconocerlos y elegir un TRAC.
+            </p>
+          </div>
+
+          <button onClick={() => { setScreen("home"); setCompletedLevels([1, 2, 3, 4]); }} style={{
+            width: "100%", padding: "16px",
+            background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+            border: "none", borderRadius: 14, fontSize: 17, fontWeight: 700, cursor: "pointer",
+          }}>
+            Volver al inicio 🏠
+          </button>
+
+          {/* Feedback Form */}
+          <FeedbackForm />
+
+          <div style={{ textAlign: "center", padding: "24px 0", fontSize: 12, color: "#8A9DAB" }}>
+            Creado con 💜 · @leo.eyzaguirre
+          </div>
+        </div>
+        <style>{`
+          @keyframes floatParticle {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(20px, -30px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-10px, -60px) scale(0.8); opacity: 0.4; }
+            75% { transform: translate(30px, -30px) scale(1.1); opacity: 0.5; }
+          }
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+          }
+          @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          button { font-family: inherit; }
+          textarea { font-family: inherit; }
+        `}</style>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+// Feedback form with Formspree
+function FeedbackForm() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState(null);
+  const [status, setStatus] = useState("idle"); // idle, sending, sent, error
+
+  const FORMSPREE_ID = "xbdadlnz"; // ← Reemplaza con tu ID de Formspree
+
+  const handleSubmit = async () => {
+    if (!message.trim()) return;
+    setStatus("sending");
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          tipo: type === "mejora" ? "💡 Idea de mejora" : type === "ejercicio" ? "🏋️ Mejora de ejercicio" : "💬 Comentario general",
+          mensaje: message,
+          fecha: new Date().toLocaleString("es-BO"),
+        }),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setMessage("");
+        setType(null);
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
+        style={{
+          width: "100%", marginTop: 20, padding: "14px 16px",
+          background: "transparent", border: "2px dashed #8E44AD60",
+          borderRadius: 14, cursor: "pointer", transition: "all 0.3s",
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+        }}
+      >
+        <span style={{ fontSize: 20 }}>💬</span>
+        <span style={{ fontSize: 14, color: "#5A7A8A", fontWeight: 600 }}>
+          ¿Tienes ideas para mejorar esta herramienta? (opcional)
+        </span>
+      </button>
+    );
+  }
+
+  if (status === "sent") {
+    return (
+      <div style={{
+        marginTop: 20, padding: 20, borderRadius: 16,
+        background: "linear-gradient(145deg, #D4F5E0, #C2EDCF)",
+        border: "2px solid #2EAF70", textAlign: "center",
+        animation: "fadeSlideIn 0.4s ease-out",
+      }}>
+        <div style={{ fontSize: 40, marginBottom: 8 }}>✅</div>
+        <p style={{ fontSize: 16, fontWeight: 700, color: "#1A7A4A", marginBottom: 4 }}>
+          ¡Gracias por tu feedback!
+        </p>
+        <p style={{ fontSize: 13, color: "#2C6E49" }}>
+          Tu mensaje fue enviado. Me ayuda mucho a mejorar esta herramienta. 🙏
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      marginTop: 20, padding: 20, borderRadius: 16,
+      background: "#FFFFFF", border: "1px solid #C0D8E8",
+      boxShadow: "0 4px 16px #00000008", textAlign: "left",
+      animation: "fadeSlideIn 0.4s ease-out",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        <div>
+          <p style={{ fontSize: 16, fontWeight: 700, color: "#0d1b2a" }}>💬 Tu feedback</p>
+          <p style={{ fontSize: 12, color: "#5A7A8A", marginTop: 2 }}>Opcional · Solo lo veo yo</p>
+        </div>
+        <button
+          onClick={() => setIsOpen(false)}
+          style={{
+            background: "#EDF4FA", border: "none", borderRadius: 8,
+            width: 32, height: 32, cursor: "pointer", fontSize: 16,
+            color: "#5A7A8A", display: "flex", alignItems: "center", justifyContent: "center",
+          }}
+        >✕</button>
+      </div>
+
+      {/* Type selector */}
+      <p style={{ fontSize: 12, color: "#5A7A8A", fontWeight: 600, marginBottom: 8 }}>
+        ¿Sobre qué quieres comentar?
+      </p>
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+        {[
+          { id: "mejora", emoji: "💡", label: "Idea de mejora" },
+          { id: "ejercicio", emoji: "🏋️", label: "Ejercicios" },
+          { id: "general", emoji: "💬", label: "General" },
+        ].map(opt => (
+          <button
+            key={opt.id}
+            onClick={() => setType(opt.id)}
+            style={{
+              flex: 1, padding: "10px 6px", borderRadius: 10,
+              background: type === opt.id ? "#E0EFFF" : "#F5FAFF",
+              border: `2px solid ${type === opt.id ? "#3498DB" : "#D0E0EA"}`,
+              cursor: "pointer", transition: "all 0.2s", textAlign: "center",
+            }}
+          >
+            <div style={{ fontSize: 18 }}>{opt.emoji}</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: type === opt.id ? "#2471A3" : "#5A7A8A", marginTop: 2 }}>
+              {opt.label}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Text area */}
+      <textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Escribe tu idea, sugerencia o comentario aquí..."
+        rows={4}
+        style={{
+          width: "100%", padding: "12px 14px", borderRadius: 12,
+          border: "2px solid #D0E0EA", background: "#F5FAFF",
+          fontSize: 14, color: "#0d1b2a", resize: "vertical",
+          fontFamily: "inherit", lineHeight: 1.5, outline: "none",
+          transition: "border-color 0.3s",
+        }}
+        onFocus={(e) => e.target.style.borderColor = "#3498DB"}
+        onBlur={(e) => e.target.style.borderColor = "#D0E0EA"}
+      />
+
+      {/* Submit */}
+      <button
+        onClick={handleSubmit}
+        disabled={!message.trim() || !type || status === "sending"}
+        style={{
+          marginTop: 12, width: "100%", padding: "14px",
+          background: message.trim() && type
+            ? "linear-gradient(135deg, #8E44AD, #7D3C98)"
+            : "#D0DDE6",
+          color: message.trim() && type ? "#FFFFFF" : "#8A9DAB",
+          border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700,
+          cursor: message.trim() && type ? "pointer" : "not-allowed",
+          transition: "all 0.3s",
+          opacity: status === "sending" ? 0.7 : 1,
+        }}
+      >
+        {status === "sending" ? "Enviando... ⏳" : status === "error" ? "Error — Reintentar 🔄" : "Enviar feedback 📩"}
+      </button>
+
+      {status === "error" && (
+        <p style={{ fontSize: 12, color: "#C0392B", marginTop: 8, textAlign: "center" }}>
+          No se pudo enviar. Verifica tu conexión o que el ID de Formspree sea correcto.
+        </p>
+      )}
+    </div>
+  );
+}
+
+// Identify component sub-exercise
+function IdentifyComponentExercise({ exercise, onComplete }) {
+  const [currentQ, setCurrentQ] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(null);
+  const [correctCount, setCorrectCount] = useState(0);
+  const q = exercise.questions[currentQ];
+  const isLast = currentQ === exercise.questions.length - 1;
+
+  const handleAnswer = (i) => {
+    setSelectedIdx(i);
+    setAnswered(true);
+    if (i === q.correct) setCorrectCount(c => c + 1);
+  };
+
+  const handleNext = () => {
+    if (isLast) { onComplete(); return; }
+    setCurrentQ(i => i + 1);
+    setAnswered(false);
+    setSelectedIdx(null);
+  };
+
+  return (
+    <div>
+      <MCExercise
+        question={q}
+        options={q.options}
+        onAnswer={handleAnswer}
+        answered={answered}
+        selectedIdx={selectedIdx}
+      />
+      {answered && (
+        <>
+          <FeedbackBox
+            text={selectedIdx === q.correct ? q.feedback.correct : q.feedback.wrong}
+            isCorrect={selectedIdx === q.correct}
+          />
+          <button onClick={handleNext} style={{
+            width: "100%", padding: "14px",
+            background: "linear-gradient(135deg, #2EAF70, #27A05F)", color: "#FFFFFF",
+            border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          }}>
+            {isLast ? "Completar ejercicio →" : "Siguiente pregunta →"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Expert trap sub-exercise
+function ExpertTrapExercise({ exercise, onComplete }) {
+  const [answered, setAnswered] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(null);
+
+  const handleAnswer = (i) => {
+    setSelectedIdx(i);
+    setAnswered(true);
+  };
+
+  const isCorrect = answered && exercise.options[selectedIdx].isCorrect;
+
+  return (
+    <div>
+      <MCExercise
+        question={exercise.question}
+        options={exercise.options}
+        onAnswer={handleAnswer}
+        answered={answered}
+        selectedIdx={selectedIdx}
+      />
+      {answered && (
+        <>
+          <FeedbackBox
+            text={isCorrect ? exercise.feedback.correct : exercise.feedback.wrong}
+            isCorrect={isCorrect}
+          />
+          <button onClick={onComplete} style={{
+            width: "100%", padding: "14px",
+            background: "linear-gradient(135deg, #E8A817, #D4960F)", color: "#FFFFFF",
+            border: "none", borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: "pointer",
+          }}>
+            Continuar →
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+  </script>
+</body>
+</html>

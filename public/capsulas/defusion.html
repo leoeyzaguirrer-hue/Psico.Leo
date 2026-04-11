@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Defusión: Entrenamiento Clínico</title>
+<meta name="description" content="Entrena tu habilidad de defusión cognitiva con ejercicios progresivos basados en ACT y RFT">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #e8f4f8;
+  --bg-card: #1b5e7b;
+  --bg-card-hover: #1a7a9a;
+  --bg-surface: #15516d;
+  --blue-dark: #0e3d54;
+  --blue-mid: #2874a6;
+  --blue-bright: #2196c8;
+  --blue-light: #4fc3f7;
+  --gold: #d4a017;
+  --gold-dim: #b8860b;
+  --gold-bright: #f0c040;
+  --white: #ffffff;
+  --white-dim: #dce8ec;
+  --white-muted: #a8c4d0;
+  --green: #2ecc71;
+  --green-dim: #1a5c35;
+  --red: #e74c3c;
+  --red-dim: #5c1a1a;
+  --text-dark: #1a3a4a;
+  --text-mid: #2c5f73;
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --shadow: 0 8px 32px rgba(27,94,123,0.2);
+  --shadow-sm: 0 4px 16px rgba(27,94,123,0.15);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === AMBIENT BACKGROUND === */
+.bg-ambient {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none; overflow: hidden;
+  background: linear-gradient(160deg, #e8f4f8 0%, #d4eef6 40%, #e0f0e8 100%);
+}
+.bg-line {
+  position: absolute; background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+  opacity: 0.18; border-radius: 2px;
+}
+.bg-line:nth-child(1) {
+  width: 200%; height: 1.5px; top: 18%; left: -50%;
+  animation: lineSlide 18s linear infinite;
+  transform: rotate(-12deg);
+}
+.bg-line:nth-child(2) {
+  width: 180%; height: 1px; top: 42%; left: -40%;
+  animation: lineSlide 24s linear infinite reverse;
+  transform: rotate(8deg); opacity: 0.12;
+}
+.bg-line:nth-child(3) {
+  width: 160%; height: 1.5px; top: 68%; left: -30%;
+  animation: lineSlide 20s linear infinite;
+  transform: rotate(-5deg); opacity: 0.15;
+}
+.bg-line:nth-child(4) {
+  width: 140%; height: 1px; top: 88%; left: -20%;
+  animation: lineSlide 22s linear infinite reverse;
+  transform: rotate(15deg); opacity: 0.1;
+}
+.bg-circle {
+  position: absolute; border: 1.5px solid var(--gold-bright); border-radius: 50%; opacity: 0.1;
+  animation: circleFloat 25s ease-in-out infinite;
+}
+.bg-circle:nth-child(5) { width: 300px; height: 300px; top: -80px; right: -60px; }
+.bg-circle:nth-child(6) { width: 200px; height: 200px; bottom: 10%; left: -40px; animation-delay: -8s; opacity: 0.08; }
+.bg-circle:nth-child(7) { width: 150px; height: 150px; top: 40%; right: -30px; animation-delay: -15s; opacity: 0.07; }
+@keyframes lineSlide {
+  0% { transform: translateX(-10%) rotate(var(--r, -12deg)); }
+  50% { transform: translateX(10%) rotate(var(--r, -12deg)); }
+  100% { transform: translateX(-10%) rotate(var(--r, -12deg)); }
+}
+@keyframes circleFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -25px) scale(1.05); }
+  66% { transform: translate(-15px, 20px) scale(0.95); }
+}
+
+/* === LAYOUT === */
+.app-container { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 0 16px; }
+
+/* === HEADER === */
+.header {
+  text-align: center; padding: 32px 0 24px; animation: fadeInDown 0.8s ease-out;
+}
+.header h1 {
+  font-family: var(--font-display); font-size: 1.6rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 50%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1.3;
+}
+.header p { color: var(--text-mid); font-size: 0.85rem; margin-top: 6px; font-weight: 300; }
+
+/* === PROGRESS BAR GLOBAL === */
+.global-progress {
+  background: rgba(27,94,123,0.1); border-radius: 20px; padding: 12px 16px;
+  margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+  border: 1px solid rgba(27,94,123,0.12); backdrop-filter: blur(8px);
+}
+.global-progress-bar {
+  flex: 1; height: 8px; background: rgba(27,94,123,0.15); border-radius: 4px; overflow: hidden;
+}
+.global-progress-fill {
+  height: 100%; border-radius: 4px; transition: width 0.6s ease;
+  background: linear-gradient(90deg, var(--blue-bright), var(--gold));
+}
+.global-progress-text { font-size: 0.75rem; color: var(--gold-dim); font-weight: 600; white-space: nowrap; }
+
+/* === LEVEL CARDS === */
+.levels-grid { display: flex; flex-direction: column; gap: 12px; padding-bottom: 24px; }
+.level-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+  transition: var(--transition); position: relative; overflow: hidden;
+  color: var(--white); box-shadow: var(--shadow-sm);
+}
+.level-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--blue-bright), var(--gold));
+  opacity: 0; transition: var(--transition);
+}
+.level-card:hover, .level-card:active { background: var(--bg-card-hover); transform: translateY(-2px); box-shadow: var(--shadow); }
+.level-card:hover::before, .level-card.active::before { opacity: 1; }
+.level-card.locked { opacity: 0.5; pointer-events: none; }
+.level-card.completed { border-color: var(--green); }
+.level-card.completed::before { background: var(--green); opacity: 0.6; }
+
+.level-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.level-icon {
+  width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; background: rgba(0,0,0,0.15); flex-shrink: 0;
+}
+.level-info { flex: 1; }
+.level-num { font-size: 0.7rem; color: var(--gold-bright); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+.level-title { font-size: 1.05rem; font-weight: 600; margin-top: 2px; }
+.level-desc { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 4px; line-height: 1.4; }
+
+.level-progress { margin-top: 12px; }
+.level-progress-bar { height: 5px; background: rgba(255,255,255,0.15); border-radius: 3px; overflow: hidden; }
+.level-progress-fill { height: 100%; border-radius: 3px; background: var(--gold-bright); transition: width 0.4s ease; }
+.level-progress-text { font-size: 0.7rem; color: rgba(255,255,255,0.65); margin-top: 4px; text-align: right; }
+.level-lock-badge {
+  position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.2);
+  padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; color: rgba(255,255,255,0.6);
+}
+.level-complete-badge {
+  position: absolute; top: 12px; right: 12px; background: rgba(46,204,113,0.2);
+  padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; color: var(--green); font-weight: 600;
+}
+
+/* === EXERCISE VIEW === */
+.view { display: none; animation: fadeIn 0.4s ease-out; }
+.view.active { display: block; }
+
+.exercise-header {
+  display: flex; align-items: center; gap: 12px; padding: 16px 0;
+  border-bottom: 1px solid rgba(27,94,123,0.12); margin-bottom: 20px;
+}
+.btn-back {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--bg-card);
+  border: none; color: var(--white); font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: var(--transition); box-shadow: var(--shadow-sm);
+}
+.btn-back:hover { background: var(--bg-card-hover); }
+.exercise-header-info { flex: 1; }
+.exercise-header-info .level-num { font-size: 0.65rem; color: var(--blue-mid); }
+.exercise-header-info .ex-title { font-size: 0.95rem; font-weight: 600; margin-top: 2px; color: var(--text-dark); }
+.exercise-counter {
+  font-size: 0.7rem; color: var(--gold-dim); background: rgba(212,160,23,0.12);
+  padding: 4px 10px; border-radius: 20px; font-weight: 600;
+}
+
+.exercise-progress-mini {
+  display: flex; gap: 4px; margin-bottom: 20px;
+}
+.exercise-dot {
+  flex: 1; height: 4px; border-radius: 2px; background: rgba(27,94,123,0.15); transition: var(--transition);
+}
+.exercise-dot.done { background: var(--green); }
+.exercise-dot.current { background: var(--gold); }
+
+/* === EXERCISE CONTENT === */
+.exercise-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 24px 20px;
+  border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px;
+  color: var(--white); box-shadow: var(--shadow-sm);
+}
+.exercise-card h3 {
+  font-family: var(--font-display); font-size: 1.2rem; line-height: 1.3;
+  margin-bottom: 16px; color: var(--white);
+}
+.exercise-card .scenario {
+  background: rgba(0,0,0,0.15); border-radius: var(--radius-sm); padding: 16px;
+  margin-bottom: 16px; border-left: 3px solid var(--gold);
+  font-size: 0.9rem; line-height: 1.6; color: var(--white-dim);
+}
+.exercise-card .scenario em { color: var(--gold-bright); font-style: italic; }
+.exercise-card .scenario .speaker {
+  font-weight: 600; color: var(--blue-light); display: block; margin-bottom: 4px; font-size: 0.8rem;
+}
+.exercise-card .instruction {
+  font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 16px; line-height: 1.5;
+}
+
+/* === OPTION BUTTONS === */
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option-btn {
+  background: rgba(0,0,0,0.12); border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm); padding: 14px 16px; text-align: left;
+  color: var(--white); font-size: 0.88rem; line-height: 1.5; cursor: pointer;
+  transition: var(--transition); font-family: var(--font-body); position: relative;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.option-btn:hover { border-color: var(--gold-bright); background: rgba(0,0,0,0.2); }
+.option-btn:active { transform: scale(0.98); }
+.option-btn .opt-letter {
+  width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
+  font-weight: 600; color: rgba(255,255,255,0.6); flex-shrink: 0;
+}
+.option-btn.selected { border-color: var(--gold); background: rgba(212,160,23,0.15); }
+.option-btn.selected .opt-letter { background: var(--gold); color: var(--blue-dark); }
+.option-btn.correct { border-color: var(--green); background: rgba(46,204,113,0.15); }
+.option-btn.correct .opt-letter { background: var(--green); color: white; }
+.option-btn.incorrect { border-color: var(--red); background: rgba(231,76,60,0.12); }
+.option-btn.incorrect .opt-letter { background: var(--red); color: white; }
+.option-btn.disabled { pointer-events: none; }
+.option-btn .opt-text { flex: 1; }
+
+/* Multi-select checkbox style */
+.option-btn.multi .opt-letter {
+  border-radius: 6px; border: 2px solid rgba(255,255,255,0.2); background: transparent;
+}
+.option-btn.multi.selected .opt-letter { border-color: var(--gold); background: var(--gold); color: var(--blue-dark); }
+.option-btn.multi.selected .opt-letter::after { content: '✓'; }
+.option-btn.multi.correct .opt-letter { border-color: var(--green); background: var(--green); }
+.option-btn.multi.correct .opt-letter::after { content: '✓'; }
+
+/* === ORDERING EXERCISE === */
+.ordering-list { display: flex; flex-direction: column; gap: 8px; }
+.ordering-item {
+  background: rgba(0,0,0,0.12); border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-sm); padding: 12px 16px; cursor: grab;
+  display: flex; align-items: center; gap: 12px; transition: var(--transition);
+  user-select: none; font-size: 0.88rem; color: var(--white);
+}
+.ordering-item:active { cursor: grabbing; transform: scale(0.98); background: rgba(0,0,0,0.2); }
+.ordering-item .drag-handle { color: rgba(255,255,255,0.5); font-size: 1.1rem; }
+.ordering-item .order-num {
+  width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
+  font-weight: 600; color: var(--gold-bright); flex-shrink: 0;
+}
+.ordering-item.correct-pos { border-color: var(--green); }
+.ordering-item.incorrect-pos { border-color: var(--red); }
+.ordering-arrows { display: flex; flex-direction: column; gap: 2px; margin-left: auto; }
+.arrow-btn {
+  width: 30px; height: 24px; border: none; background: rgba(255,255,255,0.1);
+  border-radius: 4px; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center; transition: var(--transition);
+}
+.arrow-btn:hover { background: rgba(255,255,255,0.2); color: var(--white); }
+
+/* === MATCHING EXERCISE === */
+.matching-grid { display: flex; flex-direction: column; gap: 10px; }
+.matching-row {
+  display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.12);
+  border-radius: var(--radius-sm); padding: 12px; border: 1.5px solid rgba(255,255,255,0.08);
+}
+.matching-label { flex: 1; font-size: 0.85rem; color: var(--white-dim); line-height: 1.4; }
+.matching-select {
+  background: rgba(0,0,0,0.2); border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-xs); padding: 8px 12px; color: var(--white);
+  font-size: 0.8rem; font-family: var(--font-body); min-width: 120px;
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a8c4d0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+.matching-select option { background: var(--bg-card); color: var(--white); }
+.matching-row.correct { border-color: var(--green); }
+.matching-row.incorrect { border-color: var(--red); }
+
+/* === CLASSIFY EXERCISE === */
+.classify-items { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.classify-chip {
+  background: rgba(0,0,0,0.1); border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 20px; padding: 8px 14px; font-size: 0.8rem; cursor: pointer;
+  transition: var(--transition); color: var(--white-dim);
+}
+.classify-chip:hover { border-color: var(--gold); }
+.classify-chip.placed { opacity: 0.35; pointer-events: none; }
+.classify-chip.correct-chip { border-color: var(--green); background: rgba(46,204,113,0.15); color: var(--green); }
+.classify-chip.incorrect-chip { border-color: var(--red); background: rgba(231,76,60,0.12); color: var(--red); }
+.classify-zones { display: flex; flex-direction: column; gap: 12px; }
+.classify-zone {
+  background: rgba(0,0,0,0.08); border: 2px dashed rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm); padding: 14px; min-height: 60px;
+}
+.classify-zone-title { font-size: 0.8rem; color: var(--gold-bright); font-weight: 600; margin-bottom: 8px; }
+.classify-zone-items { display: flex; flex-wrap: wrap; gap: 6px; }
+.classify-zone-item {
+  background: rgba(0,0,0,0.12); border-radius: 16px; padding: 6px 12px;
+  font-size: 0.78rem; color: var(--white-dim); cursor: pointer; transition: var(--transition);
+}
+.classify-zone-item:hover { background: rgba(231,76,60,0.2); }
+
+/* === DIALOGUE EXERCISE === */
+.dialogue-bubble {
+  max-width: 85%; padding: 14px 16px; border-radius: 16px;
+  font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px;
+  animation: bubbleIn 0.3s ease-out;
+}
+.dialogue-bubble.client {
+  background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--white-dim); margin-right: auto; border-bottom-left-radius: 4px;
+}
+.dialogue-bubble.client .bubble-name { color: var(--blue-light); font-weight: 600; font-size: 0.75rem; margin-bottom: 4px; }
+.dialogue-bubble.therapist {
+  background: linear-gradient(135deg, rgba(212,160,23,0.2), rgba(240,192,64,0.1));
+  border: 1px solid rgba(212,160,23,0.3); color: var(--white);
+  margin-left: auto; border-bottom-right-radius: 4px;
+}
+.dialogue-bubble.therapist .bubble-name { color: var(--gold-bright); font-weight: 600; font-size: 0.75rem; margin-bottom: 4px; }
+.dialogue-choices { margin-top: 16px; }
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === FEEDBACK === */
+.feedback-box {
+  border-radius: var(--radius-sm); padding: 16px; margin-top: 16px;
+  animation: fadeIn 0.3s ease-out; font-size: 0.88rem; line-height: 1.6;
+}
+.feedback-box.correct {
+  background: rgba(46,204,113,0.12); border: 1px solid rgba(46,204,113,0.25);
+}
+.feedback-box.correct .fb-title { color: #5fde9a; font-weight: 600; margin-bottom: 6px; }
+.feedback-box.incorrect {
+  background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.25);
+}
+.feedback-box.incorrect .fb-title { color: #f09080; font-weight: 600; margin-bottom: 6px; }
+.feedback-box .fb-explanation { color: var(--white-dim); font-size: 0.84rem; }
+.feedback-box .fb-process {
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.78rem; color: rgba(255,255,255,0.55); font-style: italic;
+}
+
+/* === BUTTONS === */
+.btn-primary {
+  width: 100%; padding: 14px 24px; border: none; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--blue-bright), var(--blue-mid));
+  color: white; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  font-family: var(--font-body); transition: var(--transition);
+  box-shadow: 0 4px 16px rgba(33,150,200,0.3);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(33,150,200,0.4); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary.gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  box-shadow: 0 4px 16px rgba(240,180,41,0.3);
+}
+.btn-primary:disabled { opacity: 0.4; pointer-events: none; }
+
+.btn-check {
+  width: 100%; padding: 14px 24px; border: 2px solid var(--gold);
+  border-radius: var(--radius-sm); background: rgba(212,160,23,0.08);
+  color: var(--gold-bright); font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  font-family: var(--font-body); transition: var(--transition); margin-top: 16px;
+}
+.btn-check:hover { background: rgba(212,160,23,0.18); }
+
+/* === LEVEL COMPLETE SCREEN === */
+.level-complete {
+  text-align: center; padding: 40px 20px;
+}
+.level-complete .trophy { font-size: 4rem; margin-bottom: 16px; animation: bounce 1s ease infinite; }
+.level-complete h2 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 8px; color: var(--text-dark); }
+.level-complete .score { color: var(--gold-dim); font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+.level-complete .message { color: var(--text-mid); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.5; }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* === FEEDBACK FORM === */
+.feedback-section {
+  background: rgba(27,94,123,0.08); border-radius: var(--radius); padding: 24px 20px;
+  border: 1px solid rgba(27,94,123,0.12); margin: 24px 0 40px;
+}
+.feedback-section h3 {
+  font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 4px; color: var(--text-dark);
+}
+.feedback-section p { color: var(--text-mid); font-size: 0.8rem; margin-bottom: 16px; }
+.feedback-section textarea {
+  width: 100%; min-height: 100px; background: white;
+  border: 1.5px solid rgba(27,94,123,0.2); border-radius: var(--radius-sm);
+  padding: 12px; color: var(--text-dark); font-family: var(--font-body); font-size: 0.88rem;
+  resize: vertical; margin-bottom: 12px;
+}
+.feedback-section textarea:focus { outline: none; border-color: var(--blue-bright); }
+.feedback-section textarea::placeholder { color: #8aabb8; }
+.feedback-section .btn-send {
+  padding: 10px 24px; border: none; border-radius: var(--radius-sm);
+  background: var(--bg-card); color: var(--white); font-size: 0.85rem;
+  font-weight: 500; cursor: pointer; font-family: var(--font-body); transition: var(--transition);
+}
+.feedback-section .btn-send:hover { background: var(--bg-card-hover); }
+.feedback-section .send-ok { color: var(--green); font-size: 0.85rem; display: none; margin-top: 8px; }
+
+/* === FOOTER === */
+.footer {
+  text-align: center; padding: 24px 0 40px; color: var(--text-mid); font-size: 0.75rem;
+}
+.footer a { color: var(--blue-mid); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* === ANIMATIONS === */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+.anim-fade-in { animation: fadeIn 0.5s ease-out; }
+.anim-fade-up { animation: fadeInUp 0.5s ease-out; }
+.anim-slide-in { animation: slideInRight 0.4s ease-out; }
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(27,94,123,0.3); border-radius: 2px; }
+
+/* === CONFETTI CANVAS === */
+#confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+
+/* Intro concept box */
+.concept-box {
+  background: rgba(27,94,123,0.06); 
+  border: 1px solid rgba(27,94,123,0.18); border-radius: var(--radius-sm);
+  padding: 16px; margin-bottom: 20px;
+}
+.concept-box h4 { color: var(--blue-dark); font-size: 0.85rem; margin-bottom: 6px; font-weight: 700; }
+.concept-box p { color: var(--text-dark); font-size: 0.82rem; line-height: 1.5; }
+
+/* === GLOSSARY TOOLTIPS === */
+.glossary-term {
+  color: var(--gold-bright); border-bottom: 1.5px dotted var(--gold-bright);
+  cursor: help; position: relative; font-weight: 500;
+  transition: color 0.2s;
+}
+.concept-box .glossary-term { color: var(--gold-dim); border-bottom-color: var(--gold-dim); }
+.glossary-tooltip {
+  position: fixed; z-index: 200; max-width: 320px; width: 90vw;
+  background: #0e3d54; color: var(--white); border-radius: var(--radius-sm);
+  padding: 14px 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  font-size: 0.82rem; line-height: 1.55; pointer-events: auto;
+  animation: tooltipIn 0.2s ease-out;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.glossary-tooltip::before {
+  content: ''; position: absolute; top: -6px; left: 20px;
+  width: 12px; height: 12px; background: #0e3d54;
+  transform: rotate(45deg); border-left: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.glossary-tooltip.above::before {
+  top: auto; bottom: -6px;
+  border-left: none; border-top: none;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.glossary-tooltip .gt-title {
+  font-weight: 700; color: var(--gold-bright); font-size: 0.85rem; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.glossary-tooltip .gt-title::before { content: '📖'; font-size: 0.9rem; }
+.glossary-tooltip .gt-def { margin-bottom: 8px; color: rgba(255,255,255,0.85); }
+.glossary-tooltip .gt-example {
+  background: rgba(255,255,255,0.08); border-radius: 6px; padding: 8px 10px;
+  font-size: 0.78rem; color: rgba(255,255,255,0.7); font-style: italic;
+}
+.glossary-tooltip .gt-example::before { content: 'Ej: '; font-style: normal; font-weight: 600; color: var(--gold-bright); }
+.glossary-tooltip .gt-close {
+  position: absolute; top: 8px; right: 10px; background: none; border: none;
+  color: rgba(255,255,255,0.4); font-size: 1.1rem; cursor: pointer; padding: 2px 6px;
+}
+.glossary-tooltip .gt-close:hover { color: var(--white); }
+.glossary-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 199; background: transparent;
+}
+@keyframes tooltipIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Sandbox textarea */
+.sandbox-area {
+  width: 100%; min-height: 80px; background: rgba(0,0,0,0.12);
+  border: 1.5px solid rgba(255,255,255,0.12); border-radius: var(--radius-sm);
+  padding: 12px; color: var(--white); font-family: var(--font-body); font-size: 0.88rem;
+  resize: vertical; margin-bottom: 4px;
+}
+.sandbox-area:focus { outline: none; border-color: var(--gold); }
+.sandbox-area::placeholder { color: rgba(255,255,255,0.4); }
+.sandbox-hint { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+
+/* Reset button */
+.btn-reset {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+  background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2);
+  border-radius: var(--radius-xs); color: var(--red); font-size: 0.78rem;
+  cursor: pointer; font-family: var(--font-body); transition: var(--transition);
+  margin-top: 12px;
+}
+.btn-reset:hover { background: rgba(231,76,60,0.15); }
+</style>
+</head>
+<body>
+
+<div class="bg-ambient">
+  <div class="bg-line"></div>
+  <div class="bg-line"></div>
+  <div class="bg-line"></div>
+  <div class="bg-line"></div>
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<div class="app-container">
+
+  <!-- ========== HOME VIEW ========== -->
+  <div id="homeView" class="view active">
+    <div class="header">
+      <h1>Entrenamiento en Defusión Cognitiva</h1>
+      <p>Ejercicios progresivos para psicoterapeutas · Basado en ACT & RFT</p>
+    </div>
+
+    <div class="global-progress">
+      <div class="global-progress-bar"><div class="global-progress-fill" id="globalFill" style="width:0%"></div></div>
+      <div class="global-progress-text" id="globalText">0 / 34</div>
+    </div>
+
+    <div class="levels-grid" id="levelsGrid"></div>
+
+    <!-- Feedback form -->
+    <div class="feedback-section">
+      <h3>💬 ¿Sugerencias?</h3>
+      <p>Tu opinión ayuda a mejorar estos ejercicios. Totalmente opcional.</p>
+      <form id="feedbackForm" action="https://formspree.io/f/xbdadlnz" method="POST">
+        <textarea name="message" placeholder="¿Qué mejorarías? ¿Algún ejercicio confuso? ¿Ideas para nuevos ejercicios?"></textarea>
+        <input type="hidden" name="_subject" value="Feedback - Entrenamiento Defusión">
+        <button type="submit" class="btn-send">Enviar sugerencia</button>
+        <div class="send-ok" id="sendOk">✓ ¡Gracias por tu feedback!</div>
+      </form>
+    </div>
+
+    <div class="footer">
+      <p>Creado por <a href="https://www.instagram.com/leo.eyzaguirre" target="_blank">@leo.eyzaguirre</a></p>
+      <p style="margin-top:4px;">Basado en Assaz et al. (2018), Snyder et al. (2011), Dixon, Hayes & Belisle (2023),<br>Wilson & Luciano, Harte & Barnes-Holmes (2023)</p>
+    </div>
+
+    <button class="btn-reset" id="btnResetAll" style="margin: 0 auto 30px; display:flex;">
+      ↺ Reiniciar todo el progreso
+    </button>
+  </div>
+
+  <!-- ========== EXERCISE VIEW ========== -->
+  <div id="exerciseView" class="view">
+    <div class="exercise-header">
+      <button class="btn-back" id="btnBack">←</button>
+      <div class="exercise-header-info">
+        <div class="level-num" id="exLevelName"></div>
+        <div class="ex-title" id="exTitle"></div>
+      </div>
+      <div class="exercise-counter" id="exCounter"></div>
+    </div>
+    <div class="exercise-progress-mini" id="exDots"></div>
+    <div id="exerciseContent"></div>
+    <div id="exerciseActions" style="margin-top:20px; padding-bottom:40px;"></div>
+  </div>
+
+  <!-- ========== LEVEL COMPLETE VIEW ========== -->
+  <div id="completeView" class="view">
+    <div class="level-complete">
+      <div class="trophy">🏆</div>
+      <h2 id="completeTitle"></h2>
+      <div class="score" id="completeScore"></div>
+      <div class="message" id="completeMsg"></div>
+      <button class="btn-primary gold" id="btnNextLevel" style="margin-bottom:12px;"></button>
+      <button class="btn-primary" id="btnRetry" style="background:var(--bg-card); box-shadow:var(--shadow-sm);">Repetir nivel</button>
+      <br>
+      <button class="btn-primary" id="btnGoHome" style="background:rgba(27,94,123,0.08); box-shadow:none; border:1px solid rgba(27,94,123,0.2); color:var(--text-dark); margin-top:12px;">Volver al inicio</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA: All 36 exercises organized by level
+// ============================================================
+const LEVELS = [
+// ──────────── NIVEL 1: RECONOCER LA FUSIÓN ────────────
+{
+  id: 'nivel1', title: 'Reconocer la Fusión', icon: '👁️',
+  subtitle: 'Aprende a identificar cuándo un pensamiento controla la conducta',
+  concept: {
+    title: '¿Qué es la fusión cognitiva?',
+    text: 'La fusión ocurre cuando un pensamiento domina la conducta de la persona como si fuera literalmente verdadero, sin que se discrimine entre el pensamiento y el evento al que refiere. La persona actúa "dentro" del pensamiento, no "observándolo". La función del estímulo verbal (Cfunc) domina sobre la relación derivada (Crel).'
+  },
+  exercises: [
+  {
+    title: '¿Fusión o no fusión?',
+    type: 'single',
+    scenario: 'María piensa <em>"soy una mala madre"</em>. Deja de asistir a las reuniones de la escuela de su hija, se aísla de otras madres y deja de proponer actividades familiares.',
+    instruction: '¿Este escenario describe fusión cognitiva?',
+    options: [
+      { text: 'Sí, hay fusión — el pensamiento está controlando directamente su conducta como si fuera un hecho literal', correct: true },
+      { text: 'No hay fusión — simplemente está deprimida', correct: false },
+      { text: 'No hay fusión — es una evaluación realista de su desempeño', correct: false },
+      { text: 'Sí, hay fusión — porque el pensamiento es negativo', correct: false }
+    ],
+    feedback: {
+      correct: '¡Exacto! La clave de la fusión no es que el pensamiento sea negativo, sino que está funcionando como regulador directo de la conducta. María actúa como si literalmente FUERA una mala madre, y toda su conducta se organiza en torno a eso.',
+      incorrect: 'La fusión no se define por si el pensamiento es negativo o si la persona está deprimida. Se define por la relación funcional: el pensamiento "soy mala madre" está controlando directamente la conducta de María (evitar reuniones, aislarse) como si fuera un hecho literal.',
+      process: 'Proceso: La Cfunc (función conductual) del pensamiento domina — la relación verbal transforma las funciones de estímulo de las situaciones sociales en aversivas.'
+    }
+  },
+  {
+    title: 'Detectar la regla verbal',
+    type: 'single',
+    scenario: 'Carlos dice: <em>"Si voy a la fiesta, seguro que me pongo nervioso y todos se van a dar cuenta. Mejor me quedo en casa."</em>',
+    instruction: '¿Cuál es la regla verbal que está operando?',
+    options: [
+      { text: '"Si situación social → ansiedad visible → rechazo social", por lo tanto evitar', correct: true },
+      { text: '"Las fiestas son peligrosas"', correct: false },
+      { text: '"Soy introvertido y prefiero estar solo"', correct: false },
+      { text: '"La gente siempre me juzga"', correct: false }
+    ],
+    feedback: {
+      correct: 'Correcto. La regla verbal tiene estructura condicional: SI (fiesta) → ENTONCES (nervios + ser descubierto) → MEJOR (evitar). Es una regla de tipo augmental que amplifica las funciones aversivas de la situación a través de la transformación de funciones.',
+      incorrect: 'Las otras opciones son pensamientos posibles, pero la regla verbal que controla la conducta es la cadena completa: "si voy → me pondré nervioso → se darán cuenta → mejor me quedo". Esta estructura condicional es lo que regula la evitación.',
+      process: 'Proceso: Comportamiento gobernado por reglas (rule-governed behavior). La regla verbal especifica contingencias que no están presentes y transforma las funciones del estímulo "fiesta".'
+    }
+  },
+  {
+    title: '¿Cuál es la función del pensamiento?',
+    type: 'single',
+    scenario: 'Andrea repite internamente <em>"no puedo con esto, no puedo con esto"</em> antes de cada examen. Estudia compulsivamente 16 horas al día, revisa una y otra vez los mismos temas, y aún así siente que no es suficiente.',
+    instruction: '¿Qué función cumple este pensamiento fusionado en la conducta de Andrea?',
+    options: [
+      { text: 'Funciona como un augmental motivacional — amplifica la urgencia de estudiar más como forma de evitar el resultado temido', correct: true },
+      { text: 'Funciona como una descripción precisa de su capacidad cognitiva', correct: false },
+      { text: 'Funciona como un pliance — ella obedece lo que otros le dijeron', correct: false },
+      { text: 'No cumple ninguna función particular, es solo un síntoma de ansiedad', correct: false }
+    ],
+    feedback: {
+      correct: 'Bien. "No puedo con esto" funciona como un augmental: transforma las funciones del estímulo (el examen) amplificando sus propiedades aversivas, lo que incrementa la conducta de estudio compulsivo como forma de escape de la experiencia aversiva anticipada.',
+      incorrect: 'El pensamiento "no puedo con esto" no es solo un síntoma ni una descripción. Cumple una función conductual específica: amplifica las funciones aversivas del examen (augmental) y mantiene la conducta de estudio compulsivo como operante de escape.',
+      process: 'Proceso: Augmental — un tipo de regla verbal que altera las funciones reforzantes/aversivas de los estímulos a través de la transformación de funciones de estímulo.'
+    }
+  },
+  {
+    title: 'Fusión vs. pensamiento observado',
+    type: 'classify',
+    instruction: 'Clasifica cada ejemplo como FUSIÓN (el pensamiento controla la conducta) o DEFUSIÓN (la persona observa el pensamiento sin que domine su acción):',
+    categories: ['Fusión', 'Defusión'],
+    items: [
+      { text: '"Me siento inútil" → deja de buscar trabajo', cat: 0 },
+      { text: '"Ahí viene otra vez el pensamiento de que no sirvo" → sigue con su tarea', cat: 1 },
+      { text: '"Mi mente me dice que todo va a salir mal" → lo nota y elige actuar según sus valores', cat: 1 },
+      { text: '"Esto es demasiado para mí" → cancela todos sus compromisos', cat: 0 },
+      { text: '"Nadie me quiere" → llama a un amigo para verificar si es verdad', cat: 0 },
+      { text: '"Noto que estoy teniendo pensamientos de que nadie me quiere" → sigue con su día', cat: 1 }
+    ],
+    feedback: {
+      correct: 'Excelente. La clave está en si la persona actúa DESDE el pensamiento (fusión) o si lo OBSERVA sin que controle su conducta (defusión). Nota que en el quinto ejemplo, aunque la persona "verifica", sigue regulada por el pensamiento — eso es fusión.',
+      incorrect: 'Revisa: la fusión se detecta cuando la conducta está directamente controlada por el contenido literal del pensamiento. La defusión aparece cuando hay un paso de observación ("noto que...", "mi mente dice...") y la conducta sigue orientada por valores, no por el pensamiento.',
+      process: 'Proceso: Dominancia de Cfunc (fusión) vs. dominancia de Crel (defusión). En la defusión, la persona discrimina la relación derivada como relación, no como realidad literal.'
+    }
+  },
+  {
+    title: 'Niveles de fusión',
+    type: 'ordering',
+    instruction: 'Ordena estos escenarios de MENOR a MAYOR nivel de fusión cognitiva:',
+    items: [
+      { text: '"Noto que mi mente está generando el pensamiento de que soy un fracaso" — continúa trabajando', order: 1 },
+      { text: '"A veces pienso que soy un fracaso, pero no siempre es así" — busca evidencia a favor y en contra', order: 2 },
+      { text: '"Soy un fracaso" — evita nuevos proyectos por miedo a confirmar el pensamiento', order: 3 },
+      { text: '"Soy un fracaso y siempre lo seré" — deja su trabajo y se aísla completamente', order: 4 }
+    ],
+    feedback: {
+      correct: 'Perfecto. De menor a mayor fusión: (1) Observación con distancia funcional, (2) Evaluación parcial aún fusionada (buscar evidencia = el pensamiento sigue regulando), (3) Evitación gobernada por el pensamiento, (4) Fusión total con generalización y rigidez conductual.',
+      incorrect: 'El orden correcto va desde la observación distanciada (mínima fusión) hasta la rigidez conductual total (máxima fusión). Nota que "buscar evidencia" aún implica fusión parcial, porque la conducta sigue regulada por el contenido del pensamiento.',
+      process: 'Proceso: La "masa" relacional (Dixon et al., 2023). A mayor fusión, mayor resistencia al cambio y mayor impacto en la conducta — como un objeto con más masa, requiere más fuerza disruptiva para cambiar.'
+    }
+  },
+  {
+    title: '¿Qué hace que la fusión se mantenga?',
+    type: 'multi',
+    instruction: 'Selecciona TODOS los factores que contribuyen al mantenimiento de la fusión cognitiva:',
+    options: [
+      { text: 'Reforzamiento negativo: evitar situaciones aversivas producido por obedecer al pensamiento', correct: true },
+      { text: 'Coherencia verbal: la red relacional se auto-confirma (si pienso X, entonces Y "tiene sentido")', correct: true },
+      { text: 'Ausencia de contextos que promuevan Crel sobre Cfunc', correct: true },
+      { text: 'La persona tiene poca inteligencia verbal', correct: false },
+      { text: 'Derivación relacional que transforma las funciones de estímulos presentes a través de marcos temporales y causales', correct: true },
+      { text: 'La persona elige conscientemente creer en sus pensamientos', correct: false }
+    ],
+    feedback: {
+      correct: '¡Muy bien! La fusión se mantiene por múltiples procesos: reforzamiento negativo de la evitación, coherencia de la red relacional, ausencia de contextos que promuevan discriminación relacional (Crel), y la transformación de funciones a través de marcos de relación.',
+      incorrect: 'La fusión no tiene que ver con inteligencia ni con elección consciente. Se mantiene por procesos conductuales: reforzamiento negativo, coherencia verbal (las redes de relación son auto-confirmantes), falta de contextos que promuevan discriminación, y la propia transformación de funciones.',
+      process: 'Proceso: Desde RFT, la fusión es el producto natural del lenguaje — la transformación de funciones (Cfunc) es la operación por defecto. La defusión requiere contextos específicos que promuevan la discriminación de Crel.'
+    }
+  },
+  {
+    title: 'Sandbox: Tu propio ejemplo',
+    type: 'sandbox',
+    instruction: 'Piensa en un caso clínico (real o hipotético). Describe brevemente: (1) el pensamiento fusionado, (2) la conducta que produce, y (3) qué tipo de regla verbal opera. Este ejercicio es para tu reflexión — no se califica.',
+    placeholder: 'Ej: "Mi paciente piensa «si pido ayuda es señal de debilidad». Esto funciona como un pliance derivado de su contexto familiar. La conducta resultante es..."',
+    reflection: 'Reflexiona: ¿Pudiste identificar la regla verbal? ¿Es un pliance, tracking, o augmental? ¿Qué funciones del estímulo se transforman? En los siguientes niveles aprenderás qué hacer con esta fusión.'
+  }
+  ]
+},
+
+// ──────────── NIVEL 2: TÉCNICAS DE DEBILITAMIENTO ────────────
+{
+  id: 'nivel2', title: 'Técnicas de Debilitamiento', icon: '🔧',
+  subtitle: 'Practica técnicas que reducen el impacto literal del pensamiento',
+  concept: {
+    title: 'El principio del debilitamiento',
+    text: 'Las técnicas de defusión no cambian el contenido del pensamiento. Cambian la función que el pensamiento tiene sobre la conducta. Según Assaz et al. (2018), operan por al menos 4 procesos: extinción respondiente, reforzamiento diferencial, recontextualización narrativa, y distanciamiento espacial.'
+  },
+  exercises: [
+  {
+    title: 'Repetición de palabra: ¿qué proceso opera?',
+    type: 'single',
+    scenario: 'La técnica clásica de Titchener: el terapeuta pide al cliente que repita la palabra <em>"limón"</em> rápidamente durante 30-60 segundos. Después de repetirla muchas veces, la palabra pierde su capacidad de evocar la imagen, el sabor y la sensación del limón real.',
+    instruction: '¿Qué proceso conductual explica principalmente este efecto?',
+    options: [
+      { text: 'Extinción respondiente: la exposición repetida al estímulo verbal sin el referente debilita la respuesta condicionada', correct: true },
+      { text: 'Castigo positivo: la repetición se vuelve aversiva', correct: false },
+      { text: 'Habituación sensorial: el oído se acostumbra al sonido', correct: false },
+      { text: 'Reestructuración cognitiva: la persona cambia lo que piensa sobre la palabra', correct: false }
+    ],
+    feedback: {
+      correct: 'Correcto. La repetición rápida funciona como un procedimiento de extinción respondiente. El estímulo verbal (la palabra) se presenta repetidamente sin las funciones del referente (el limón real), debilitando la transformación de funciones. La palabra se convierte en "solo un sonido".',
+      incorrect: 'No es habituación ni castigo. El proceso es extinción respondiente: la palabra "limón" normalmente evoca funciones del limón real (sabor, imagen) por transformación de funciones. Al repetirla sin el referente, esa relación se debilita temporalmente.',
+      process: 'Proceso: Extinción respondiente/contracondicionamiento (Assaz et al., 2018). Se debilita la transformación de funciones de estímulo derivada de marcos de coordinación.'
+    }
+  },
+  {
+    title: '¿Cuándo usar cada técnica?',
+    type: 'matching',
+    instruction: 'Conecta cada técnica con el proceso conductual que la sustenta:',
+    pairs: [
+      { left: 'Repetir el pensamiento rápidamente 30 segundos', right: 'Extinción respondiente' },
+      { left: '"Estoy teniendo el pensamiento de que..."', right: 'Autoclítico descriptivo (recontextualización)' },
+      { left: 'Cantar el pensamiento con melodía de cumpleaños', right: 'Extinción + contracondicionamiento' },
+      { left: 'Visualizar pensamientos como hojas en un río', right: 'Distanciamiento espacial' },
+      { left: 'Notar el pensamiento y elegir actuar según valores', right: 'Reforzamiento diferencial' }
+    ],
+    feedback: {
+      correct: 'Excelente mapeo. Cada técnica de defusión opera por un proceso conductual distinto. Saber esto te permite elegir la técnica según el análisis funcional del caso, no por costumbre o preferencia.',
+      incorrect: 'Revisa las conexiones: la repetición opera por extinción respondiente, los prefijos ("estoy teniendo el pensamiento...") son autoclíticos descriptivos que recontextualizan, cantar combina extinción con contracondicionamiento (la melodía evoca funciones incompatibles), las metáforas visuales generan distanciamiento espacial, y actuar según valores pese al pensamiento es reforzamiento diferencial de conducta no-fusionada.',
+      process: 'Proceso: Los 4 procesos de Assaz et al. (2018): extinción/contracondicionamiento, reforzamiento diferencial, recontextualización narrativa (autoclíticos), distanciamiento espacial.'
+    }
+  },
+  {
+    title: 'El prefijo de defusión',
+    type: 'single',
+    scenario: 'Un cliente dice: <em>"Soy un fracaso total"</em>. El terapeuta le pide que reformule usando el prefijo de defusión.',
+    instruction: '¿Cuál es la reformulación más efectiva para promover defusión?',
+    options: [
+      { text: '"Estoy notando que tengo el pensamiento de que soy un fracaso total"', correct: true },
+      { text: '"No soy un fracaso, tengo muchas cualidades positivas"', correct: false },
+      { text: '"Tal vez soy un fracaso, tal vez no"', correct: false },
+      { text: '"Mi terapeuta me dice que no piense eso"', correct: false }
+    ],
+    feedback: {
+      correct: 'Exacto. "Estoy notando que tengo el pensamiento de que..." es un autoclítico descriptivo. No cambia el contenido del pensamiento, pero altera el contexto funcional: ahora la persona está en relación de observación CON el pensamiento, en lugar de estar DENTRO de él.',
+      incorrect: 'Las otras opciones son reestructuración cognitiva (cambiar el contenido), relativismo verbal, o pliance. La defusión no busca cambiar el pensamiento sino la relación funcional con él. El autoclítico "estoy notando que tengo el pensamiento de que..." mantiene el contenido intacto pero cambia el marco relacional.',
+      process: 'Proceso: Recontextualización narrativa a través de autoclíticos descriptivos (Assaz et al., 2018). Se introduce un marco deíctico (yo-aquí-ahora observando el pensamiento) que promueve Crel sobre Cfunc.'
+    }
+  },
+  {
+    title: 'Cantar el pensamiento: ¿por qué funciona?',
+    type: 'multi',
+    instruction: 'El cliente canta "soy un perdedor" con la melodía de "Feliz Cumpleaños". ¿Qué procesos operan? Selecciona TODOS los que aplican:',
+    options: [
+      { text: 'Contracondicionamiento: la melodía alegre evoca funciones incompatibles con las funciones aversivas del pensamiento', correct: true },
+      { text: 'Extinción respondiente: la repetición en contexto nuevo debilita la transformación de funciones original', correct: true },
+      { text: 'Distracción: el cliente deja de pensar en el contenido', correct: false },
+      { text: 'Cambio de contexto funcional: el pensamiento aparece en un marco de coordinación con "juego/humor" en lugar de "evaluación literal"', correct: true },
+      { text: 'Supresión del pensamiento: cantar evita que aparezca el pensamiento', correct: false }
+    ],
+    feedback: {
+      correct: 'Correcto. Cantar el pensamiento combina extinción respondiente, contracondicionamiento (funciones incompatibles de la melodía alegre), y cambio de contexto funcional. No es distracción ni supresión — el contenido del pensamiento permanece intacto.',
+      incorrect: 'Cantar el pensamiento no es distracción ni supresión. El contenido permanece idéntico ("soy un perdedor"). Lo que cambia es: (1) la transformación de funciones se debilita por repetición, (2) las funciones alegres de la melodía son incompatibles con las aversivas, (3) el contexto funcional cambia de "evaluación seria" a "juego verbal".',
+      process: 'Proceso: Extinción + contracondicionamiento + cambio de contexto funcional. Como señala Dixon et al. (2023): "no cambiamos el pensamiento, cambiamos cómo interactuamos con él".'
+    }
+  },
+  {
+    title: 'Agradecer a la mente',
+    type: 'single',
+    scenario: 'El cliente reporta: <em>"Mi mente no para de decirme que todo va a salir mal"</em>. El terapeuta responde: <em>"Ah, interesante. ¿Puedes agradecerle a tu mente por ese aviso? Algo como: Gracias, mente, por tratar de protegerme. Lo noto."</em>',
+    instruction: '¿Qué función clínica cumple "agradecer a la mente"?',
+    options: [
+      { text: 'Introduce un marco deíctico (yo vs. mente) y de perspectiva que promueve la observación del proceso verbal como proceso, sin luchar contra él', correct: true },
+      { text: 'Reduce la ansiedad mediante pensamiento positivo', correct: false },
+      { text: 'Refuerza el pensamiento negativo al validarlo', correct: false },
+      { text: 'Es una técnica de reestructuración cognitiva encubierta', correct: false }
+    ],
+    feedback: {
+      correct: 'Exacto. "Agradecer a la mente" crea una distinción funcional entre el yo-como-contexto y el contenido verbal. El marco deíctico (yo ≠ mi mente) permite que la persona observe el proceso verbal sin fusionarse con él. Además, el "gracias" evita la lucha contra el pensamiento.',
+      incorrect: 'No es pensamiento positivo ni reestructuración. El pensamiento sigue siendo "todo va a salir mal". Lo que cambia es el contexto relacional: se introduce una perspectiva del yo que observa a "la mente" como algo que produce contenidos, no como fuente de verdad literal.',
+      process: 'Proceso: Marco deíctico + distanciamiento funcional. Se promueve el yo-como-contexto (self-as-context) y la dominancia de Crel: la persona responde a la relación (la mente produce pensamientos) en lugar del contenido (todo va a salir mal).'
+    }
+  },
+  {
+    title: 'Etiquetar el proceso',
+    type: 'single',
+    scenario: 'El cliente comienza a explicar por qué no puede ir a la entrevista de trabajo: <em>"Es que no tiene sentido, yo nunca voy a conseguir nada bueno, siempre me sale todo mal, además la economía está terrible y..."</em>',
+    instruction: 'Como terapeuta ACT, ¿cuál sería la intervención de defusión más apropiada en este momento?',
+    options: [
+      { text: '"Noto que tu mente se acaba de poner muy activa dando razones. ¿Puedes notar eso conmigo? Tu mente está haciendo su trabajo de dar razones."', correct: true },
+      { text: '"Tienes razón, la economía está difícil, pero no pierdas la esperanza."', correct: false },
+      { text: '"Esas son distorsiones cognitivas. Estás catastrofizando y generalizando."', correct: false },
+      { text: '"No te preocupes, todo va a salir bien."', correct: false }
+    ],
+    feedback: {
+      correct: 'Perfecto. Etiquetar el proceso ("tu mente está dando razones") es una intervención de defusión que: (1) distingue al cliente de su mente, (2) describe el PROCESO verbal (dar razones) en lugar de discutir el CONTENIDO, y (3) no invalida ni pelea con el pensamiento.',
+      incorrect: 'Las otras opciones entran en el contenido (dar la razón, corregir distorsiones, o tranquilizar). La defusión no discute si los pensamientos son verdaderos o falsos. Etiquetar el proceso ("la mente dando razones") promueve discriminación del comportamiento verbal como comportamiento, no como verdad.',
+      process: 'Proceso: Recontextualización narrativa. Se establece un contexto funcional donde el comportamiento verbal es observado como proceso (dar razones) en lugar de tomado como descripción literal de la realidad.'
+    }
+  },
+  {
+    title: 'Sandbox: Practica la técnica',
+    type: 'sandbox',
+    instruction: 'Elige un pensamiento difícil (tuyo o de un caso clínico). Escríbelo y luego aplica 3 técnicas diferentes: (1) el prefijo de defusión, (2) agradecerle a la mente, (3) etiquetar el proceso. Observa qué cambia en cada caso.',
+    placeholder: 'Pensamiento: "___"\n\n1. Prefijo: "Estoy notando que tengo el pensamiento de que..."\n2. Agradecer: "Gracias, mente, por..."\n3. Etiquetar: "Mi mente está haciendo el trabajo de..."',
+    reflection: '¿Notaste cómo cada técnica cambia algo distinto? El prefijo introduce un marco deíctico, agradecer reduce la lucha, etiquetar promueve discriminación del proceso. En la práctica clínica, combinar técnicas según el análisis funcional es más poderoso que usar una sola.'
+  }
+  ]
+},
+
+// ──────────── NIVEL 3: METÁFORAS Y RECONTEXTUALIZACIÓN ────────────
+{
+  id: 'nivel3', title: 'Metáforas y Recontextualización', icon: '🌊',
+  subtitle: 'Domina las metáforas clínicas y aprende cuándo aplicar cada una',
+  concept: {
+    title: 'El poder de las metáforas en defusión',
+    text: 'Las metáforas en ACT no son "ilustraciones". Son intervenciones que establecen marcos de relación alternativos a los que mantienen la fusión. Cada metáfora genera un contexto relacional específico (marcos deícticos, jerárquicos, espaciales) que compite funcionalmente con la red relacional fusionada.'
+  },
+  exercises: [
+  {
+    title: 'Los Pasajeros del Autobús',
+    type: 'single',
+    scenario: 'En la metáfora de los Pasajeros del Autobús (Hayes et al., 1999), tú eres el conductor y los pensamientos/emociones son pasajeros que gritan amenazas. Los pasajeros dicen <em>"¡Para el autobús! ¡Da la vuelta! ¡No sigas por ahí!"</em>. La clave es que puedes seguir conduciendo en tu dirección elegida aunque los pasajeros griten.',
+    instruction: '¿Qué función clínica cumple esta metáfora?',
+    options: [
+      { text: 'Establece un marco jerárquico (yo > pensamientos) y deíctico (yo ≠ pensamientos) donde la persona discrimina que puede actuar según valores aunque estén presentes los eventos privados aversivos', correct: true },
+      { text: 'Enseña que los pensamientos no son reales', correct: false },
+      { text: 'Promueve la supresión de los pensamientos molestos', correct: false },
+      { text: 'Genera distracción para no pensar en los problemas', correct: false }
+    ],
+    feedback: {
+      correct: 'Exacto. La metáfora establece: (1) Marco jerárquico: tú contienes a los pasajeros, no al revés; (2) Marco deíctico: tú ≠ los pensamientos; (3) Contexto de disposición: puedes seguir en la dirección valiosa MIENTRAS los pensamientos están presentes. No se trata de eliminarlos.',
+      incorrect: 'Los pasajeros (pensamientos) siguen en el autobús — no se eliminan ni se distraen. La metáfora establece una relación jerárquica y deíctica donde la persona discrimina que puede actuar según sus valores con los pensamientos presentes, no contra ellos.',
+      process: 'Proceso: Marco jerárquico + deíctico + distanciamiento funcional. Promueve disposición (willingness) como alternativa a la evitación experiencial.'
+    }
+  },
+  {
+    title: 'Hojas en el Río',
+    type: 'single',
+    scenario: 'En este ejercicio de mindfulness, el cliente visualiza un arroyo con hojas flotando. Cada pensamiento o sensación que aparece se "coloca" sobre una hoja y se observa alejarse con la corriente, sin agarrarlo ni empujarlo.',
+    instruction: '¿Qué proceso de defusión opera principalmente en este ejercicio?',
+    options: [
+      { text: 'Distanciamiento espacial: se crea una relación de marco espacial (yo-aquí observando, pensamiento-allá flotando) que reduce la dominancia de Cfunc', correct: true },
+      { text: 'Extinción respondiente como en la repetición de palabra', correct: false },
+      { text: 'Reforzamiento positivo de la relajación', correct: false },
+      { text: 'Reestructuración del contenido cognitivo', correct: false }
+    ],
+    feedback: {
+      correct: 'Correcto. Hojas en el río opera por distanciamiento espacial (Assaz et al., 2018). Se establece un marco espacial: yo-aquí observando vs. pensamiento-allá moviéndose. Esta distancia funcional reduce la capacidad del pensamiento de transformar las funciones de estímulo presentes.',
+      incorrect: 'No es extinción (no hay repetición del estímulo), ni relajación (la relajación puede ocurrir pero no es el objetivo), ni reestructuración (el contenido no cambia). Es distanciamiento espacial: crear una relación de perspectiva donde el pensamiento se observa "desde fuera".',
+      process: 'Proceso: Distanciamiento espacial (Assaz et al., 2018). Se introduce un marco de relación espacial (aquí/allá) entre el yo-como-contexto y el contenido verbal, debilitando la dominancia de Cfunc.'
+    }
+  },
+  {
+    title: 'El Tablero de Ajedrez',
+    type: 'single',
+    scenario: 'Wilson y Luciano (2002) describen esta metáfora: las fichas blancas son los pensamientos/emociones "positivos" y las negras los "negativos". El cliente ha estado luchando — poniéndose del lado de las blancas contra las negras. Pero cuanto más lucha, más grandes se hacen las fichas. La alternativa es ser el tablero: el contexto que contiene a ambos tipos de fichas sin ser ninguna de ellas.',
+    instruction: '¿Cuál es la principal función de la metáfora del tablero?',
+    options: [
+      { text: 'Introduce el yo-como-contexto: la persona aprende a discriminarse como el "lugar" donde ocurren los eventos privados, no como los eventos mismos', correct: true },
+      { text: 'Enseña que no hay que tener emociones negativas', correct: false },
+      { text: 'Promueve el equilibrio entre pensamientos positivos y negativos', correct: false },
+      { text: 'Demuestra que la persona tiene control sobre sus emociones', correct: false }
+    ],
+    feedback: {
+      correct: 'Exacto. El tablero representa el yo-como-contexto (self-as-context): el marco deíctico estable desde el cual se observan todos los contenidos. Wilson y Luciano señalan que la clave es distinguir entre el contexto (tablero/yo) y el contenido (fichas/pensamientos), sin luchar contra ninguno.',
+      incorrect: 'El tablero contiene TODAS las fichas — blancas y negras. No se trata de eliminar las negras ni de equilibrar. Se trata de discriminar que TÚ eres el tablero (el contexto), no las fichas (el contenido). Esto rompe la fusión con los eventos privados.',
+      process: 'Proceso: Yo-como-contexto (self-as-context). Se establece un marco jerárquico donde el yo contiene a los contenidos verbales, promoviendo la defusión desde la perspectiva, no desde la técnica.'
+    }
+  },
+  {
+    title: 'Elige la metáfora correcta',
+    type: 'matching',
+    instruction: 'Para cada situación clínica, selecciona la metáfora más apropiada:',
+    pairs: [
+      { left: 'Cliente que lucha constantemente contra pensamientos intrusivos, intentando suprimirlos', right: 'Tablero de ajedrez (dejar de luchar contra las fichas)' },
+      { left: 'Cliente que no puede "soltar" una preocupación recurrente y queda atrapado rumiando', right: 'Hojas en el río (observar pasar sin agarrar)' },
+      { left: 'Cliente que evita actuar por miedo a lo que pueda pasar, cediendo ante las "amenazas" de la ansiedad', right: 'Pasajeros del autobús (seguir conduciendo pese a los gritos)' },
+      { left: 'Cliente con adicción que siente que las ansias son incontrolables y "van a explotar"', right: 'La gran ola (las ansias crecen, llegan al máximo, y se disipan solas)' }
+    ],
+    feedback: {
+      correct: 'Perfecto. La selección de metáforas debe basarse en el análisis funcional: lucha activa → Tablero (dejar de luchar); rumiación → Hojas (dejar pasar); evitación por amenaza → Autobús (seguir hacia valores); ansias "explosivas" → Ola (las emociones tienen un pico y bajan solas).',
+      incorrect: 'La clave es el análisis funcional: ¿Qué mantiene la fusión? Si es lucha activa → Tablero. Si es quedarse atrapado → Hojas. Si es ceder ante amenazas → Autobús. Si es miedo a que la emoción "explote" → Ola. Cada metáfora aborda un patrón funcional distinto.',
+      process: 'Proceso: Selección de intervención basada en análisis funcional, no por preferencia del terapeuta. Cada metáfora establece marcos relacionales diferentes que compiten con el patrón de fusión específico.'
+    }
+  },
+  {
+    title: 'La Mente como Radio',
+    type: 'single',
+    scenario: 'El terapeuta dice: <em>"Imagina que tu mente es como una radio que siempre está encendida. A veces pone música agradable, a veces noticias alarmantes, a veces estática. Tú no eres la radio ni la programación. Eres la persona en la habitación que puede escuchar lo que dice la radio y elegir qué hacer con su día."</em>',
+    instruction: '¿Qué distingue esta metáfora de simplemente decir "no hagas caso a tus pensamientos"?',
+    options: [
+      { text: 'Establece un marco deíctico funcional (yo ≠ radio/contenido) sin invalidar los pensamientos ni promover supresión — los pensamientos siguen "sonando" y eso está bien', correct: true },
+      { text: 'Es más amable pero dice lo mismo', correct: false },
+      { text: 'Promueve ignorar activamente los pensamientos', correct: false },
+      { text: 'Es una técnica de relajación basada en imaginería', correct: false }
+    ],
+    feedback: {
+      correct: 'Exacto. La diferencia crucial es: "no hagas caso" promueve supresión (que paradójicamente aumenta la fusión). La metáfora de la radio promueve disposición: los pensamientos siguen sonando, tú los escuchas, y TAMBIÉN actúas en tu dirección elegida. No es ignorar — es no obedecer.',
+      incorrect: 'La diferencia es funcional, no cosmética. "No hagas caso" implica supresión (luchar contra el pensamiento). La radio implica disposición: el sonido sigue ahí, tú lo notas, pero tu conducta se orienta por lo que te importa. Es la diferencia entre evitación experiencial y defusión.',
+      process: 'Proceso: Marco deíctico + disposición (willingness). Se distingue la persona del proceso verbal sin promover evitación experiencial. La radio sigue sonando — y está bien.'
+    }
+  },
+  {
+    title: 'Crear recontextualizaciones',
+    type: 'single',
+    scenario: 'Un cliente está fusionado con el pensamiento <em>"si no lo hago perfecto, será un desastre"</em>. Ya has trabajado desesperanza creativa y el cliente entiende que la lucha contra el pensamiento no funciona.',
+    instruction: '¿Cuál es el siguiente paso más coherente con defusión?',
+    options: [
+      { text: 'Ayudar al cliente a notar el pensamiento como proceso verbal: "Tu mente acaba de generar la regla de que imperfecto = desastre. ¿Puedes notar esa regla funcionando?"', correct: true },
+      { text: 'Desafiar la evidencia: "¿Alguna vez no hiciste algo perfecto y no fue un desastre?"', correct: false },
+      { text: 'Reemplazar con un pensamiento positivo: "Puedes pensar que lo harás bien"', correct: false },
+      { text: 'Usar relajación para reducir la ansiedad que genera el pensamiento', correct: false }
+    ],
+    feedback: {
+      correct: 'Correcto. Después de la desesperanza creativa, el paso coherente es promover la discriminación del proceso verbal como proceso. "Tu mente generó la regla imperfecto=desastre" es una recontextualización que: (1) distingue al cliente de la regla, (2) describe el proceso (generar reglas), (3) no discute el contenido.',
+      incorrect: 'Desafiar la evidencia es reestructuración cognitiva (entra en el contenido). Pensamiento positivo es supresión/sustitución. Relajación aborda el síntoma, no la fusión. La defusión trabaja la RELACIÓN con el pensamiento, no el pensamiento mismo.',
+      process: 'Proceso: Recontextualización narrativa + etiquetar el proceso verbal. Se promueve Crel (observar la regla como regla) sobre Cfunc (obedecer la regla como verdad literal).'
+    }
+  },
+  {
+    title: 'Sandbox: Diseña tu metáfora',
+    type: 'sandbox',
+    instruction: 'Piensa en un caso clínico y diseña una metáfora original de defusión que sea coherente con el análisis funcional. Describe: (1) el patrón de fusión del caso, (2) tu metáfora, (3) qué marco relacional establece.',
+    placeholder: 'Caso: Mi cliente está fusionado con...\n\nMetáfora: ...\n\nMarco relacional que establece: ...',
+    reflection: 'Las mejores metáforas clínicas no son "bonitas" — son funcionalmente precisas. Deben establecer marcos de relación alternativos a los que mantienen el problema. Pregúntate: ¿mi metáfora promueve observación, disposición, y acción valiosa? ¿O promueve evitación, lucha, o distracción?'
+  }
+  ]
+},
+
+// ──────────── NIVEL 4: ANÁLISIS FUNCIONAL DE LA DEFUSIÓN ────────────
+{
+  id: 'nivel4', title: 'Análisis Funcional de la Defusión', icon: '🔬',
+  subtitle: 'Identifica procesos, diseña intervenciones y evalúa resultados',
+  concept: {
+    title: 'De la técnica al proceso',
+    text: 'La defusión competente no es aplicar técnicas sino analizar la función de la fusión en cada caso y diseñar intervenciones que alteren esa función específica. El terapeuta ACT funcional piensa en procesos (Crel/Cfunc, ROE-M, transformación de funciones) no en protocolos.'
+  },
+  exercises: [
+  {
+    title: 'Identifica el proceso de Assaz',
+    type: 'matching',
+    instruction: 'Para cada intervención, identifica el proceso principal según Assaz et al. (2018):',
+    pairs: [
+      { left: 'El cliente repite "soy tonto" durante 45 segundos hasta que la palabra pierde impacto emocional', right: 'Extinción respondiente' },
+      { left: 'El terapeuta refuerza socialmente cada vez que el cliente nota un pensamiento sin actuar desde él', right: 'Reforzamiento diferencial' },
+      { left: 'El cliente practica decir "estoy notando que mi mente dice que soy tonto"', right: 'Recontextualización narrativa (autoclíticos)' },
+      { left: 'El cliente visualiza sus pensamientos escritos en nubes que pasan por el cielo', right: 'Distanciamiento espacial' }
+    ],
+    feedback: {
+      correct: 'Excelente. Identificar el proceso te permite: (1) elegir la intervención más apropiada para el caso, (2) explicar al supervisando POR QUÉ funciona, (3) adaptarla flexiblemente cuando la técnica "estándar" no es aplicable.',
+      incorrect: 'Revisa los 4 procesos: Extinción respondiente = exposición repetida al estímulo verbal sin referente. Reforzamiento diferencial = reforzar conducta no-fusionada. Recontextualización = cambiar el marco relacional con autoclíticos. Distanciamiento espacial = marcos espaciales yo-aquí/pensamiento-allá.',
+      process: 'Proceso: Los 4 mecanismos de Assaz et al. (2018). Cada técnica de defusión puede analizarse según qué proceso conductual la sustenta.'
+    }
+  },
+  {
+    title: 'Caso clínico: ¿Qué intervención?',
+    type: 'single',
+    scenario: '<span class="speaker">Caso:</span>Pedro, 35 años. Desde hace meses evita conducir porque tuvo un pensamiento intrusivo: <em>"¿Y si pierdo el control y atropello a alguien?"</em>. Cada vez que se acerca al coche, el pensamiento se intensifica y él "obedece" alejándose. La evitación se ha generalizado: ahora también evita cuchillos, herramientas, y estar cerca de ventanas altas. Su repertorio conductual se ha reducido drásticamente.',
+    instruction: '¿Cuál sería la primera intervención de defusión más apropiada para este caso?',
+    options: [
+      { text: 'Trabajar primero con recontextualización: ayudar a Pedro a discriminar "estoy teniendo el pensamiento de que podría perder el control" — distinguiendo el pensamiento del hecho, sin entrar a discutir su veracidad', correct: true },
+      { text: 'Repetición de palabra: que repita "atropellar" hasta que pierda significado', correct: false },
+      { text: 'Exposición directa: que conduzca inmediatamente', correct: false },
+      { text: 'Discutir la probabilidad estadística de atropellar a alguien', correct: false }
+    ],
+    feedback: {
+      correct: 'Bien razonado. Con pensamientos intrusivos ego-distónicos y alto nivel de fusión, la recontextualización es el primer paso más seguro. No se entra al contenido (¿es probable o no?) sino a la relación funcional. La repetición podría ser percibida como invalidante en esta fase. La exposición conductual vendrá después, con la defusión como base.',
+      incorrect: 'La repetición directa de "atropellar" podría ser aversiva e iatrogénica con pensamientos intrusivos intensos. Discutir probabilidades es reestructuración cognitiva (entramos al contenido). La exposición conductual es valiosa pero requiere primero que Pedro pueda observar el pensamiento sin fusionarse. La recontextualización es el paso funcional más seguro.',
+      process: 'Proceso: Secuenciación basada en análisis funcional. En fusión intensa con pensamientos ego-distónicos, la recontextualización (Crel) precede a la exposición funcional.'
+    }
+  },
+  {
+    title: '¿Qué NO es defusión?',
+    type: 'multi',
+    instruction: 'Selecciona TODAS las intervenciones que NO son defusión (aunque puedan parecer similares):',
+    options: [
+      { text: '"Ese pensamiento es irracional, vamos a buscar evidencia en contra" (reestructuración cognitiva)', correct: true },
+      { text: '"Intenta no pensar en eso, piensa en algo positivo" (supresión/sustitución)', correct: true },
+      { text: '"Estoy notando que tengo el pensamiento de que no sirvo" (autoclítico descriptivo)', correct: false },
+      { text: '"¿Cuántas veces has pensado eso y no se ha cumplido?" (cuestionamiento socrático)', correct: true },
+      { text: '"Mi mente me está diciendo una historia sobre el fracaso" (etiquetar el proceso)', correct: false },
+      { text: '"Respira profundo y deja ir ese pensamiento" (relajación/letting go como evitación)', correct: true }
+    ],
+    feedback: {
+      correct: 'Excelente discriminación. La defusión NO cambia el contenido (≠ reestructuración), NO suprime (≠ sustitución), NO debate la veracidad (≠ cuestionamiento socrático), y NO usa relajación como forma de escapar del pensamiento. La defusión cambia la FUNCIÓN del pensamiento sin alterar su contenido.',
+      incorrect: 'Revisa: la clave es que la defusión NO entra al contenido del pensamiento. Si la intervención busca cambiar LO QUE piensas (reestructuración), eliminar el pensamiento (supresión), debatir si es verdad (cuestionamiento), o escapar de él (relajación como evitación), NO es defusión.',
+      process: 'Proceso: La defusión opera sobre la relación funcional con el pensamiento (Cfunc → Crel), no sobre el contenido del pensamiento. Esta distinción es fundamental para la fidelidad al modelo ACT.'
+    }
+  },
+  {
+    title: 'Análisis ROE-M de un caso',
+    type: 'matching',
+    instruction: 'En el caso de Pedro (pensamientos intrusivos sobre dañar a otros), mapea cada componente del ROE-M:',
+    pairs: [
+      { left: 'R (Relating/Relacionar): La derivación relacional activa', right: '"Pensamiento de dañar" → en marco de causalidad → "Yo soy peligroso"' },
+      { left: 'O (Orienting/Orientar): Hacia dónde se dirige la atención', right: 'Atención focalizada en señales de "peligro" interno (pensamientos, impulsos)' },
+      { left: 'E (Evoking/Evocar): Funciones conductuales que se activan', right: 'Funciones aversivas (miedo, repulsión) que evocan escape/evitación' },
+      { left: 'M (Motivating/Motivar): Operaciones motivacionales', right: 'El alivio de la evitación funciona como reforzamiento negativo que mantiene el patrón' }
+    ],
+    feedback: {
+      correct: 'Excelente análisis ROE-M. Esta unidad de análisis (Harte & Barnes-Holmes, 2023) permite ver cómo los cuatro elementos interactúan dinámicamente para mantener la fusión. La intervención de defusión puede apuntar a cualquiera de los elementos para interrumpir el patrón.',
+      incorrect: 'El ROE-M analiza la fusión como interacción dinámica: R = qué relaciones se derivan, O = hacia dónde se orienta la atención, E = qué funciones se activan, M = qué operaciones motivacionales mantienen el patrón. Cada elemento influye en los demás.',
+      process: 'Proceso: Unidad de análisis ROE-M (Relating-Orienting-Evoking-Motivating) de Harte & Barnes-Holmes (2023). Permite un análisis más fino de la fusión que la dicotomía simple fusión/defusión.'
+    }
+  },
+  {
+    title: 'Diseñar la intervención',
+    type: 'ordering',
+    instruction: 'Ordena la secuencia de intervención de defusión más apropiada para un caso de fusión moderada con pensamientos de autocrítica ("no valgo nada"):',
+    items: [
+      { text: 'Validar la experiencia del cliente y establecer contexto terapéutico de apertura', order: 1 },
+      { text: 'Introducir la desesperanza creativa: explorar qué ha hecho el cliente para luchar contra el pensamiento y cómo le ha ido', order: 2 },
+      { text: 'Presentar la defusión como alternativa: no cambiar el pensamiento sino la relación con él', order: 3 },
+      { text: 'Practicar técnicas concretas (prefijo, etiquetar, metáfora) ajustadas al análisis funcional', order: 4 },
+      { text: 'Conectar la defusión con los valores del cliente: "ahora que puedes notar el pensamiento sin que te domine, ¿hacia dónde quieres caminar?"', order: 5 }
+    ],
+    feedback: {
+      correct: 'Perfecto. La secuencia es: (1) Validación, (2) Desesperanza creativa (el cliente contacta que la lucha no funciona), (3) Presentar la alternativa conceptualmente, (4) Practicar técnicas ajustadas al caso, (5) Conectar con valores. La defusión sin valores es un ejercicio vacío.',
+      incorrect: 'La secuencia lógica es: primero validar (contexto terapéutico), luego desesperanza creativa (contactar la ineficacia de la lucha), después presentar la alternativa (defusión), practicar técnicas concretas, y finalmente conectar con valores. Saltarse pasos reduce la eficacia.',
+      process: 'Proceso: Secuenciación funcional de la intervención ACT. La defusión se inserta en un proceso terapéutico más amplio donde los valores dan dirección y la desesperanza creativa crea el contexto motivacional.'
+    }
+  },
+  {
+    title: '¿Cuándo la defusión no es suficiente?',
+    type: 'multi',
+    instruction: 'Selecciona las situaciones donde la defusión SOLA probablemente no será suficiente y se necesitan otros procesos ACT:',
+    options: [
+      { text: 'El cliente puede notar sus pensamientos sin fusionarse, pero no sabe qué le importa en la vida (falta clarificación de valores)', correct: true },
+      { text: 'El cliente se defusiona momentáneamente pero inmediatamente vuelve a la evitación porque el reforzamiento negativo es muy potente (falta trabajo con aceptación/disposición)', correct: true },
+      { text: 'El cliente tiene pensamientos negativos frecuentes', correct: false },
+      { text: 'El cliente puede defusionarse pero no tiene las habilidades conductuales para actuar en la dirección valiosa (falta acción comprometida)', correct: true },
+      { text: 'El cliente no puede mantener la perspectiva de observador porque se identifica completamente con sus roles y narrativas (falta yo-como-contexto)', correct: true }
+    ],
+    feedback: {
+      correct: 'Excelente comprensión del modelo. La defusión es un proceso necesario pero no suficiente. Se necesita: valores (para qué defusionarse), aceptación (disposición a tener lo que aparezca), acción comprometida (habilidades para actuar), y yo-como-contexto (perspectiva estable de observación). Los 6 procesos trabajan juntos.',
+      incorrect: 'Tener pensamientos negativos frecuentes NO significa que la defusión sea insuficiente — la defusión permite tener esos pensamientos sin que dominen. Los otros casos sí requieren procesos adicionales: valores, aceptación, acción comprometida, y yo-como-contexto.',
+      process: 'Proceso: Modelo de flexibilidad psicológica (Hexaflex). Los 6 procesos ACT son interdependientes. La defusión habilita pero no reemplaza a los otros procesos.'
+    }
+  },
+  {
+    title: 'Sandbox: Análisis funcional completo',
+    type: 'sandbox',
+    instruction: 'Toma un caso clínico y realiza: (1) Análisis funcional de la fusión, (2) Identifica los 4 procesos de Assaz relevantes, (3) Diseña una secuencia de intervención de 3 pasos. Puedes usar el modelo ROE-M si quieres mayor precisión.',
+    placeholder: 'Caso:\n\nAnálisis funcional de la fusión:\n- R (Relacionar):\n- O (Orientar):\n- E (Evocar):\n- M (Motivar):\n\nProcesos de Assaz relevantes:\n\nSecuencia de intervención:\n1.\n2.\n3.',
+    reflection: 'Este tipo de análisis funcional es lo que distingue al terapeuta ACT competente del que solo "aplica técnicas". En el siguiente nivel, practicarás todo esto en formato de sesión simulada.'
+  }
+  ]
+},
+
+// ──────────── NIVEL 5: SESIÓN SIMULADA ────────────
+{
+  id: 'nivel5', title: 'Sesión Simulada', icon: '🎯',
+  subtitle: 'Pon todo en práctica en escenarios clínicos realistas',
+  concept: {
+    title: 'Integrando todo',
+    text: 'En la práctica real, la defusión no ocurre como una "técnica aislada". Emerge en el flujo terapéutico, responde al momento presente de la sesión, y se conecta con el resto de procesos ACT. Aquí practicarás tomando decisiones como terapeuta.'
+  },
+  exercises: [
+  {
+    title: 'Sesión 1: La trampa del contenido',
+    type: 'dialogue',
+    intro: 'Tu cliente Sofía llega angustiada. Lleva semanas sin dormir bien. Has identificado que está altamente fusionada con pensamientos de autocrítica intensa.',
+    steps: [
+      {
+        speaker: 'client', name: 'Sofía',
+        text: 'Es que no puedo más. Mi mente no para. Toda la noche pensando "no voy a poder con esto, no voy a poder". Y es verdad, mira cómo estoy. No puedo ni dormir.'
+      },
+      {
+        speaker: 'choose',
+        instruction: 'Como terapeuta, ¿cómo respondes?',
+        options: [
+          {
+            text: '"Sofía, noto que tu mente está muy activa ahora mismo, dando el mensaje de que no puedes. ¿Puedes notar eso conmigo? Que hay una parte que observa y otra parte que dice cosas."',
+            correct: true,
+            response: { speaker: 'client', name: 'Sofía', text: '(pausa)... Sí, es como que siempre está ahí diciendo lo mismo. Como un disco rayado.' }
+          },
+          {
+            text: '"No te preocupes, seguro que puedes con esto. Eres más fuerte de lo que crees."',
+            correct: false,
+            response: { speaker: 'client', name: 'Sofía', text: 'Eso me dicen todos, pero no me ayuda. Si pudiera sentirme fuerte, lo haría. No es tan fácil.' },
+            why: 'Tranquilizar invalida la experiencia y entra en el contenido. Además, "eres más fuerte" contradice lo que Sofía experimenta, lo que puede generar más fusión (ahora con "debería poder y no puedo").'
+          },
+          {
+            text: '"Vamos a analizar si realmente no puedes. ¿Cuáles son las evidencias de que no puedes?"',
+            correct: false,
+            response: { speaker: 'client', name: 'Sofía', text: 'Las evidencias están clarísimas, mira cómo estoy, no duermo, no puedo concentrarme en nada...' },
+            why: 'Pedir evidencias es reestructuración cognitiva. Entra en el contenido del pensamiento y puede reforzar la fusión: ahora Sofía genera más "evidencia" de que no puede.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: '"Como un disco rayado... Entonces hay un disco que suena, y hay alguien que escucha el disco. ¿Quién es la que está escuchando ahora mismo?"'
+      },
+      {
+        speaker: 'client', name: 'Sofía',
+        text: '(leve sonrisa) Pues... yo. Yo lo escucho. Pero es que es muy fuerte, es como si me gritara.'
+      },
+      {
+        speaker: 'choose',
+        instruction: '¿Cuál es tu siguiente movimiento?',
+        options: [
+          {
+            text: '"Claro que grita fuerte. Y tú estás aquí, escuchándolo, y al mismo tiempo sentada en esta silla, hablando conmigo. El disco grita y tú estás aquí. ¿Puedes notar las dos cosas al mismo tiempo?"',
+            correct: true,
+            response: { speaker: 'client', name: 'Sofía', text: '(pausa larga)... Sí. Es raro. Sí puedo notar las dos cosas. El pensamiento está ahí pero también estoy aquí.' }
+          },
+          {
+            text: '"Vamos a intentar que deje de gritar. Te voy a enseñar una técnica de relajación para bajar el volumen."',
+            correct: false,
+            response: { speaker: 'client', name: 'Sofía', text: 'Sí, por favor, quiero que se calle de una vez.' },
+            why: 'Ofrecer "bajar el volumen" del pensamiento entra en la agenda de control. Refuerza la idea de que el pensamiento debe cambiar para que Sofía pueda funcionar.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: 'Estás notando que el disco suena Y tú estás aquí. Eso que acabas de hacer — notarlo — es exactamente lo que vamos a practicar. No a apagar el disco, sino a poder moverte en tu vida mientras suena.'
+      }
+    ],
+    feedback: {
+      correct: 'Has navegado esta interacción manteniendo el foco en la defusión: distinguir al observador del contenido, validar sin tranquilizar, y no entrar en la agenda de control. La metáfora del disco emergió del propio lenguaje de la cliente, lo que la hace más potente.',
+      process: 'Proceso: Marco deíctico (yo observando vs. contenido), metáfora emergente del lenguaje del cliente, disposición como alternativa a control.'
+    }
+  },
+  {
+    title: 'Sesión 2: Resistencia a la defusión',
+    type: 'dialogue',
+    intro: 'Tu cliente Marcos ha estado trabajando defusión por 3 sesiones, pero hoy llega frustrado. Parece estar "usando" la defusión como otra forma de control.',
+    steps: [
+      {
+        speaker: 'client', name: 'Marcos',
+        text: 'Estuve practicando lo del "estoy teniendo el pensamiento de que..." pero no funciona. Sigo sintiéndome igual de mal. Hice lo que me dijiste y nada cambió.'
+      },
+      {
+        speaker: 'choose',
+        instruction: '¿Cómo respondes?',
+        options: [
+          {
+            text: '"Marcos, cuando dices que no funcionó... ¿para qué estabas usando la defusión? ¿Qué esperabas que pasara?"',
+            correct: true,
+            response: { speaker: 'client', name: 'Marcos', text: 'Pues... que dejara de sentirme así. Que el pensamiento se fuera.' }
+          },
+          {
+            text: '"Tal vez no la estás haciendo bien. Vamos a practicar de nuevo con más atención."',
+            correct: false,
+            response: { speaker: 'client', name: 'Marcos', text: '(frustrado) Ya, seguro que estoy haciendo otra cosa mal también.' },
+            why: 'Corregir la técnica refuerza la fusión con la idea de que hay una forma "correcta" de sentir. Además, Marcos ya se autocritica — añadir más "corrección" amplifica ese patrón.'
+          },
+          {
+            text: '"A veces lleva tiempo. Ten paciencia, sigue practicando."',
+            correct: false,
+            response: { speaker: 'client', name: 'Marcos', text: '(suspira) Eso espero...' },
+            why: 'Ser genérico evita el momento terapéutico. Marcos está mostrando fusión EN VIVO: está usando la defusión como herramienta de control/evitación. Esto necesita abordarse directamente.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: '"Perfecto, Marcos. Fíjate en algo interesante: estabas usando el \'estoy teniendo el pensamiento...\' para librarte del pensamiento. ¿Eso te suena familiar? ¿Es parecido a lo que ya habías estado haciendo antes de venir aquí — intentar que los pensamientos se vayan?"'
+      },
+      {
+        speaker: 'client', name: 'Marcos',
+        text: '(pausa)... Sí. Es lo mismo. Estaba usando la técnica como otra forma de escapar. (ríe un poco) Vaya.'
+      },
+      {
+        speaker: 'choose',
+        instruction: '¿Cuál es tu siguiente intervención?',
+        options: [
+          {
+            text: '"Exacto. Y fíjate que ahora mismo acabas de hacer algo diferente: NOTASTE que estabas haciendo eso. Ese notar — eso sí es defusión. No la técnica en sí, sino este darte cuenta."',
+            correct: true,
+            response: { speaker: 'client', name: 'Marcos', text: 'Entonces... no se trata de la frase en sí, sino de darme cuenta de lo que estoy haciendo.' }
+          },
+          {
+            text: '"No te preocupes, es un error común. Vamos a intentar con otra técnica diferente."',
+            correct: false,
+            response: { speaker: 'client', name: 'Marcos', text: 'Bueno, a ver si esta nueva funciona.' },
+            why: 'Cambiar de técnica evita el insight más importante: que la defusión no es una técnica sino un proceso de notar. Además, refuerza la búsqueda de "la técnica que funcione" — otra forma de control.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: '"Eso es. La defusión no es una herramienta para sentirte mejor. Es la capacidad de notar lo que tu mente hace — incluyendo cuando usa la defusión como escape. Y desde ahí, elegir. ¿Qué quieres hacer con tu tarde hoy, independientemente de lo que diga el disco?"'
+      }
+    ],
+    feedback: {
+      correct: 'Excelente manejo de un momento clínico sutil. Cuando la defusión se usa como control, el terapeuta funcional no "enseña mejor la técnica" sino que usa ESE MOMENTO para promover la discriminación: notar que estabas usando la defusión como escape ES defusión. Conectar con valores al final cierra el loop.',
+      process: 'Proceso: Meta-defusión (noticing the process of noticing), desesperanza creativa aplicada a la propia técnica de defusión, conexión con valores como dirección.'
+    }
+  },
+  {
+    title: 'Sesión 3: Defusión en crisis',
+    type: 'dialogue',
+    intro: 'Tu cliente Lucía llega en crisis. Acaba de recibir una crítica de su jefe y está completamente fusionada. Llorando, repite el mismo pensamiento.',
+    steps: [
+      {
+        speaker: 'client', name: 'Lucía',
+        text: '(llorando) Me dijo que mi trabajo es mediocre. Mediocre. Eso es lo que soy. Toda mi vida he sido mediocre. En todo. No sirvo para nada. Debería dejarlo todo.'
+      },
+      {
+        speaker: 'choose',
+        instruction: 'Lucía está en alta activación emocional y fusión. ¿Cuál es tu primer movimiento?',
+        options: [
+          {
+            text: '(Pausa, contacto visual, tono calmado) "Lucía, estoy aquí contigo. ¿Puedes sentir la silla debajo de ti? Estás aquí, en este espacio, ahora mismo."',
+            correct: true,
+            response: { speaker: 'client', name: 'Lucía', text: '(respiración entrecortada, asiente)... Sí... estoy aquí.' }
+          },
+          {
+            text: '"Vamos a usar la técnica: \'estoy teniendo el pensamiento de que soy mediocre\'."',
+            correct: false,
+            response: { speaker: 'client', name: 'Lucía', text: '(más frustrada) ¡No es un pensamiento, ES LA REALIDAD! ¡Mi jefe me lo dijo!' },
+            why: 'Introducir la técnica de defusión cuando el cliente está en alta activación emocional puede sentirse invalidante. Primero se necesita contacto con el presente y validación.'
+          },
+          {
+            text: '"Tu jefe no tiene razón. Tu trabajo es valioso."',
+            correct: false,
+            response: { speaker: 'client', name: 'Lucía', text: '¡Tú no lo viste! No sabes lo que dijo... fue delante de todos.' },
+            why: 'Contradecir la experiencia genera reactancia y puede romper la alianza terapéutica. Lucía necesita sentirse escuchada, no corregida.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: '"Estás aquí. Y noto que llegó un dolor muy grande. Tu mente ha agarrado esa palabra — mediocre — y la ha conectado con toda tu vida. ¿Puedes notar eso conmigo? Cómo una palabra se ha expandido a todo."'
+      },
+      {
+        speaker: 'client', name: 'Lucía',
+        text: '(más calmada, pero aún llorando) Sí... es como que esa palabra se pegó a todo. A mis recuerdos, a mi futuro... todo se volvió mediocre.'
+      },
+      {
+        speaker: 'choose',
+        instruction: 'Lucía comienza a discriminar el proceso. ¿Cómo avanzas?',
+        options: [
+          {
+            text: '"Sí. Esa palabra se pegó a todo. Eso es exactamente lo que hace el lenguaje: una palabra se conecta con todo lo demás. Y en este momento, ¿qué sería lo más importante para ti hacer, independientemente de lo que esa palabra diga?"',
+            correct: true,
+            response: { speaker: 'client', name: 'Lucía', text: '(pausa)... No sé... ¿Seguir? No quiero que una palabra decida por mí.' }
+          },
+          {
+            text: '"Vamos a repetir la palabra \'mediocre\' 40 veces rápido para que pierda su poder."',
+            correct: false,
+            response: { speaker: 'client', name: 'Lucía', text: '(incómoda) No... no quiero hacer eso ahora. Me da cosa.' },
+            why: 'La repetición de palabra puede funcionar en otros momentos, pero justo ahora sería forzar una técnica sin sensibilidad al momento clínico. Lucía ya está discriminando — mejor seguir ese hilo.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: '"No quieres que una palabra decida por ti. Eso es algo muy importante que acabas de decir. Podemos aprender a que las palabras estén ahí — incluso esa — sin que nos dirijan la vida."'
+      }
+    ],
+    feedback: {
+      correct: 'Has demostrado sensibilidad al momento clínico: primero contacto con el presente, luego validación, después discriminación del proceso verbal ("la palabra se pegó a todo"), y finalmente conexión con valores. La defusión en crisis requiere más presencia del terapeuta y menos "técnicas".',
+      process: 'Proceso: Presente momento → validación → recontextualización natural → conexión con valores. En crisis, la defusión emerge del contacto terapéutico, no de la aplicación de técnicas.'
+    }
+  },
+  {
+    title: 'Sesión 4: Defusión y adicción',
+    type: 'dialogue',
+    intro: 'Tu cliente Roberto, 40 años, lleva 8 meses sin consumir alcohol. Hoy llega agitado. Ha tenido una discusión fuerte con su pareja y reporta ansias intensas de beber.',
+    steps: [
+      {
+        speaker: 'client', name: 'Roberto',
+        text: 'No aguanto más. Necesito un trago. Lo necesito, es como un globo inflándose aquí dentro (señala el estómago). Si no bebo va a explotar. Llevo toda la tarde luchando contra esto y cada vez es peor.'
+      },
+      {
+        speaker: 'choose',
+        instruction: 'Roberto está describiendo sus ansias con una metáfora potente. ¿Cómo respondes?',
+        options: [
+          {
+            text: '"Roberto, noto que dices que es como un globo que se infla y va a explotar. ¿Y si ese globo fuera más como una ola? Las olas crecen, crecen... llegan a un punto máximo... y después simplemente rompen en la playa. ¿Puedes quedarte un momento observando esa ola conmigo?"',
+            correct: true,
+            response: { speaker: 'client', name: 'Roberto', text: '(respira hondo)... Una ola... Sí, puedo intentar verlo así. Pero es que sube mucho.' }
+          },
+          {
+            text: '"Piensa en tus 8 meses de sobriedad. No puedes tirar todo eso a la basura por una discusión."',
+            correct: false,
+            response: { speaker: 'client', name: 'Roberto', text: '¡Ya lo sé! ¿No crees que ya pensé en eso? Pero saber eso no me quita las ganas.' },
+            why: 'Apelar a la lógica y al "no puedes" entra en la agenda de control racional. Roberto ya sabe que no debería beber — el problema no es informativo, es funcional. Además, "no puedes tirar eso a la basura" puede funcionar como un augmental que amplifica la presión.'
+          },
+          {
+            text: '"Vamos a hacer un ejercicio de relajación para bajar la ansiedad."',
+            correct: false,
+            response: { speaker: 'client', name: 'Roberto', text: 'Sí, algo que me quite esto de encima...' },
+            why: 'Ofrecer relajación para "quitar" las ansias refuerza la agenda de control. El mensaje implícito es: las ansias son el enemigo que hay que eliminar. Esto es exactamente lo que mantiene el ciclo de la adicción.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: '"Sube mucho, sí. Y tú estás aquí, observándola subir. Eso ya es diferente a estar dentro de la ola. Cuéntame, ¿cómo es ahora mismo? ¿La ola está subiendo, está en su punto máximo, o está empezando a bajar?"'
+      },
+      {
+        speaker: 'client', name: 'Roberto',
+        text: '(pausa, se concentra)... Creo que... está como en la cresta. Está muy fuerte. Pero... no explotó. Sigue ahí pero no explotó.'
+      },
+      {
+        speaker: 'choose',
+        instruction: 'Roberto está contactando la experiencia sin actuar. ¿Cuál es tu siguiente movimiento?',
+        options: [
+          {
+            text: '"No explotó. Tu mente te dijo que iba a explotar, y tú te quedaste observando, y no explotó. ¿Qué te dice eso sobre lo que tu mente predice cuando tiene ansias?"',
+            correct: true,
+            response: { speaker: 'client', name: 'Roberto', text: '(sonríe un poco)... Que no siempre tiene razón. Que me dice que va a explotar y en realidad... pasa.' }
+          },
+          {
+            text: '"Bien, ya está bajando. ¿Ves? No era para tanto."',
+            correct: false,
+            response: { speaker: 'client', name: 'Roberto', text: '(se tensa) Sí era para tanto. Todavía lo siento.' },
+            why: 'Minimizar la experiencia ("no era para tanto") invalida a Roberto y puede romper la alianza terapéutica. Además, el objetivo no es que las ansias no sean intensas, sino que Roberto pueda estar con ellas sin que controlen su conducta.'
+          }
+        ]
+      },
+      {
+        speaker: 'therapist',
+        text: '"Pasa. Las olas siempre pasan. Y lo que acaba de ocurrir aquí es que tú te quedaste en la playa observando la ola, sin tirarte al agua. Ocho meses de sobriedad no los sostiene la lucha contra las ansias, Roberto — los sostiene esta capacidad de ver la ola y dejarla pasar. ¿Qué quieres hacer con tu noche ahora?"'
+      }
+    ],
+    feedback: {
+      correct: 'Excelente manejo. Usaste la metáfora de la ola (Wilson & Luciano) de manera natural, recontextualizando la metáfora del propio cliente (globo → ola). Mantuviste contacto con el presente, promoviste observación sin lucha, y cerraste conectando con valores y acción. La defusión con adicciones requiere especial cuidado para no reforzar la agenda de control.',
+      process: 'Proceso: Recontextualización de la metáfora del cliente + distanciamiento espacial (observar la ola) + discriminación experiencial (no explotó) + conexión con valores y acción comprometida.'
+    }
+  },
+  {
+    title: 'Secuencia terapéutica completa',
+    type: 'ordering',
+    instruction: 'Un nuevo cliente presenta fusión intensa con "no merezco ser feliz". Ordena los pasos de una secuencia terapéutica completa de defusión:',
+    items: [
+      { text: 'Explorar con empatía la experiencia del cliente: validar el sufrimiento sin entrar al contenido del pensamiento', order: 1 },
+      { text: 'Desesperanza creativa: explorar qué ha intentado el cliente para deshacerse de ese pensamiento y cómo le ha ido', order: 2 },
+      { text: 'Introducir la distinción entre el observador y lo observado: "Hay un pensamiento que dice X, y hay alguien que escucha ese pensamiento"', order: 3 },
+      { text: 'Practicar técnicas ajustadas al caso (ej: prefijo "estoy notando que...", etiquetar "mi mente está haciendo su trabajo de juzgar")', order: 4 },
+      { text: 'Usar metáfora apropiada al patrón funcional (ej: Pasajeros del autobús si hay evitación, Tablero si hay lucha activa contra el pensamiento)', order: 5 },
+      { text: 'Conectar con valores: "Ahora que puedes notar ese pensamiento sin que te dirija, ¿hacia dónde quieres caminar?"', order: 6 },
+      { text: 'Diseñar acciones comprometidas concretas que el cliente pueda realizar entre sesiones, con el pensamiento presente', order: 7 }
+    ],
+    feedback: {
+      correct: 'Perfecto. La secuencia sigue la lógica funcional de ACT: primero crear contexto terapéutico (validación), luego socavar la agenda de control (desesperanza creativa), después introducir la alternativa gradualmente (observador → técnicas → metáforas), y finalmente darle dirección con valores y acción. Cada paso prepara el terreno para el siguiente.',
+      incorrect: 'La secuencia lógica es: (1) Validar → (2) Desesperanza creativa → (3) Introducir perspectiva de observador → (4) Técnicas concretas → (5) Metáfora apropiada → (6) Conectar valores → (7) Acción comprometida. Saltar la validación o la desesperanza creativa reduce la efectividad porque el cliente no tiene el contexto motivacional para las técnicas.',
+      process: 'Proceso: Secuenciación funcional ACT completa. La defusión no es un evento aislado sino un proceso que se construye sobre validación, desesperanza creativa, y se completa con valores y acción comprometida.'
+    }
+  },
+  {
+    title: 'Elegir el momento de la defusión',
+    type: 'single',
+    scenario: 'Estás en una sesión y tu cliente dice: <em>"Sabes qué, ya entendí que son solo pensamientos. Pero la verdad es que estoy harto de mi trabajo. Mi jefe es un idiota y mis compañeros no hacen nada. Quiero cambiar de empleo pero no sé por dónde empezar."</em>',
+    instruction: '¿Cuál es la respuesta más apropiada?',
+    options: [
+      { text: 'No usar defusión ahora. El cliente está hablando desde sus valores (querer cambiar) y pidiendo ayuda práctica. Explorar acción comprometida: "¿Qué sería lo primero que harías si decidieras avanzar en esa dirección?"', correct: true },
+      { text: 'Aplicar defusión a "mi jefe es un idiota": "Estás teniendo el pensamiento de que tu jefe es un idiota."', correct: false },
+      { text: 'Trabajar aceptación del malestar laboral', correct: false },
+      { text: 'Explorar si realmente quiere cambiar de trabajo o si es evitación', correct: false }
+    ],
+    feedback: {
+      correct: 'Excelente discriminación clínica. No todo pensamiento necesita defusión. Cuando el cliente está moviéndose hacia sus valores y pidiendo ayuda concreta, la defusión puede ser contraproducente — como "técniquear" un momento de agencia. Aquí corresponde acción comprometida.',
+      incorrect: 'Un error común es aplicar defusión a TODO lo que el cliente dice. "Mi jefe es un idiota" no está funcionando como fusión que paralice al cliente — al contrario, el cliente está tomando dirección. Defusionar ahí podría interrumpir un momento valioso de agencia.',
+      process: 'Proceso: Discriminación clínica de cuándo usar cada proceso ACT. La defusión se aplica cuando la fusión impide la acción valiosa, no como respuesta automática a todo pensamiento.'
+    }
+  },
+  {
+    title: 'Integración: Caso completo',
+    type: 'multi',
+    scenario: '<span class="speaker">Caso:</span>Elena, 28 años. Evita relaciones íntimas porque piensa <em>"si me acerco a alguien, me van a abandonar como mi padre"</em>. Cuando alguien muestra interés, ella siente ansiedad intensa y se aleja. Ha perdido varias relaciones valiosas. Dice <em>"sé que no es racional pero no puedo evitarlo"</em>.',
+    instruction: '¿Qué procesos ACT necesitas trabajar con Elena? Selecciona TODOS los que aplican:',
+    options: [
+      { text: 'Defusión: ayudarla a notar la regla verbal "cercanía = abandono" como una relación derivada, no como ley natural', correct: true },
+      { text: 'Aceptación: disposición a sentir la ansiedad que aparece al acercarse, sin huir de ella', correct: true },
+      { text: 'Valores: clarificar qué tipo de relaciones quiere tener y por qué le importan', correct: true },
+      { text: 'Reestructuración cognitiva: demostrarle que no todos la van a abandonar', correct: false },
+      { text: 'Acción comprometida: pasos concretos hacia la intimidad, con la ansiedad presente', correct: true },
+      { text: 'Yo-como-contexto: discriminar que ella no es su historia de abandono, es el contexto donde esa historia ocurre', correct: true }
+    ],
+    feedback: {
+      correct: 'Perfecto. Elena necesita los 5 procesos ACT (excepto reestructuración, que no es ACT): defusión de la regla verbal, aceptación de la ansiedad, clarificación de valores relacionales, acción comprometida hacia la intimidad, y yo-como-contexto para no identificarse con la historia de abandono.',
+      incorrect: 'La reestructuración cognitiva ("no todos te van a abandonar") entra en el contenido del pensamiento, que es justamente lo que Elena ya intenta hacer cuando dice "sé que no es racional". El problema no es la racionalidad del pensamiento sino su función sobre la conducta. Necesita los 5 procesos ACT.',
+      process: 'Proceso: Modelo hexaflex completo. La defusión habilita la observación de la regla, la aceptación permite tolerar la ansiedad, los valores dan dirección, la acción comprometida genera cambio, y el yo-como-contexto ofrece perspectiva estable.'
+    }
+  },
+  {
+    title: 'Sandbox: Tu mini-sesión',
+    type: 'sandbox',
+    instruction: 'Diseña un fragmento de sesión (5-8 intercambios) donde apliques defusión de manera funcional. Incluye: el contexto del caso, qué dice el cliente, qué respondes tú como terapeuta, y por qué eliges esa intervención.',
+    placeholder: 'Contexto del caso:\n\nCliente: "___"\nTerapeuta: "___" (Razón: ...)\nCliente: "___"\nTerapeuta: "___" (Razón: ...)\n...',
+    reflection: 'Has completado el entrenamiento. La defusión competente no es un repertorio de técnicas — es la capacidad de discriminar cuándo y cómo alterar la relación funcional entre el lenguaje y la conducta. Sigue practicando con casos reales y supervisión.'
+  }
+  ]
+}
+];
+
+// ============================================================
+// APP STATE & LOGIC
+// ============================================================
+const TOTAL_EXERCISES = LEVELS.reduce((sum, l) => sum + l.exercises.length, 0);
+let state = loadState();
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('defusion_app_state');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return { completed: {}, scores: {}, currentLevel: 0, currentExercise: 0 };
+}
+
+function saveState() {
+  try { localStorage.setItem('defusion_app_state', JSON.stringify(state)); } catch(e) {}
+}
+
+function getCompletedCount() {
+  return Object.keys(state.completed).length;
+}
+
+function isExerciseCompleted(levelIdx, exIdx) {
+  return state.completed[`${levelIdx}-${exIdx}`] === true;
+}
+
+function completeExercise(levelIdx, exIdx, correct) {
+  state.completed[`${levelIdx}-${exIdx}`] = true;
+  if (!state.scores[levelIdx]) state.scores[levelIdx] = { correct: 0, total: 0 };
+  state.scores[levelIdx].total++;
+  if (correct) state.scores[levelIdx].correct++;
+  saveState();
+}
+
+function isLevelUnlocked(idx) {
+  if (idx === 0) return true;
+  const prevLevel = LEVELS[idx - 1];
+  const prevCompleted = prevLevel.exercises.filter((_, ei) => isExerciseCompleted(idx - 1, ei)).length;
+  return prevCompleted >= Math.ceil(prevLevel.exercises.length * 0.6); // 60% to unlock next
+}
+
+function isLevelCompleted(idx) {
+  return LEVELS[idx].exercises.every((_, ei) => isExerciseCompleted(idx, ei));
+}
+
+function getLevelProgress(idx) {
+  const completed = LEVELS[idx].exercises.filter((_, ei) => isExerciseCompleted(idx, ei)).length;
+  return { completed, total: LEVELS[idx].exercises.length };
+}
+
+// ============================================================
+// GLOSSARY: Technical terms with definitions and examples
+// ============================================================
+const GLOSSARY = {
+  'pliance': {
+    title: 'Pliance',
+    def: 'Conducta gobernada por reglas donde la persona sigue la regla porque hay una historia de reforzamiento social por obedecer, no porque la regla describa contingencias reales.',
+    example: '"Un hombre no llora" → el niño aprende a suprimir el llanto porque el padre refuerza no llorar, no porque llorar tenga consecuencias naturales negativas.'
+  },
+  'augmental': {
+    title: 'Augmental',
+    def: 'Regla verbal que altera la capacidad reforzante o aversiva de un estímulo a través de la transformación de funciones. Cambia cuánto te importa algo.',
+    example: '"Si no apruebo este examen, mi vida se arruinará" → el examen adquiere funciones aversivas amplificadas que no corresponden a las contingencias reales.'
+  },
+  'tracking': {
+    title: 'Tracking',
+    def: 'Conducta gobernada por reglas donde la persona sigue la regla porque describe contingencias naturales precisas. Es sensible a las consecuencias directas.',
+    example: '"Si toco la estufa caliente me quemaré" → la regla describe una contingencia real y verificable. La conducta de evitar tocarla se mantiene por las consecuencias naturales.'
+  },
+  'cfunc': {
+    title: 'Cfunc (C-funcional)',
+    def: 'La función conductual que se transforma a través de una relación derivada. Es lo que el pensamiento "te hace hacer o sentir". Cuando domina Cfunc, estás fusionado.',
+    example: 'Pensar "soy un fracaso" activa funciones aversivas (tristeza, evitación) como si FUERAS literalmente un fracaso. Eso es Cfunc dominando.'
+  },
+  'crel': {
+    title: 'Crel (C-relacional)',
+    def: 'El tipo de relación derivada en sí misma (coordinación, oposición, jerarquía, etc.). Cuando domina Crel, notas la relación COMO relación — eso es defusión.',
+    example: 'Notar "mi mente está produciendo una relación de coordinación entre yo y fracaso" es responder a Crel: ves la relación sin quedar atrapado en sus funciones.'
+  },
+  'marco deíctico': {
+    title: 'Marco deíctico',
+    def: 'Relación de perspectiva basada en yo/tú, aquí/allí, ahora/entonces. En ACT permite distinguir al observador (yo-aquí-ahora) de lo observado (pensamiento-allá).',
+    example: '"YO estoy AQUÍ notando que ALLÁ hay un pensamiento sobre fracaso" — establece una perspectiva que separa funcionalmente a la persona del contenido verbal.'
+  },
+  'marco jerárquico': {
+    title: 'Marco jerárquico',
+    def: 'Relación donde un elemento contiene a otro. En ACT se usa para establecer que el yo contiene a los pensamientos, no al revés.',
+    example: 'En la metáfora del tablero: TÚ (tablero) contienes a los pensamientos (fichas). El tablero es más grande que cualquier ficha — no puede ser destruido por ellas.'
+  },
+  'extinción respondiente': {
+    title: 'Extinción respondiente',
+    def: 'Debilitamiento de una respuesta condicionada al presentar el estímulo repetidamente sin el referente original. La palabra pierde su capacidad de evocar funciones.',
+    example: 'Repetir "limón" 45 segundos → al inicio evoca sabor ácido y salivación, al final es solo un sonido. La transformación de funciones se debilitó temporalmente.'
+  },
+  'contracondicionamiento': {
+    title: 'Contracondicionamiento',
+    def: 'Proceso donde se asocian funciones incompatibles con las originales. El estímulo verbal adquiere nuevas funciones que compiten con las aversivas.',
+    example: 'Cantar "soy un perdedor" con melodía de cumpleaños: la alegría de la melodía es incompatible con la tristeza del pensamiento, debilitando su impacto.'
+  },
+  'reforzamiento diferencial': {
+    title: 'Reforzamiento diferencial',
+    def: 'Reforzar selectivamente la conducta deseada (actuar sin fusionarse) mientras se extingue la no deseada (actuar desde la fusión).',
+    example: 'El terapeuta refuerza socialmente cuando el cliente nota un pensamiento y elige actuar según valores, y no refuerza cuando el cliente obedece al pensamiento.'
+  },
+  'autoclítico descriptivo': {
+    title: 'Autoclítico descriptivo',
+    def: 'En análisis verbal de Skinner, un autoclítico es una respuesta verbal sobre la propia conducta verbal. El "descriptivo" describe el proceso sin cambiarlo.',
+    example: '"Estoy teniendo el pensamiento de que no sirvo" — describe la conducta verbal (tener el pensamiento) sin alterar el contenido. Introduce perspectiva.'
+  },
+  'roe-m': {
+    title: 'ROE-M',
+    def: 'Unidad de análisis propuesta por Harte & Barnes-Holmes (2023): Relating (derivar relaciones), Orienting (dirigir atención), Evoking (activar funciones) y Motivating (mantener el patrón).',
+    example: 'Pensamiento "soy peligroso": R=relación yo-peligro, O=atención a señales de amenaza interna, E=ansiedad y escape, M=alivio de evitar refuerza el patrón.'
+  },
+  'transformación de funciones': {
+    title: 'Transformación de funciones',
+    def: 'Proceso central de RFT: las funciones de un estímulo se transfieren a otro a través de relaciones derivadas, sin contacto directo con contingencias.',
+    example: 'Si aprendes que A=B y B produce miedo, A también producirá miedo sin haber sido emparejado directamente. La palabra "cáncer" evoca miedo sin tener la enfermedad.'
+  },
+  'yo-como-contexto': {
+    title: 'Yo-como-contexto (Self-as-context)',
+    def: 'Perspectiva estable del yo como el "lugar" donde ocurren las experiencias, no como las experiencias mismas. Es el tablero, no las fichas.',
+    example: '"He tenido miles de pensamientos diferentes en mi vida, algunos se contradicen. Si yo fuera mis pensamientos, ¿cuál sería yo? Yo soy el que observa todos esos pensamientos."'
+  },
+  'desesperanza creativa': {
+    title: 'Desesperanza creativa',
+    def: 'Fase de ACT donde el cliente contacta experiencialmente que sus estrategias de control/evitación no han funcionado. No es generar desesperanza, sino notar que la lucha es el problema.',
+    example: '"Has intentado no pensar en eso, distraerte, beber, trabajar más... ¿Cómo te ha ido? ¿Alguna de esas estrategias resolvió el problema a largo plazo?"'
+  },
+  'flexibilidad psicológica': {
+    title: 'Flexibilidad psicológica',
+    def: 'Capacidad de contactar el momento presente plenamente, con apertura a los eventos privados, y actuar en dirección a los valores. Es el objetivo central de ACT.',
+    example: 'Sentir ansiedad ante una presentación (aceptación), notar el pensamiento "va a salir mal" sin obedecerlo (defusión), y presentar igual porque es importante (valores + acción).'
+  },
+  'comportamiento gobernado por reglas': {
+    title: 'Comportamiento gobernado por reglas',
+    def: 'Conducta controlada por estímulos verbales (reglas) más que por las contingencias directas del ambiente. Incluye pliance, tracking y augmenting.',
+    example: '"No debo mostrar debilidad" controla la conducta de suprimir emociones, independientemente de si mostrar emociones realmente produce consecuencias negativas en el contexto actual.'
+  }
+};
+
+// Process text to add glossary tooltips
+function addGlossaryTerms(html) {
+  if (!html) return '';
+  // Sort terms by length (longest first) to avoid partial matches
+  const terms = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
+  
+  // Split html into tags and text segments to only process text
+  const parts = html.split(/(<[^>]+>)/);
+  
+  for (let p = 0; p < parts.length; p++) {
+    // Skip HTML tags
+    if (parts[p].startsWith('<')) continue;
+    
+    let text = parts[p];
+    terms.forEach(term => {
+      const escaped = term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const regex = new RegExp(`\\b(${escaped})\\b`, 'gi');
+      text = text.replace(regex, (match) => {
+        return `<span class="glossary-term" data-term="${term}">${match}</span>`;
+      });
+    });
+    parts[p] = text;
+  }
+  
+  return parts.join('');
+}
+
+// Show tooltip for a glossary term
+function showGlossaryTooltip(termEl) {
+  closeGlossaryTooltip(); // close any existing
+  
+  const termKey = termEl.dataset.term.toLowerCase();
+  const entry = GLOSSARY[termKey];
+  if (!entry) return;
+  
+  // Create overlay to catch outside clicks
+  const overlay = document.createElement('div');
+  overlay.className = 'glossary-overlay';
+  overlay.addEventListener('click', closeGlossaryTooltip);
+  document.body.appendChild(overlay);
+  
+  // Create tooltip
+  const tooltip = document.createElement('div');
+  tooltip.className = 'glossary-tooltip';
+  tooltip.id = 'activeGlossaryTooltip';
+  tooltip.innerHTML = `
+    <button class="gt-close" onclick="closeGlossaryTooltip()">✕</button>
+    <div class="gt-title">${entry.title}</div>
+    <div class="gt-def">${entry.def}</div>
+    <div class="gt-example">${entry.example}</div>
+  `;
+  document.body.appendChild(tooltip);
+  
+  // Position tooltip near the term
+  const rect = termEl.getBoundingClientRect();
+  const tooltipRect = tooltip.getBoundingClientRect();
+  
+  let top = rect.bottom + 10;
+  let left = Math.max(10, rect.left - 20);
+  let isAbove = false;
+  
+  // If tooltip would go below viewport, show above
+  if (top + tooltipRect.height > window.innerHeight - 20) {
+    top = rect.top - tooltipRect.height - 10;
+    isAbove = true;
+    tooltip.classList.add('above');
+  }
+  
+  // Keep within horizontal bounds
+  if (left + tooltipRect.width > window.innerWidth - 10) {
+    left = window.innerWidth - tooltipRect.width - 10;
+  }
+  
+  tooltip.style.top = top + 'px';
+  tooltip.style.left = left + 'px';
+  
+  // Adjust arrow position to point at term
+  const arrowLeft = Math.max(15, Math.min(rect.left - left + rect.width/2 - 6, tooltipRect.width - 25));
+  const beforeStyle = document.createElement('style');
+  beforeStyle.id = 'glossary-arrow-style';
+  const oldArrow = document.getElementById('glossary-arrow-style');
+  if (oldArrow) oldArrow.remove();
+  beforeStyle.textContent = `.glossary-tooltip::before { left: ${arrowLeft}px !important; }`;
+  document.head.appendChild(beforeStyle);
+}
+
+function closeGlossaryTooltip() {
+  const existing = document.getElementById('activeGlossaryTooltip');
+  if (existing) existing.remove();
+  const overlay = document.querySelector('.glossary-overlay');
+  if (overlay) overlay.remove();
+}
+
+// Delegate click events for glossary terms
+document.addEventListener('click', (e) => {
+  const term = e.target.closest('.glossary-term');
+  if (term) {
+    e.preventDefault();
+    e.stopPropagation();
+    showGlossaryTooltip(term);
+  }
+});
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+function renderHome() {
+  document.getElementById('homeView').classList.add('active');
+  document.getElementById('exerciseView').classList.remove('active');
+  document.getElementById('completeView').classList.remove('active');
+  
+  // Global progress
+  const done = getCompletedCount();
+  document.getElementById('globalFill').style.width = `${(done / TOTAL_EXERCISES) * 100}%`;
+  document.getElementById('globalText').textContent = `${done} / ${TOTAL_EXERCISES}`;
+  
+  // Level cards
+  const grid = document.getElementById('levelsGrid');
+  grid.innerHTML = '';
+  LEVELS.forEach((level, idx) => {
+    const unlocked = isLevelUnlocked(idx);
+    const completed = isLevelCompleted(idx);
+    const prog = getLevelProgress(idx);
+    
+    const card = document.createElement('div');
+    card.className = `level-card ${!unlocked ? 'locked' : ''} ${completed ? 'completed' : ''}`;
+    card.innerHTML = `
+      <div class="level-header">
+        <div class="level-icon">${level.icon}</div>
+        <div class="level-info">
+          <div class="level-num">Nivel ${idx + 1}</div>
+          <div class="level-title">${level.title}</div>
+        </div>
+      </div>
+      <div class="level-desc">${level.subtitle}</div>
+      <div class="level-progress">
+        <div class="level-progress-bar"><div class="level-progress-fill" style="width:${(prog.completed/prog.total)*100}%"></div></div>
+        <div class="level-progress-text">${prog.completed} / ${prog.total} ejercicios</div>
+      </div>
+      ${!unlocked ? '<div class="level-lock-badge">🔒 Completa el anterior</div>' : ''}
+      ${completed ? '<div class="level-complete-badge">✓ Completado</div>' : ''}
+    `;
+    if (unlocked) {
+      card.addEventListener('click', () => startLevel(idx));
+    }
+    grid.appendChild(card);
+  });
+}
+
+function startLevel(levelIdx) {
+  state.currentLevel = levelIdx;
+  // Find first incomplete exercise
+  const level = LEVELS[levelIdx];
+  let startEx = 0;
+  for (let i = 0; i < level.exercises.length; i++) {
+    if (!isExerciseCompleted(levelIdx, i)) { startEx = i; break; }
+    if (i === level.exercises.length - 1) startEx = 0; // all complete, restart
+  }
+  state.currentExercise = startEx;
+  saveState();
+  renderExercise();
+}
+
+function renderExercise() {
+  document.getElementById('homeView').classList.remove('active');
+  document.getElementById('exerciseView').classList.add('active');
+  document.getElementById('completeView').classList.remove('active');
+  
+  const level = LEVELS[state.currentLevel];
+  const ex = level.exercises[state.currentExercise];
+  
+  // Header
+  document.getElementById('exLevelName').textContent = `Nivel ${state.currentLevel + 1} · ${level.title}`;
+  document.getElementById('exTitle').textContent = ex.title;
+  document.getElementById('exCounter').textContent = `${state.currentExercise + 1}/${level.exercises.length}`;
+  
+  // Dots
+  const dots = document.getElementById('exDots');
+  dots.innerHTML = '';
+  level.exercises.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = `exercise-dot ${isExerciseCompleted(state.currentLevel, i) ? 'done' : ''} ${i === state.currentExercise ? 'current' : ''}`;
+    dot.addEventListener('click', () => { state.currentExercise = i; saveState(); renderExercise(); });
+    dots.appendChild(dot);
+  });
+  
+  // Content
+  const content = document.getElementById('exerciseContent');
+  const actions = document.getElementById('exerciseActions');
+  content.innerHTML = '';
+  actions.innerHTML = '';
+  
+  // Concept box for first exercise of each level
+  if (state.currentExercise === 0 && level.concept) {
+    content.innerHTML += `
+      <div class="concept-box anim-fade-up">
+        <h4>${level.concept.title}</h4>
+        <p>${addGlossaryTerms(level.concept.text)}</p>
+      </div>
+    `;
+  }
+  
+  switch(ex.type) {
+    case 'single': renderSingleChoice(ex, content, actions); break;
+    case 'multi': renderMultiChoice(ex, content, actions); break;
+    case 'matching': renderMatching(ex, content, actions); break;
+    case 'ordering': renderOrdering(ex, content, actions); break;
+    case 'classify': renderClassify(ex, content, actions); break;
+    case 'dialogue': renderDialogue(ex, content, actions); break;
+    case 'sandbox': renderSandbox(ex, content, actions); break;
+  }
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// === SINGLE CHOICE ===
+function renderSingleChoice(ex, content, actions) {
+  const card = document.createElement('div');
+  card.className = 'exercise-card anim-fade-up';
+  card.innerHTML = `
+    <h3>${ex.title}</h3>
+    ${ex.scenario ? `<div class="scenario">${addGlossaryTerms(ex.scenario)}</div>` : ''}
+    <p class="instruction">${addGlossaryTerms(ex.instruction)}</p>
+    <div class="options" id="optionsContainer"></div>
+    <div id="feedbackArea"></div>
+  `;
+  content.appendChild(card);
+  
+  const opts = card.querySelector('#optionsContainer');
+  const letters = ['A','B','C','D','E','F'];
+  let answered = false;
+  
+  ex.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span class="opt-text">${addGlossaryTerms(opt.text)}</span>`;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      
+      // Mark all
+      opts.querySelectorAll('.option-btn').forEach((b, j) => {
+        b.classList.add('disabled');
+        if (ex.options[j].correct) b.classList.add('correct');
+        if (j === i && !opt.correct) b.classList.add('incorrect');
+      });
+      
+      showFeedback(card.querySelector('#feedbackArea'), opt.correct, ex.feedback);
+      completeExercise(state.currentLevel, state.currentExercise, opt.correct);
+      showNextButton(actions);
+    });
+    opts.appendChild(btn);
+  });
+}
+
+// === MULTI CHOICE ===
+function renderMultiChoice(ex, content, actions) {
+  const card = document.createElement('div');
+  card.className = 'exercise-card anim-fade-up';
+  card.innerHTML = `
+    <h3>${ex.title}</h3>
+    ${ex.scenario ? `<div class="scenario">${addGlossaryTerms(ex.scenario)}</div>` : ''}
+    <p class="instruction">${addGlossaryTerms(ex.instruction)}</p>
+    <div class="options" id="optionsContainer"></div>
+    <div id="feedbackArea"></div>
+  `;
+  content.appendChild(card);
+  
+  const opts = card.querySelector('#optionsContainer');
+  const letters = ['A','B','C','D','E','F'];
+  const selected = new Set();
+  let answered = false;
+  
+  ex.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn multi';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span class="opt-text">${addGlossaryTerms(opt.text)}</span>`;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      if (selected.has(i)) { selected.delete(i); btn.classList.remove('selected'); }
+      else { selected.add(i); btn.classList.add('selected'); }
+    });
+    opts.appendChild(btn);
+  });
+  
+  // Check button
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn-check';
+  checkBtn.textContent = 'Verificar respuesta';
+  checkBtn.addEventListener('click', () => {
+    if (answered || selected.size === 0) return;
+    answered = true;
+    
+    const correctSet = new Set(ex.options.map((o, i) => o.correct ? i : -1).filter(i => i >= 0));
+    const isCorrect = selected.size === correctSet.size && [...selected].every(i => correctSet.has(i));
+    
+    opts.querySelectorAll('.option-btn').forEach((b, j) => {
+      b.classList.add('disabled');
+      if (ex.options[j].correct) b.classList.add('correct');
+      if (selected.has(j) && !ex.options[j].correct) b.classList.add('incorrect');
+    });
+    
+    showFeedback(card.querySelector('#feedbackArea'), isCorrect, ex.feedback);
+    completeExercise(state.currentLevel, state.currentExercise, isCorrect);
+    checkBtn.remove();
+    showNextButton(actions);
+  });
+  actions.appendChild(checkBtn);
+}
+
+// === MATCHING ===
+function renderMatching(ex, content, actions) {
+  const card = document.createElement('div');
+  card.className = 'exercise-card anim-fade-up';
+  card.innerHTML = `
+    <h3>${ex.title}</h3>
+    <p class="instruction">${addGlossaryTerms(ex.instruction)}</p>
+    <div class="matching-grid" id="matchingGrid"></div>
+    <div id="feedbackArea"></div>
+  `;
+  content.appendChild(card);
+  
+  const grid = card.querySelector('#matchingGrid');
+  const rights = ex.pairs.map(p => p.right);
+  const shuffled = [...rights].sort(() => Math.random() - 0.5);
+  let answered = false;
+  
+  ex.pairs.forEach((pair, i) => {
+    const row = document.createElement('div');
+    row.className = 'matching-row';
+    row.innerHTML = `
+      <div class="matching-label">${addGlossaryTerms(pair.left)}</div>
+      <select class="matching-select" data-idx="${i}">
+        <option value="">Seleccionar...</option>
+        ${shuffled.map(r => `<option value="${r}">${r.length > 35 ? r.substring(0,35)+'...' : r}</option>`).join('')}
+      </select>
+    `;
+    grid.appendChild(row);
+  });
+  
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn-check';
+  checkBtn.textContent = 'Verificar respuestas';
+  checkBtn.addEventListener('click', () => {
+    if (answered) return;
+    const selects = grid.querySelectorAll('select');
+    const allFilled = [...selects].every(s => s.value !== '');
+    if (!allFilled) return;
+    
+    answered = true;
+    let allCorrect = true;
+    selects.forEach((s, i) => {
+      const row = s.closest('.matching-row');
+      s.disabled = true;
+      if (s.value === ex.pairs[i].right) {
+        row.classList.add('correct');
+      } else {
+        row.classList.add('incorrect');
+        allCorrect = false;
+      }
+    });
+    
+    showFeedback(card.querySelector('#feedbackArea'), allCorrect, ex.feedback);
+    completeExercise(state.currentLevel, state.currentExercise, allCorrect);
+    checkBtn.remove();
+    showNextButton(actions);
+  });
+  actions.appendChild(checkBtn);
+}
+
+// === ORDERING ===
+function renderOrdering(ex, content, actions) {
+  const card = document.createElement('div');
+  card.className = 'exercise-card anim-fade-up';
+  card.innerHTML = `
+    <h3>${ex.title}</h3>
+    <p class="instruction">${addGlossaryTerms(ex.instruction)}</p>
+    <div class="ordering-list" id="orderingList"></div>
+    <div id="feedbackArea"></div>
+  `;
+  content.appendChild(card);
+  
+  let items = [...ex.items].sort(() => Math.random() - 0.5);
+  let answered = false;
+  
+  function renderOrderList() {
+    const list = card.querySelector('#orderingList');
+    list.innerHTML = '';
+    items.forEach((item, i) => {
+      const el = document.createElement('div');
+      el.className = 'ordering-item';
+      el.innerHTML = `
+        <span class="order-num">${i + 1}</span>
+        <span style="flex:1">${addGlossaryTerms(item.text)}</span>
+        <div class="ordering-arrows">
+          <button class="arrow-btn" data-dir="up" data-idx="${i}" ${i === 0 ? 'disabled' : ''}>▲</button>
+          <button class="arrow-btn" data-dir="down" data-idx="${i}" ${i === items.length-1 ? 'disabled' : ''}>▼</button>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+    
+    list.querySelectorAll('.arrow-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        if (answered) return;
+        const idx = parseInt(btn.dataset.idx);
+        const dir = btn.dataset.dir;
+        if (dir === 'up' && idx > 0) { [items[idx], items[idx-1]] = [items[idx-1], items[idx]]; }
+        if (dir === 'down' && idx < items.length-1) { [items[idx], items[idx+1]] = [items[idx+1], items[idx]]; }
+        renderOrderList();
+      });
+    });
+  }
+  renderOrderList();
+  
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn-check';
+  checkBtn.textContent = 'Verificar orden';
+  checkBtn.addEventListener('click', () => {
+    if (answered) return;
+    answered = true;
+    
+    const isCorrect = items.every((item, i) => item.order === i + 1);
+    const list = card.querySelector('#orderingList');
+    list.querySelectorAll('.ordering-item').forEach((el, i) => {
+      el.querySelectorAll('.arrow-btn').forEach(b => b.disabled = true);
+      if (items[i].order === i + 1) el.classList.add('correct-pos');
+      else el.classList.add('incorrect-pos');
+    });
+    
+    showFeedback(card.querySelector('#feedbackArea'), isCorrect, ex.feedback);
+    completeExercise(state.currentLevel, state.currentExercise, isCorrect);
+    checkBtn.remove();
+    showNextButton(actions);
+  });
+  actions.appendChild(checkBtn);
+}
+
+// === CLASSIFY ===
+function renderClassify(ex, content, actions) {
+  const card = document.createElement('div');
+  card.className = 'exercise-card anim-fade-up';
+  card.innerHTML = `
+    <h3>${ex.title}</h3>
+    <p class="instruction">${addGlossaryTerms(ex.instruction)}</p>
+    <div class="classify-items" id="classifyItems"></div>
+    <div class="classify-zones" id="classifyZones"></div>
+    <div id="feedbackArea"></div>
+  `;
+  content.appendChild(card);
+  
+  const chipsArea = card.querySelector('#classifyItems');
+  const zonesArea = card.querySelector('#classifyZones');
+  let selectedChip = null;
+  let placements = {};
+  let answered = false;
+  
+  // Create zones
+  ex.categories.forEach((cat, ci) => {
+    const zone = document.createElement('div');
+    zone.className = 'classify-zone';
+    zone.dataset.cat = ci;
+    zone.innerHTML = `<div class="classify-zone-title">${cat}</div><div class="classify-zone-items" id="zone${ci}"></div>`;
+    zone.addEventListener('click', () => {
+      if (answered || selectedChip === null) return;
+      const zoneItems = zone.querySelector('.classify-zone-items');
+      const item = document.createElement('span');
+      item.className = 'classify-zone-item';
+      item.textContent = ex.items[selectedChip].text.substring(0, 50) + (ex.items[selectedChip].text.length > 50 ? '...' : '');
+      item.dataset.idx = selectedChip;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (answered) return;
+        delete placements[item.dataset.idx];
+        chipsArea.querySelector(`[data-idx="${item.dataset.idx}"]`).classList.remove('placed');
+        item.remove();
+      });
+      zoneItems.appendChild(item);
+      placements[selectedChip] = ci;
+      chipsArea.querySelector(`[data-idx="${selectedChip}"]`).classList.add('placed');
+      selectedChip = null;
+      chipsArea.querySelectorAll('.classify-chip').forEach(c => c.style.outline = '');
+    });
+    zonesArea.appendChild(zone);
+  });
+  
+  // Create chips
+  const shuffledItems = ex.items.map((item, i) => ({ ...item, origIdx: i })).sort(() => Math.random() - 0.5);
+  shuffledItems.forEach(item => {
+    const chip = document.createElement('span');
+    chip.className = 'classify-chip';
+    chip.textContent = item.text;
+    chip.dataset.idx = item.origIdx;
+    chip.addEventListener('click', () => {
+      if (answered || chip.classList.contains('placed')) return;
+      chipsArea.querySelectorAll('.classify-chip').forEach(c => c.style.outline = '');
+      selectedChip = item.origIdx;
+      chip.style.outline = '2px solid var(--gold)';
+    });
+    chipsArea.appendChild(chip);
+  });
+  
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn-check';
+  checkBtn.textContent = 'Verificar clasificación';
+  checkBtn.addEventListener('click', () => {
+    if (answered || Object.keys(placements).length < ex.items.length) return;
+    answered = true;
+    
+    let allCorrect = true;
+    Object.entries(placements).forEach(([idx, cat]) => {
+      const chip = chipsArea.querySelector(`[data-idx="${idx}"]`);
+      if (parseInt(cat) === ex.items[idx].cat) {
+        chip.classList.add('correct-chip');
+      } else {
+        chip.classList.add('incorrect-chip');
+        allCorrect = false;
+      }
+    });
+    
+    showFeedback(card.querySelector('#feedbackArea'), allCorrect, ex.feedback);
+    completeExercise(state.currentLevel, state.currentExercise, allCorrect);
+    checkBtn.remove();
+    showNextButton(actions);
+  });
+  actions.appendChild(checkBtn);
+}
+
+// === DIALOGUE ===
+function renderDialogue(ex, content, actions) {
+  const card = document.createElement('div');
+  card.className = 'exercise-card anim-fade-up';
+  
+  const titleEl = document.createElement('h3');
+  titleEl.textContent = ex.title;
+  card.appendChild(titleEl);
+  
+  if (ex.intro) {
+    const introEl = document.createElement('p');
+    introEl.className = 'instruction';
+    introEl.innerHTML = addGlossaryTerms(ex.intro);
+    card.appendChild(introEl);
+  }
+  
+  // Start button
+  const startBtn = document.createElement('button');
+  startBtn.className = 'btn-primary';
+  startBtn.style.cssText = 'margin-top:16px; margin-bottom:8px;';
+  startBtn.textContent = '▶ Comenzar la sesión';
+  card.appendChild(startBtn);
+  
+  const dialogueArea = document.createElement('div');
+  dialogueArea.id = 'dialogueArea';
+  dialogueArea.style.display = 'none';
+  card.appendChild(dialogueArea);
+  
+  const feedbackArea = document.createElement('div');
+  feedbackArea.id = 'feedbackArea';
+  card.appendChild(feedbackArea);
+  
+  content.appendChild(card);
+  
+  let stepIdx = 0;
+  let correctCount = 0;
+  let totalChoices = 0;
+  
+  startBtn.addEventListener('click', () => {
+    startBtn.style.display = 'none';
+    dialogueArea.style.display = 'block';
+    renderStep();
+  });
+  
+  function renderStep() {
+    if (stepIdx >= ex.steps.length) {
+      // Dialogue complete
+      const isCorrect = correctCount === totalChoices;
+      showFeedback(card.querySelector('#feedbackArea'), isCorrect, ex.feedback);
+      completeExercise(state.currentLevel, state.currentExercise, isCorrect);
+      showNextButton(actions);
+      return;
+    }
+    
+    const step = ex.steps[stepIdx];
+    
+    if (step.speaker === 'client') {
+      const bubble = document.createElement('div');
+      bubble.className = 'dialogue-bubble client';
+      bubble.innerHTML = `<div class="bubble-name">${step.name || 'Cliente'}</div>${addGlossaryTerms(step.text)}`;
+      dialogueArea.appendChild(bubble);
+      stepIdx++;
+      setTimeout(renderStep, 300);
+    }
+    else if (step.speaker === 'therapist') {
+      const bubble = document.createElement('div');
+      bubble.className = 'dialogue-bubble therapist';
+      bubble.innerHTML = `<div class="bubble-name">Tú (Terapeuta)</div>${step.text}`;
+      dialogueArea.appendChild(bubble);
+      stepIdx++;
+      setTimeout(renderStep, 300);
+    }
+    else if (step.speaker === 'choose') {
+      totalChoices++;
+      const choiceDiv = document.createElement('div');
+      choiceDiv.className = 'dialogue-choices';
+      choiceDiv.innerHTML = `<p class="instruction" style="margin-bottom:10px">${addGlossaryTerms(step.instruction)}</p>`;
+      
+      const opts = document.createElement('div');
+      opts.className = 'options';
+      const letters = ['A','B','C'];
+      let chosen = false;
+      
+      step.options.forEach((opt, oi) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="opt-letter">${letters[oi]}</span><span class="opt-text">${addGlossaryTerms(opt.text)}</span>`;
+        btn.addEventListener('click', () => {
+          if (chosen) return;
+          chosen = true;
+          
+          opts.querySelectorAll('.option-btn').forEach((b, j) => {
+            b.classList.add('disabled');
+            if (step.options[j].correct) b.classList.add('correct');
+            if (j === oi && !opt.correct) b.classList.add('incorrect');
+          });
+          
+          if (opt.correct) correctCount++;
+          
+          // Show why if incorrect
+          if (!opt.correct && opt.why) {
+            const whyBox = document.createElement('div');
+            whyBox.className = 'feedback-box incorrect';
+            whyBox.innerHTML = `<div class="fb-explanation">${addGlossaryTerms(opt.why)}</div>`;
+            opts.after(whyBox);
+          }
+          
+          // Show response
+          if (opt.response) {
+            setTimeout(() => {
+              const respBubble = document.createElement('div');
+              respBubble.className = `dialogue-bubble ${opt.response.speaker || 'client'}`;
+              respBubble.innerHTML = `<div class="bubble-name">${opt.response.name || 'Cliente'}</div>${opt.response.text}`;
+              dialogueArea.appendChild(respBubble);
+              
+              stepIdx++;
+              setTimeout(renderStep, 500);
+            }, 400);
+          } else {
+            stepIdx++;
+            setTimeout(renderStep, 300);
+          }
+        });
+        opts.appendChild(btn);
+      });
+      
+      choiceDiv.appendChild(opts);
+      dialogueArea.appendChild(choiceDiv);
+    }
+    
+    dialogueArea.scrollTop = dialogueArea.scrollHeight;
+  }
+}
+
+// === SANDBOX ===
+function renderSandbox(ex, content, actions) {
+  const card = document.createElement('div');
+  card.className = 'exercise-card anim-fade-up';
+  card.innerHTML = `
+    <h3>${ex.title}</h3>
+    <p class="instruction">${addGlossaryTerms(ex.instruction)}</p>
+    <textarea class="sandbox-area" placeholder="${ex.placeholder || 'Escribe aquí tu reflexión...'}" id="sandboxText"></textarea>
+    <p class="sandbox-hint">Este ejercicio es para tu reflexión personal. Se completa al escribir tu respuesta.</p>
+    <div id="feedbackArea"></div>
+  `;
+  content.appendChild(card);
+  
+  const doneBtn = document.createElement('button');
+  doneBtn.className = 'btn-check';
+  doneBtn.textContent = 'Completar reflexión';
+  doneBtn.addEventListener('click', () => {
+    const text = document.getElementById('sandboxText').value.trim();
+    if (text.length < 10) return;
+    
+    const fb = card.querySelector('#feedbackArea');
+    fb.innerHTML = `
+      <div class="feedback-box correct">
+        <div class="fb-title">✓ Reflexión completada</div>
+        <div class="fb-explanation">${addGlossaryTerms(ex.reflection)}</div>
+      </div>
+    `;
+    
+    completeExercise(state.currentLevel, state.currentExercise, true);
+    doneBtn.remove();
+    showNextButton(actions);
+  });
+  actions.appendChild(doneBtn);
+}
+
+// === HELPERS ===
+function showFeedback(container, isCorrect, feedback) {
+  if (!container || !feedback) return;
+  const fb = feedback;
+  container.innerHTML = `
+    <div class="feedback-box ${isCorrect ? 'correct' : 'incorrect'}">
+      <div class="fb-title">${isCorrect ? '✓ ¡Correcto!' : '✗ No exactamente'}</div>
+      <div class="fb-explanation">${addGlossaryTerms(isCorrect ? fb.correct : fb.incorrect)}</div>
+      ${fb.process ? `<div class="fb-process">🔬 ${addGlossaryTerms(fb.process)}</div>` : ''}
+    </div>
+  `;
+}
+
+function showNextButton(actions) {
+  const level = LEVELS[state.currentLevel];
+  const isLast = state.currentExercise >= level.exercises.length - 1;
+  
+  const btn = document.createElement('button');
+  btn.className = 'btn-primary';
+  btn.textContent = isLast ? 'Finalizar nivel' : 'Siguiente ejercicio →';
+  btn.style.marginTop = '16px';
+  btn.addEventListener('click', () => {
+    if (isLast) {
+      showLevelComplete();
+    } else {
+      state.currentExercise++;
+      saveState();
+      renderExercise();
+    }
+  });
+  actions.appendChild(btn);
+}
+
+function showLevelComplete() {
+  document.getElementById('homeView').classList.remove('active');
+  document.getElementById('exerciseView').classList.remove('active');
+  document.getElementById('completeView').classList.add('active');
+  
+  const level = LEVELS[state.currentLevel];
+  const score = state.scores[state.currentLevel] || { correct: 0, total: 0 };
+  const pct = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 100;
+  
+  document.getElementById('completeTitle').textContent = `¡${level.title} completado!`;
+  document.getElementById('completeScore').textContent = `${score.correct}/${score.total} respuestas correctas (${pct}%)`;
+  
+  let msg = '';
+  if (pct >= 80) msg = 'Excelente comprensión. Estás listo para el siguiente nivel.';
+  else if (pct >= 60) msg = 'Buen trabajo. Puedes avanzar, pero considera repasar los ejercicios donde fallaste.';
+  else msg = 'Hay conceptos por reforzar. Te recomiendo repetir este nivel antes de avanzar.';
+  document.getElementById('completeMsg').textContent = msg;
+  
+  const nextBtn = document.getElementById('btnNextLevel');
+  if (state.currentLevel < LEVELS.length - 1) {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = `Ir al Nivel ${state.currentLevel + 2}: ${LEVELS[state.currentLevel + 1].title}`;
+    nextBtn.onclick = () => startLevel(state.currentLevel + 1);
+  } else {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = '🎉 ¡Entrenamiento completo!';
+    nextBtn.onclick = () => renderHome();
+  }
+  
+  document.getElementById('btnRetry').onclick = () => {
+    // Reset level scores
+    LEVELS[state.currentLevel].exercises.forEach((_, i) => {
+      delete state.completed[`${state.currentLevel}-${i}`];
+    });
+    delete state.scores[state.currentLevel];
+    saveState();
+    startLevel(state.currentLevel);
+  };
+  
+  document.getElementById('btnGoHome').onclick = () => renderHome();
+  
+  // Confetti
+  if (pct >= 60) launchConfetti();
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function launchConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  
+  const pieces = [];
+  const colors = ['#f0b429','#3498db','#2ecc71','#e74c3c','#ffd54f','#5dade2'];
+  
+  for (let i = 0; i < 80; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * 200,
+      w: 6 + Math.random() * 6,
+      h: 4 + Math.random() * 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vy: 2 + Math.random() * 3,
+      vx: -1 + Math.random() * 2,
+      rot: Math.random() * Math.PI * 2,
+      vrot: -0.05 + Math.random() * 0.1
+    });
+  }
+  
+  let frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 180) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+document.getElementById('btnBack').addEventListener('click', renderHome);
+
+document.getElementById('btnResetAll').addEventListener('click', function() {
+  const btn = this;
+  if (btn.dataset.confirm === 'true') {
+    state = { completed: {}, scores: {}, currentLevel: 0, currentExercise: 0 };
+    try { localStorage.removeItem('defusion_app_state'); } catch(e) {}
+    saveState();
+    btn.dataset.confirm = 'false';
+    btn.textContent = '✓ Progreso reiniciado';
+    btn.style.borderColor = 'var(--green)';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => {
+      btn.innerHTML = '↺ Reiniciar todo el progreso';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+      renderHome();
+    }, 1200);
+  } else {
+    btn.dataset.confirm = 'true';
+    btn.innerHTML = '⚠ Toca de nuevo para confirmar';
+    btn.style.borderColor = 'var(--red)';
+    btn.style.color = 'var(--red)';
+    setTimeout(() => {
+      btn.dataset.confirm = 'false';
+      btn.innerHTML = '↺ Reiniciar todo el progreso';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 3000);
+  }
+});
+
+// Feedback form
+document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const textarea = form.querySelector('textarea');
+  if (!textarea.value.trim()) return;
+  
+  try {
+    await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+    textarea.value = '';
+    document.getElementById('sendOk').style.display = 'block';
+    setTimeout(() => { document.getElementById('sendOk').style.display = 'none'; }, 4000);
+  } catch(err) {
+    alert('Error al enviar. Intenta de nuevo.');
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+renderHome();
+</script>
+
+</body>
+</html>

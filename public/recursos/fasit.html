@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>FASIT — Autoevaluación del Terapeuta</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF8F5;
+    --card: #FFFFFF;
+    --text: #2D2A26;
+    --text-soft: #6B6560;
+    --accent: #C45D3E;
+    --accent-light: #F4E8E3;
+    --accent-dark: #A14A30;
+    --green: #4A7C59;
+    --green-light: #E8F0EB;
+    --yellow: #C49A2A;
+    --yellow-light: #F5F0E0;
+    --border: #E8E4DF;
+    --shadow: 0 2px 12px rgba(45,42,38,0.06);
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding: 40px 0 24px;
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .header p {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-top: 8px;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.35s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .disclaimer-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--yellow-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  .disclaimer-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .disclaimer-card p {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+    line-height: 1.7;
+  }
+  .disclaimer-card ul {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+  .disclaimer-card li {
+    margin-bottom: 6px;
+  }
+  .disclaimer-ref {
+    font-size: 12px;
+    color: var(--text-soft);
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 16px;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:active { background: var(--accent-dark); transform: scale(0.98); }
+  .btn-secondary {
+    background: var(--card);
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    margin-top: 12px;
+  }
+  .btn-secondary:active { background: var(--accent-light); }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-container {
+    background: var(--border);
+    border-radius: 100px;
+    height: 6px;
+    margin: 20px 0 8px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    font-size: 12px;
+    color: var(--text-soft);
+    text-align: right;
+    margin-bottom: 20px;
+  }
+
+  /* ── CLASS HEADER ── */
+  .class-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+  .class-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .class-description {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+
+  /* ── QUESTION CARDS ── */
+  .question-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .question-card.answered {
+    border-color: var(--accent);
+    border-color: rgba(196,93,62,0.25);
+  }
+  .question-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .question-note {
+    font-size: 12px;
+    color: var(--text-soft);
+    font-style: italic;
+    margin-bottom: 14px;
+    line-height: 1.5;
+    padding: 8px 12px;
+    background: var(--bg);
+    border-radius: 8px;
+  }
+
+  /* ── RESPONSE OPTIONS ── */
+  .response-options {
+    display: flex;
+    gap: 8px;
+  }
+  .response-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  .response-btn:active { transform: scale(0.96); }
+  .response-btn.selected-no {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .response-btn.selected-sometimes {
+    background: var(--yellow-light);
+    border-color: var(--yellow);
+    color: var(--yellow);
+  }
+  .response-btn.selected-yes {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── NAV BUTTONS ── */
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    padding-bottom: 20px;
+  }
+  .nav-buttons .btn { flex: 1; }
+  .btn-back {
+    background: var(--bg);
+    color: var(--text-soft);
+    border: 2px solid var(--border);
+  }
+
+  /* ── RESULTS ── */
+  .results-intro {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .result-class-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .result-class-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .result-class-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+  }
+  .result-level {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+  }
+  .level-low { background: var(--green-light); color: var(--green); }
+  .level-mid { background: var(--yellow-light); color: var(--yellow); }
+  .level-high { background: var(--accent-light); color: var(--accent); }
+
+  .result-bar-track {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 100px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .result-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.8s ease;
+  }
+  .fill-low { background: var(--green); }
+  .fill-mid { background: var(--yellow); }
+  .fill-high { background: var(--accent); }
+
+  .result-breakdown {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.8;
+  }
+  .result-breakdown .flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-right: 4px;
+  }
+  .result-breakdown .ok {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-right: 4px;
+  }
+  .result-item {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--bg);
+  }
+  .result-item:last-child { border-bottom: none; }
+
+  .results-disclaimer {
+    background: var(--yellow-light);
+    border-radius: var(--radius);
+    padding: 20px;
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+  .results-disclaimer strong {
+    color: var(--yellow);
+  }
+
+  /* ── COLLAPSIBLE DETAIL ── */
+  .detail-toggle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    padding: 4px 0;
+    margin-top: 8px;
+  }
+  .detail-content {
+    display: none;
+    margin-top: 10px;
+  }
+  .detail-content.open { display: block; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 380px) {
+    .header h1 { font-size: 24px; }
+    .response-btn { font-size: 12px; padding: 9px 2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ════════ HEADER ════════ -->
+  <div class="header">
+    <div class="header-label">Herramienta de Reflexión Clínica</div>
+    <h1>FASIT</h1>
+    <p>Autoevaluación de habilidades interpersonales del terapeuta</p>
+  </div>
+
+  <!-- ════════ SCREEN: DISCLAIMER ════════ -->
+  <div class="screen active" id="screen-disclaimer">
+    <div class="disclaimer-card">
+      <div class="disclaimer-icon">⚠️</div>
+      <h2>Nota importante antes de comenzar</h2>
+      <p>El FASIT (Functional Assessment of Skills for Interpersonal Therapists) <strong>no es un cuestionario estandarizado</strong> con puntuación psicométrica validada. Es un sistema de evaluación clínica basado en preguntas abiertas de autoevaluación del terapeuta y preguntas del supervisor, diseñadas como <strong>guías clínicas</strong> para la supervisión.</p>
+      <p>Lo que hemos hecho aquí es adaptar esas preguntas a un formato de checklist interactivo para facilitar la reflexión personal. Esto implica:</p>
+      <ul>
+        <li>Las respuestas son <strong>aproximaciones</strong> a lo que originalmente son preguntas abiertas y exploratorias.</li>
+        <li>Los resultados <strong>no constituyen un diagnóstico</strong> ni una evaluación estandarizada de tus competencias.</li>
+        <li>Algunas preguntas pueden requerir más matiz del que permite un formato de tres opciones.</li>
+        <li>Esta herramienta <strong>complementa pero no reemplaza</strong> la supervisión clínica directa.</li>
+      </ul>
+      <p>Utiliza los resultados como un <strong>punto de partida para la reflexión</strong>, idealmente acompañado de un proceso de supervisión donde puedas explorar con mayor profundidad las áreas que identifiques.</p>
+      <div class="disclaimer-ref">
+        Basado en: Callaghan, G. M. (2006). Functional Assessment of Skills for Interpersonal Therapists: The FASIT System. <em>The Behavior Analyst Today</em>, 7(3), 399-433.
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="startAssessment()">Entendido, comenzar</button>
+  </div>
+
+  <!-- ════════ SCREEN: ASSESSMENT ════════ -->
+  <div class="screen" id="screen-assessment">
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div class="progress-text" id="progressText">Clase 1 de 5</div>
+    <div id="classContent"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-back" id="btnBack" onclick="prevClass()" style="display:none">Anterior</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextClass()">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- ════════ SCREEN: RESULTS ════════ -->
+  <div class="screen" id="screen-results">
+    <div class="results-intro">
+      A continuación se muestra un resumen orientativo de tus respuestas, organizadas según las 5 clases del FASIT. Las áreas con mayor cantidad de señales de atención pueden ser puntos de reflexión para tu supervisión.
+    </div>
+    <div id="resultsContent"></div>
+    <div class="results-disclaimer">
+      <strong>Recordatorio:</strong> Estos resultados son orientativos y no constituyen una evaluación psicométrica. Las áreas señaladas son invitaciones a explorar con mayor profundidad, idealmente en el contexto de supervisión clínica. Una respuesta marcada como "área de atención" no significa necesariamente que sea un problema, el contexto y la frecuencia importan.
+    </div>
+    <button class="btn btn-primary" onclick="resetAll()">Realizar de nuevo</button>
+    <button class="btn btn-secondary" onclick="downloadResults()">Descargar resumen</button>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FASIT DATA — Therapist Self-Assessment
+// ══════════════════════════════════════════
+
+const classData = [
+  {
+    id: 'A',
+    name: 'Aserción de Necesidades',
+    description: 'Esta clase evalúa comportamientos relacionados con la capacidad del terapeuta para identificar, especificar y expresar sus necesidades en el contexto de la supervisión y la terapia. Incluye necesidades de dirección, apoyo emocional, y peticiones al cliente durante la sesión.',
+    questions: [
+      {
+        text: '¿Sientes que otras personas son capaces de satisfacer las necesidades que tienes?',
+        tag: 'Visión general',
+        category: 'overview',
+        direction: 'positive' // "No" = concern
+      },
+      {
+        text: '¿Eres capaz de hacer peticiones a otros para satisfacer tus necesidades?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Eres capaz de reconocer cuando necesitas algo de otra persona?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Eres capaz de identificar momentos o situaciones en las que es mejor pedir lo que necesitas?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Puedes identificar personas que son más propensas a satisfacer estas necesidades?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿A menudo comienzas a pedir algo y luego cambias de opinión y decides no hacer la petición o aceptar la asistencia?',
+        tag: 'Repertorio de escape',
+        category: 'escape',
+        direction: 'negative' // "Sí" = concern
+      },
+      {
+        text: '¿A menudo decides no pedir algo a alguien aunque podría ser una petición razonable?',
+        tag: 'Repertorio de evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿Eres capaz de expresar tus necesidades directamente a otros, o tiendes a insinuarlas?',
+        tag: 'Repertorio ineficaz',
+        category: 'ineffective',
+        direction: 'positive',
+        note: 'Evalúa si puedes expresar directamente (positivo) o si tiendes a insinuar (área de atención).'
+      },
+      {
+        text: '¿Los demás tienen claro lo que necesitas cuando pides algo?',
+        tag: 'Repertorio ineficaz',
+        category: 'ineffective',
+        direction: 'positive'
+      },
+      {
+        text: '¿Pides algo haciendo una afirmación u observación en lugar de hacer la petición directamente?',
+        tag: 'Petición disfrazada',
+        category: 'disguised',
+        direction: 'negative',
+        note: 'Ej: "Es difícil llegar a tiempo a supervisión" en lugar de "¿Podemos cambiar el horario?"'
+      },
+      {
+        text: '¿Alguien te ha dado feedback de que pides demasiado o haces peticiones con demasiada frecuencia?',
+        tag: 'Repertorio excesivo',
+        category: 'excessive',
+        direction: 'negative'
+      },
+      {
+        text: '¿Alguien te ha dicho que la forma en que pides algo es desagradable o dificulta que cumplan con lo que quieres?',
+        tag: 'Estilo aversivo',
+        category: 'aversive',
+        direction: 'negative'
+      }
+    ]
+  },
+  {
+    id: 'B',
+    name: 'Comunicación Bidireccional',
+    description: 'Esta clase evalúa la capacidad del terapeuta para detectar su impacto interpersonal, recibir y responder al feedback, y proporcionar feedback efectivo a otros. Es esencial para FAP donde el mecanismo de cambio es la respuesta contingente del terapeuta.',
+    questions: [
+      {
+        text: '¿Eres capaz de notar el impacto que tienes en otros, es decir, cómo te perciben o se sienten contigo durante una interacción?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿A veces haces comentarios que podrían ser interpretados como ofensivos por otros?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'negative'
+      },
+      {
+        text: '¿Eres consciente o notas cuando otras personas te están dando feedback sobre tu comportamiento?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Sientes que cambias lo que haces de manera consistente con el feedback que te han dado?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Hay momentos o situaciones en las que necesitas ser más consciente de tu impacto en otros?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'negative',
+        note: 'Si identificas que hay contextos donde no estás tan atento a tu impacto, esto puede ser un área de trabajo.'
+      },
+      {
+        text: '¿Eres capaz de responder cuando las personas te dan feedback?',
+        tag: 'Repertorio general',
+        category: 'repertoire',
+        direction: 'positive'
+      },
+      {
+        text: 'Cuando otros te dan feedback, ¿hay momentos en que no sabes cómo responder?',
+        tag: 'Falta de respuesta',
+        category: 'lack_response',
+        direction: 'negative'
+      },
+      {
+        text: '¿Tienes problemas para cambiar lo que estás haciendo cuando notas o te dicen que no estás teniendo el impacto que te gustaría?',
+        tag: 'Falta de respuesta',
+        category: 'lack_response',
+        direction: 'negative'
+      },
+      {
+        text: '¿A menudo ignoras o decides no responder al feedback que otros te dan?',
+        tag: 'Insensibilidad al feedback',
+        category: 'insensitivity',
+        direction: 'negative'
+      },
+      {
+        text: 'Cuando notas que tu impacto es menos efectivo o recibes feedback al respecto, ¿continúas haciendo lo mismo, quizás en un esfuerzo por hacerte entender mejor?',
+        tag: 'Insensibilidad — escalada',
+        category: 'insensitivity',
+        direction: 'negative'
+      },
+      {
+        text: '¿Te encuentras peleando con alguien si te da feedback difícil de escuchar?',
+        tag: 'Evaluar Clase C',
+        category: 'conflict_flag',
+        direction: 'negative',
+        note: 'Si respondes "Sí" o "A veces", presta especial atención a la Clase C (Conflicto).'
+      },
+      {
+        text: '¿Eres muy sensible a cómo afectas a otros?',
+        tag: 'Hipersensibilidad',
+        category: 'hypersensitivity',
+        direction: 'negative',
+        note: 'La hipersensibilidad puede llevar a cambiar tu conducta para escapar de la incomodidad, incluso a costa de tus propias necesidades.'
+      },
+      {
+        text: '¿Hay situaciones en las que eres muy sensible al feedback que te han dado?',
+        tag: 'Hipersensibilidad',
+        category: 'hypersensitivity',
+        direction: 'negative'
+      }
+    ]
+  },
+  {
+    id: 'C',
+    name: 'Conflicto',
+    description: 'Esta clase evalúa la capacidad del terapeuta para identificar y responder efectivamente al conflicto interpersonal. Es especialmente relevante al trabajar con clientes con patrones interpersonales complejos que frecuentemente traen conflicto a sesión.',
+    questions: [
+      {
+        text: '¿Consideras normal que ocurra conflicto entre tú y otras personas en tus relaciones?',
+        tag: 'Visión general / discriminación',
+        category: 'discrimination',
+        direction: 'positive',
+        note: 'Reconocer que el conflicto es parte normal de las relaciones indica buena discriminación.'
+      },
+      {
+        text: '¿Eres consciente cuando hay un conflicto entre tú y otra persona?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Puedes identificar momentos en que es mejor abordar un conflicto?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'positive'
+      },
+      {
+        text: '¿Puedes identificar con qué personas es más apropiado abordar un conflicto?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'positive'
+      },
+      {
+        text: '¿Tiendes a intentar detener un conflicto en el que estás, aunque no haya resolución o no hayas expresado tu opinión?',
+        tag: 'Escape',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿Tiendes a ceder fácilmente ante otros si hay conflicto, aceptando su posición o punto de vista, aunque no estés de acuerdo?',
+        tag: 'Escape — aquiescencia excesiva',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿Tiendes a retirarte si comienza o puede comenzar un conflicto?',
+        tag: 'Escape / evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿Intentas evitar el conflicto a toda costa?',
+        tag: 'Evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿Intentas ser el "pacificador" o tratas de disminuir la posibilidad de que ocurra conflicto, quizás asegurándote de que la otra persona esté contenta?',
+        tag: 'Evitación — respuestas conciliatorias excesivas',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: 'Cuando intentas resolver un conflicto, ¿tus intentos son exitosos?',
+        tag: 'Repertorio ineficaz',
+        category: 'ineffective',
+        direction: 'positive'
+      },
+      {
+        text: '¿Los demás tienen claro lo que estás haciendo cuando intentas disminuir un conflicto?',
+        tag: 'Repertorio indirecto',
+        category: 'ineffective',
+        direction: 'positive'
+      },
+      {
+        text: '¿Encuentras (o te han dicho) que tiendes a no ceder ante otros en un conflicto, aunque la otra persona pueda tener un buen punto?',
+        tag: 'Inflexibilidad ante el compromiso',
+        category: 'unwilling',
+        direction: 'negative'
+      },
+      {
+        text: 'Cuando estás en conflicto con otra persona, ¿encuentras que continúas peleando o que la pelea incluso empeora?',
+        tag: 'Escalada de conflicto',
+        category: 'escalating',
+        direction: 'negative'
+      },
+      {
+        text: 'Cuando tienes conflicto con otros, ¿intentas deliberadamente aumentar el nivel o la intensidad del conflicto?',
+        tag: 'Escalada de conflicto',
+        category: 'escalating',
+        direction: 'negative'
+      },
+      {
+        text: '¿Te sientes más conectado o cercano a alguien durante un conflicto intenso?',
+        tag: 'Escalada — evaluar Clase D',
+        category: 'escalating',
+        direction: 'negative',
+        note: 'Si la respuesta es "Sí", es importante evaluar a fondo la Clase D (Cercanía Interpersonal).'
+      }
+    ]
+  },
+  {
+    id: 'D',
+    name: 'Revelación y Cercanía Interpersonal',
+    description: 'Esta clase evalúa la capacidad del terapeuta para establecer y mantener relaciones interpersonales cercanas, incluyendo la auto-revelación, la búsqueda de apoyo social, y la respuesta a las necesidades y revelaciones de otros.',
+    questions: [
+      {
+        text: '¿Has tenido un mejor amigo, o personas de las que dirías que eres cercano?',
+        tag: 'Visión general',
+        category: 'overview',
+        direction: 'positive'
+      },
+      {
+        text: '¿Actualmente tienes relaciones cercanas, personas con quienes puedes hablar de cómo te va?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Valoras o sientes que las relaciones cercanas son importantes para ti?',
+        tag: 'Discriminación / deseo de cercanía',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Hay momentos en que sientes que es importante compartir cosas sobre ti mismo con otros?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Hay momentos en que eres más sensible a lo que alguien más te está contando sobre cómo le va?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Alguna vez te han dicho que dices demasiado a otros sobre cómo te sientes o sobre tus propias experiencias?',
+        tag: 'Control contextual — sobre-revelación',
+        category: 'context',
+        direction: 'negative'
+      },
+      {
+        text: '¿No estás seguro de a qué personas podrías contarles tus sentimientos, hablar sobre tus experiencias, o pedir apoyo?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'negative'
+      },
+      {
+        text: '¿Tus amigos u otras personas te preguntan cómo estás, pero eliges no contarles?',
+        tag: 'Control contextual — sub-revelación',
+        category: 'context',
+        direction: 'negative'
+      },
+      {
+        text: '¿Alguna vez comienzas a hablar de cómo te va o a pedir apoyo pero luego decides que sería mejor no hacerlo?',
+        tag: 'Escape',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿Piensas que es mejor simplemente no hablar de tus sentimientos o de ti mismo en absoluto?',
+        tag: 'Evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿Piensas que es mejor para ti no pedir apoyo de otros aunque podría ser útil?',
+        tag: 'Evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿Tienes alguna regla que te dices a ti mismo sobre cuándo está bien hablar de tus sentimientos o pedir apoyo?',
+        tag: 'Escape / evitación',
+        category: 'avoidance',
+        direction: 'negative',
+        note: 'Las reglas sobre cuándo está permitido expresarse pueden funcionar como evitación si restringen el repertorio de forma inflexible.'
+      },
+      {
+        text: 'Cuando hablas de cómo te va o pides apoyo, ¿las personas entienden lo que estás comunicando?',
+        tag: 'Revelación poco clara',
+        category: 'unclear',
+        direction: 'positive'
+      },
+      {
+        text: '¿Las personas te dicen que la forma en que hablas de ti mismo hace sentir que no te das suficiente crédito?',
+        tag: 'Revelación inexacta — autodepreciación',
+        category: 'inaccurate',
+        direction: 'negative'
+      },
+      {
+        text: '¿Las personas te dan feedback de que tiendes a presumir o hablar de ti mismo exagerando tus habilidades?',
+        tag: 'Revelación inexacta — grandiosa',
+        category: 'inaccurate',
+        direction: 'negative'
+      },
+      {
+        text: '¿Las personas te dicen que hablas demasiado de ti mismo o de lo que sientes o has hecho?',
+        tag: 'Revelación excesiva',
+        category: 'excessive',
+        direction: 'negative'
+      },
+      {
+        text: '¿Otros te dicen que pides apoyo demasiado o que no pueden satisfacer tus necesidades tan a menudo como te gustaría?',
+        tag: 'Búsqueda excesiva de apoyo',
+        category: 'excessive',
+        direction: 'negative'
+      },
+      {
+        text: '¿Escuchas a otros y ofreces apoyo cuando lo buscan de ti?',
+        tag: 'Falta de respuesta a la revelación de otros',
+        category: 'failure_respond',
+        direction: 'positive'
+      },
+      {
+        text: '¿Alguna vez te han dicho que tomas más de lo que das en una relación?',
+        tag: 'Falta de reciprocidad',
+        category: 'failure_respond',
+        direction: 'negative'
+      }
+    ]
+  },
+  {
+    id: 'E',
+    name: 'Experiencia y Expresión Emocional',
+    description: 'Esta clase evalúa la capacidad del terapeuta para identificar, tolerar y expresar experiencias emocionales. Es fundamental para intervenciones interpersonales donde el terapeuta necesita notar su propia ansiedad, tristeza o alegría y continuar respondiendo efectivamente.',
+    questions: [
+      {
+        text: '¿Eres capaz de notar que tienes experiencias emocionales mientras están sucediendo?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Te das cuenta de que tuviste un sentimiento solo después de que ocurrió, sin poder notarlo en el momento?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'negative'
+      },
+      {
+        text: '¿Puedes distinguir diferentes tipos de experiencias emocionales entre sí?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Eres capaz de identificar situaciones en las que es apropiado expresar tus emociones?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'positive'
+      },
+      {
+        text: '¿Hay momentos en que decides no mostrar una experiencia emocional que estás teniendo?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'negative',
+        note: 'Decidir no mostrar emociones puede ser adaptativo en algunos contextos, pero si es un patrón inflexible, puede ser área de atención.'
+      },
+      {
+        text: '¿Alguien te ha hecho saber que siente que deberías ser más expresivo sobre lo que sientes?',
+        tag: 'Escape / evitación — expresión infrecuente',
+        category: 'escape_avoid',
+        direction: 'negative'
+      },
+      {
+        text: '¿Tienes alguna regla para ti mismo sobre sentimientos que no tendrás o no pasarás tiempo experimentando?',
+        tag: 'Escape y evitación',
+        category: 'escape_avoid',
+        direction: 'negative',
+        note: 'Ej: "No me permito sentir tristeza" o "La ansiedad es debilidad". Estas reglas pueden funcionar como evitación experiencial.'
+      },
+      {
+        text: '¿Frecuentemente comienzas a tener una experiencia emocional fuerte y luego haces cosas para deshacerte del sentimiento?',
+        tag: 'Repertorio de escape',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿Frecuentemente haces cosas que te impedirán tener sentimientos particulares en absoluto?',
+        tag: 'Repertorio de evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: 'Cuando le dices a las personas cómo te sientes, ¿responden de una manera que tiene sentido para ti?',
+        tag: 'Etiquetado inexacto / expresión ineficaz',
+        category: 'inaccurate',
+        direction: 'positive',
+        note: 'Si otros no responden de forma congruente, puede indicar que tu expresión emocional no está comunicando lo que sientes.'
+      },
+      {
+        text: '¿Eres capaz de etiquetar con precisión los sentimientos que tienes mientras los estás experimentando?',
+        tag: 'Etiquetado inexacto',
+        category: 'inaccurate',
+        direction: 'positive'
+      },
+      {
+        text: '¿Sientes que eres capaz de comunicar tus experiencias emocionales claramente para que otras personas entiendan lo que sientes?',
+        tag: 'Expresión ineficaz',
+        category: 'ineffective',
+        direction: 'positive'
+      },
+      {
+        text: '¿Insinúas a las personas lo que estás sintiendo en lugar de expresarlo directamente?',
+        tag: 'Expresión ineficaz',
+        category: 'ineffective',
+        direction: 'negative'
+      },
+      {
+        text: '¿Alguien alguna vez te ha hecho saber que se sintió abrumado por cómo expresas tus sentimientos?',
+        tag: 'Expresión afectiva excesiva',
+        category: 'excessive',
+        direction: 'negative'
+      }
+    ]
+  }
+];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentClassIndex = 0;
+let answers = {}; // { "A-0": "yes"/"sometimes"/"no", ... }
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startAssessment() {
+  showScreen('screen-assessment');
+  currentClassIndex = 0;
+  renderClass();
+}
+
+function renderClass() {
+  const cls = classData[currentClassIndex];
+  const total = classData.length;
+  const pct = ((currentClassIndex) / total) * 100;
+
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `Clase ${currentClassIndex + 1} de ${total}`;
+
+  let html = '';
+  html += `<div class="class-badge">Clase ${cls.id}</div>`;
+  html += `<div class="class-title">${cls.name}</div>`;
+  html += `<div class="class-description">${cls.description}</div>`;
+
+  cls.questions.forEach((q, i) => {
+    const key = `${cls.id}-${i}`;
+    const answered = answers[key] ? 'answered' : '';
+    html += `<div class="question-card ${answered}" id="card-${key}">`;
+    html += `<div class="question-tag">${q.tag}</div>`;
+    html += `<div class="question-text">${q.text}</div>`;
+    if (q.note) {
+      html += `<div class="question-note">${q.note}</div>`;
+    }
+    html += `<div class="response-options">`;
+    html += renderResponseBtn(key, 'no', 'No', q);
+    html += renderResponseBtn(key, 'sometimes', 'A veces', q);
+    html += renderResponseBtn(key, 'yes', 'Sí', q);
+    html += `</div></div>`;
+  });
+
+  document.getElementById('classContent').innerHTML = html;
+
+  // Nav buttons
+  document.getElementById('btnBack').style.display = currentClassIndex === 0 ? 'none' : 'block';
+  document.getElementById('btnNext').textContent = currentClassIndex === total - 1 ? 'Ver resultados' : 'Siguiente';
+}
+
+function renderResponseBtn(key, value, label, q) {
+  const selected = answers[key] === value;
+  let selectedClass = '';
+  if (selected) {
+    if (value === 'no') selectedClass = 'selected-no';
+    else if (value === 'sometimes') selectedClass = 'selected-sometimes';
+    else selectedClass = 'selected-yes';
+  }
+  return `<button class="response-btn ${selectedClass}" onclick="selectAnswer('${key}', '${value}')">${label}</button>`;
+}
+
+function selectAnswer(key, value) {
+  answers[key] = value;
+  const card = document.getElementById(`card-${key}`);
+  card.classList.add('answered');
+
+  // Re-render just the options in this card
+  const cls = classData[currentClassIndex];
+  const qIndex = parseInt(key.split('-')[1]);
+  const q = cls.questions[qIndex];
+  const optionsContainer = card.querySelector('.response-options');
+  let html = '';
+  html += renderResponseBtn(key, 'no', 'No', q);
+  html += renderResponseBtn(key, 'sometimes', 'A veces', q);
+  html += renderResponseBtn(key, 'yes', 'Sí', q);
+  optionsContainer.innerHTML = html;
+}
+
+function nextClass() {
+  if (currentClassIndex < classData.length - 1) {
+    currentClassIndex++;
+    renderClass();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResults();
+  }
+}
+
+function prevClass() {
+  if (currentClassIndex > 0) {
+    currentClassIndex--;
+    renderClass();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ══════════════════════════════════════════
+// SCORING & RESULTS
+// ══════════════════════════════════════════
+function getScore(key, direction) {
+  const val = answers[key];
+  if (!val) return 0; // unanswered = no concern
+
+  if (direction === 'negative') {
+    // "Sí" = concern, "A veces" = partial, "No" = ok
+    if (val === 'yes') return 2;
+    if (val === 'sometimes') return 1;
+    return 0;
+  } else {
+    // positive: "No" = concern, "A veces" = partial, "Sí" = ok
+    if (val === 'no') return 2;
+    if (val === 'sometimes') return 1;
+    return 0;
+  }
+}
+
+function getConcernLabel(key, direction) {
+  const val = answers[key];
+  if (!val) return 'sin respuesta';
+  const score = getScore(key, direction);
+  if (score === 2) return 'flag';
+  if (score === 1) return 'partial';
+  return 'ok';
+}
+
+function showResults() {
+  showScreen('screen-results');
+  document.getElementById('progressBar').style.width = '100%';
+
+  let html = '';
+
+  classData.forEach(cls => {
+    let totalScore = 0;
+    let maxScore = cls.questions.length * 2;
+    let flaggedItems = [];
+    let partialItems = [];
+
+    cls.questions.forEach((q, i) => {
+      const key = `${cls.id}-${i}`;
+      const score = getScore(key, q.direction);
+      totalScore += score;
+      if (score === 2) flaggedItems.push(q);
+      else if (score === 1) partialItems.push(q);
+    });
+
+    const pct = Math.round((totalScore / maxScore) * 100);
+    let levelClass, levelText, fillClass;
+    if (pct <= 25) { levelClass = 'level-low'; levelText = 'Bajo'; fillClass = 'fill-low'; }
+    else if (pct <= 55) { levelClass = 'level-mid'; levelText = 'Moderado'; fillClass = 'fill-mid'; }
+    else { levelClass = 'level-high'; levelText = 'Alto'; fillClass = 'fill-high'; }
+
+    html += `<div class="result-class-card">`;
+    html += `<div class="result-class-header">`;
+    html += `<div class="result-class-name">Clase ${cls.id}: ${cls.name}</div>`;
+    html += `<span class="result-level ${levelClass}">${levelText}</span>`;
+    html += `</div>`;
+    html += `<div class="result-bar-track"><div class="result-bar-fill ${fillClass}" style="width: ${pct}%"></div></div>`;
+
+    if (flaggedItems.length === 0 && partialItems.length === 0) {
+      html += `<div class="result-breakdown"><span class="ok">✓</span> No se identificaron áreas de atención significativas en esta clase.</div>`;
+    } else {
+      html += `<button class="detail-toggle" onclick="toggleDetail('detail-${cls.id}')">Ver detalle de áreas señaladas (${flaggedItems.length + partialItems.length})</button>`;
+      html += `<div class="detail-content" id="detail-${cls.id}">`;
+      html += `<div class="result-breakdown">`;
+
+      flaggedItems.forEach(q => {
+        html += `<div class="result-item"><span class="flag">⚑ Atención</span> <strong>${q.tag}:</strong> ${q.text}</div>`;
+      });
+      partialItems.forEach(q => {
+        html += `<div class="result-item"><span class="flag" style="background:var(--yellow-light);color:var(--yellow)">~ Parcial</span> <strong>${q.tag}:</strong> ${q.text}</div>`;
+      });
+
+      html += `</div></div>`;
+    }
+
+    html += `</div>`;
+  });
+
+  document.getElementById('resultsContent').innerHTML = html;
+}
+
+function toggleDetail(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  const btn = el.previousElementSibling;
+  if (el.classList.contains('open')) {
+    btn.textContent = btn.textContent.replace('Ver', 'Ocultar');
+  } else {
+    btn.textContent = btn.textContent.replace('Ocultar', 'Ver');
+  }
+}
+
+function resetAll() {
+  answers = {};
+  currentClassIndex = 0;
+  showScreen('screen-disclaimer');
+}
+
+function downloadResults() {
+  let text = 'FASIT — Resumen de Autoevaluación del Terapeuta\n';
+  text += '═══════════════════════════════════════════════\n\n';
+  text += 'NOTA: Este resumen es orientativo y no constituye una evaluación\n';
+  text += 'psicométrica estandarizada. Utilizar como guía para supervisión.\n\n';
+  text += 'Referencia: Callaghan, G. M. (2006). FASIT System.\n';
+  text += 'The Behavior Analyst Today, 7(3), 399-433.\n\n';
+
+  classData.forEach(cls => {
+    let totalScore = 0;
+    let maxScore = cls.questions.length * 2;
+    let flagged = [];
+    let partial = [];
+
+    cls.questions.forEach((q, i) => {
+      const key = `${cls.id}-${i}`;
+      const score = getScore(key, q.direction);
+      totalScore += score;
+      if (score === 2) flagged.push(q);
+      else if (score === 1) partial.push(q);
+    });
+
+    const pct = Math.round((totalScore / maxScore) * 100);
+    let level;
+    if (pct <= 25) level = 'BAJO';
+    else if (pct <= 55) level = 'MODERADO';
+    else level = 'ALTO';
+
+    text += `───────────────────────────────────────────────\n`;
+    text += `CLASE ${cls.id}: ${cls.name.toUpperCase()} — Nivel de atención: ${level} (${pct}%)\n`;
+    text += `───────────────────────────────────────────────\n`;
+
+    if (flagged.length > 0) {
+      text += '\n  ⚑ Áreas de atención:\n';
+      flagged.forEach(q => {
+        text += `    • [${q.tag}] ${q.text}\n`;
+      });
+    }
+    if (partial.length > 0) {
+      text += '\n  ~ Áreas parciales:\n';
+      partial.forEach(q => {
+        text += `    • [${q.tag}] ${q.text}\n`;
+      });
+    }
+    if (flagged.length === 0 && partial.length === 0) {
+      text += '\n  ✓ Sin áreas de atención significativas.\n';
+    }
+    text += '\n';
+  });
+
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'FASIT_Autoevaluacion_Resultados.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
