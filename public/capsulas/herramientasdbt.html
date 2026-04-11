@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DBT Simulador · Entrenamiento Clínico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#08141E;--surface:#0F2035;--surface2:#172C48;--surface3:#1E3A5F;
+  --accent:#F5C518;--accent2:#E8703A;--accent3:#5CB8FF;
+  --correct:#3DBE8A;--wrong:#E85555;
+  --text:#E2EAF4;--text-muted:#8AADCA;--text-dim:#3A5E7A;
+  --patient-bg:#172C48;--border:rgba(255,255,255,0.08);
+  --shadow:0 8px 32px rgba(0,0,0,0.55);--radius:18px;--radius-sm:12px;
+  --fs-body:17px;--fs-sm:14px;--fs-xs:12px;--fs-h1:32px;--fs-h2:22px;--fs-h3:19px;
+}
+[data-theme="light"]{
+  --bg:#EEF4FB;--surface:#FFFFFF;--surface2:#E0EBF7;--surface3:#CDD9EE;
+  --accent:#1B3A6B;--accent2:#E8703A;--accent3:#2370C0;
+  --text:#0F1E35;--text-muted:#4A6A8A;--text-dim:#9AB0C5;
+  --patient-bg:#E0EBF7;--border:rgba(0,0,0,0.09);--shadow:0 8px 32px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-size:var(--fs-body)}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.6;transition:background .3s,color .3s}
+
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column}
+.screen.active{display:flex}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(.86);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes shimmer{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ===== SHARED COMPONENTS ===== */
+.back-btn{width:40px;height:40px;border-radius:50%;background:var(--surface);border:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;transition:all .2s}
+.back-btn:hover{background:var(--surface2)}
+.theme-btn{width:40px;height:40px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;transition:all .2s}
+.btn-primary{background:var(--accent2);color:white;border:none;border-radius:var(--radius-sm);padding:17px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:var(--fs-body);font-weight:600;cursor:pointer;transition:all .2s;text-align:center;width:100%}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:15px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:var(--fs-body);font-weight:500;cursor:pointer;transition:all .2s;text-align:center;width:100%}
+.btn-secondary:hover{background:var(--surface2)}
+.section-chip{font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim)}
+.source-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:11px;font-weight:600;letter-spacing:.5px;padding:3px 10px;border-radius:20px;margin-top:6px}
+.highlight-box{background:var(--surface2);border-left:3px solid var(--accent3);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:14px 16px;margin:12px 0;font-size:var(--fs-sm);color:var(--text);line-height:1.65;font-style:italic}
+
+/* ===== HOME ===== */
+#home{background:var(--bg);min-height:100%}
+.home-top{padding:56px 22px 20px;display:flex;justify-content:space-between;align-items:flex-start;animation:fadeUp .5s ease both}
+.brand-label{font-size:var(--fs-xs);font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.brand-title{font-family:'Lora',serif;font-size:var(--fs-h1);font-weight:600;line-height:1.15;color:var(--text)}
+.brand-title em{font-style:italic;color:var(--accent2)}
+.home-desc{padding:0 22px 32px;animation:fadeUp .5s .1s ease both}
+.home-desc p{color:var(--text-muted);font-size:var(--fs-body);line-height:1.65}
+.home-desc strong{color:var(--text);font-weight:500}
+.skills-pills{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.pill{background:var(--surface);border:1.5px solid var(--border);color:var(--text-muted);font-size:13px;font-weight:600;letter-spacing:.3px;padding:5px 13px;border-radius:20px}
+.home-nav{padding:0 18px 40px;display:flex;flex-direction:column;gap:12px}
+.nav-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;overflow:hidden;transition:all .2s;animation:fadeUp .5s ease both;display:flex;align-items:stretch}
+.nav-card:nth-child(1){animation-delay:.15s}
+.nav-card:nth-child(2){animation-delay:.25s}
+.nav-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.nav-card:active{transform:scale(.98)}
+.nav-card-accent{width:5px;flex-shrink:0}
+.nav-card:nth-child(1) .nav-card-accent{background:var(--accent3)}
+.nav-card:nth-child(2) .nav-card-accent{background:var(--accent2)}
+.nav-card-body{padding:20px 20px 20px 18px;flex:1}
+.nav-card-title{font-weight:600;font-size:var(--fs-h3);margin-bottom:5px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.nav-card-sub{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.55}
+.nav-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;letter-spacing:.3px}
+.badge-theory{background:rgba(92,184,255,.15);color:var(--accent3)}
+.badge-practice{background:rgba(232,112,58,.15);color:var(--accent2)}
+
+/* ===== THEORY - PAGINATED ===== */
+#theory{background:var(--bg);height:100%}
+#theory.active{display:flex;flex-direction:column}
+.theory-top-bar{padding:52px 18px 0;background:var(--bg);flex-shrink:0}
+.theory-top-inner{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.theory-top-title{font-family:'Lora',serif;font-size:var(--fs-h3);font-weight:600;flex:1}
+.theory-pagination{font-size:var(--fs-xs);color:var(--text-muted);font-weight:600;letter-spacing:.5px}
+.theory-progress{height:3px;background:var(--surface2);flex-shrink:0}
+.theory-progress-fill{height:100%;background:var(--accent3);border-radius:2px;transition:width .4s ease}
+
+/* Slide container */
+.theory-slides{flex:1;overflow:hidden;position:relative}
+.theory-slide{position:absolute;inset:0;overflow-y:auto;padding:22px 18px 20px;display:none;flex-direction:column;animation:fadeIn .3s ease}
+.theory-slide.active{display:flex}
+
+/* Slide card */
+.slide-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;flex:0 0 auto}
+.slide-card-head{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.slide-num{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
+.slide-title{font-family:'Lora',serif;font-size:var(--fs-h2);font-weight:600;line-height:1.25;color:var(--text)}
+.slide-card-body{padding:20px}
+.slide-card-body p{font-size:var(--fs-body);color:var(--text-muted);line-height:1.7;margin-bottom:14px}
+.slide-card-body p:last-child{margin-bottom:0}
+.slide-card-body strong{color:var(--text);font-weight:600}
+
+/* Theory nav buttons */
+.theory-nav{flex-shrink:0;padding:14px 18px 32px;display:flex;gap:10px;align-items:center}
+.theory-nav .btn-secondary{flex:1}
+.theory-nav .btn-primary{flex:1}
+.t-nav-btn{flex:1;padding:15px;font-family:'IBM Plex Sans',sans-serif;font-size:var(--fs-body);font-weight:600;cursor:pointer;border-radius:var(--radius-sm);transition:all .2s;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;gap:6px}
+.t-nav-prev{background:var(--surface);color:var(--text-muted)}
+.t-nav-prev:hover{background:var(--surface2)}
+.t-nav-prev:disabled{opacity:.3;cursor:not-allowed}
+.t-nav-next{background:var(--accent2);color:white;border-color:var(--accent2)}
+.t-nav-next:hover{opacity:.9}
+
+/* Emotion table */
+.emotion-table{border-radius:var(--radius-sm);overflow:hidden;border:1.5px solid var(--border);margin:14px 0}
+.et-header{display:grid;grid-template-columns:1fr 1.2fr 1.2fr;background:var(--accent);color:var(--bg)}
+.et-header div,.et-row div{padding:11px 12px;font-size:var(--fs-sm);font-weight:600;line-height:1.3}
+.et-header div{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.et-row{display:grid;grid-template-columns:1fr 1.2fr 1.2fr;border-top:1px solid var(--border)}
+.et-row:nth-child(even){background:var(--surface2)}
+.et-emotion{font-weight:700;color:var(--text)}
+.et-impulse{color:var(--wrong);font-style:italic}
+.et-opposite{color:var(--correct);font-weight:600}
+
+/* Function blocks */
+.function-blocks{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.func-block{background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px;border:1px solid var(--border)}
+.func-icon{font-size:22px;margin-bottom:8px}
+.func-title{font-size:var(--fs-body);font-weight:600;color:var(--text);margin-bottom:4px}
+.func-desc{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.6}
+
+/* Bio-social two col */
+.biosocial-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.bio-col{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border)}
+.bio-col-title{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.bio-col.bio-side .bio-col-title{color:var(--accent)}
+.bio-col.env-side .bio-col-title{color:var(--accent2)}
+.bio-col ul{list-style:none;padding:0}
+.bio-col li{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.5;padding-left:14px;position:relative;margin-bottom:5px}
+.bio-col li::before{content:'·';position:absolute;left:0;color:var(--text-dim);font-size:18px;line-height:1.3}
+
+/* Steps list */
+.steps-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.step-item{display:flex;gap:13px;align-items:flex-start}
+.step-n{width:34px;height:34px;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:var(--fs-sm);font-weight:700;flex-shrink:0}
+.step-n.vh-n{color:var(--accent3)}
+.step-n.ao-n{color:var(--accent2)}
+.step-text strong{display:block;font-size:var(--fs-body);font-weight:600;color:var(--text);margin-bottom:3px}
+.step-text p{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.6}
+
+/* Impulso notice */
+.impulso-notice{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-top:12px}
+.impulso-notice-title{font-size:var(--fs-sm);font-weight:700;color:var(--text);margin-bottom:8px}
+.notice-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:7px}
+.notice-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);margin-top:7px;flex-shrink:0}
+.notice-item p{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.55}
+
+/* When-box */
+.when-grid{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.when-card{background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px;border:1px solid var(--border)}
+.when-card-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.when-card.vh-card .when-card-label{color:var(--accent3)}
+.when-card.ao-card .when-card-label{color:var(--accent2)}
+.when-card p{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.6}
+
+/* Thermostat */
+.thermo-block{background:var(--surface2);border-radius:var(--radius-sm);padding:16px;display:flex;gap:15px;align-items:flex-start;border:1px solid var(--border);margin:14px 0}
+.thermo-icon{font-size:34px;flex-shrink:0}
+.thermo-text strong{font-size:var(--fs-body);font-weight:600;color:var(--text);display:block;margin-bottom:5px}
+.thermo-text p{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.6}
+
+/* ===== PRACTICE ===== */
+#practice{background:var(--bg);min-height:100%}
+.practice-bar{padding:52px 18px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.practice-bar-title{font-family:'Lora',serif;font-size:var(--fs-h3);font-weight:600;flex:1}
+.levels-wrap{padding:18px 18px 40px}
+.levels-label{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+.level-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 18px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;margin-bottom:12px;display:flex;gap:16px;align-items:flex-start}
+.level-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.level-card:active{transform:scale(.98)}
+.level-card.locked{opacity:.45;cursor:not-allowed}
+.level-card.completed{border-color:rgba(61,190,138,.35)}
+.level-stripe{position:absolute;top:0;left:0;width:4px;height:100%}
+.lvl-0 .level-stripe{background:var(--accent)}
+.lvl-1 .level-stripe{background:var(--accent2)}
+.lvl-2 .level-stripe{background:var(--correct)}
+.level-icon-box{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.lvl-0 .level-icon-box{background:rgba(245,197,24,.12)}
+.lvl-1 .level-icon-box{background:rgba(232,112,58,.12)}
+.lvl-2 .level-icon-box{background:rgba(61,190,138,.12)}
+.level-info{flex:1}
+.level-name{font-weight:600;font-size:var(--fs-h3);margin-bottom:2px}
+.level-person{font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:7px}
+.level-desc{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.55}
+.level-badge{font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;display:inline-block;margin-top:8px}
+.badge-easy{background:rgba(245,197,24,.12);color:var(--accent)}
+.badge-mid{background:rgba(232,112,58,.12);color:var(--accent2)}
+.badge-hard{background:rgba(61,190,138,.12);color:var(--correct)}
+.score-chip{position:absolute;top:16px;right:16px;background:var(--correct);color:white;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
+.lock-icon{position:absolute;top:16px;right:16px;color:var(--text-dim);font-size:18px}
+
+/* ===== SESSION ===== */
+#session{display:none;flex-direction:column;height:100%}
+#session.active{display:flex}
+.sess-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:52px 16px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.sess-info{flex:1;min-width:0}
+.sess-patient{font-weight:600;font-size:var(--fs-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sess-level{font-size:var(--fs-sm);color:var(--text-muted);margin-top:2px}
+.sess-controls{display:flex;align-items:center;gap:8px}
+.score-pill{background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;padding:5px 13px;font-size:14px;font-weight:700;color:var(--accent)}
+.guide-btn{width:38px;height:38px;border-radius:50%;background:var(--surface2);border:1.5px solid var(--border);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all .2s}
+.chat-area{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.chat-msg{max-width:84%;animation:fadeIn .3s ease}
+.chat-msg.patient{align-self:flex-start;animation:slideRight .3s ease}
+.chat-msg.therapist{align-self:flex-end;animation:slideLeft .3s ease}
+.chat-msg.narrator{align-self:center}
+.bubble{padding:12px 16px;border-radius:20px;font-size:var(--fs-body);line-height:1.6}
+.patient .bubble{background:var(--patient-bg);color:var(--text);border-bottom-left-radius:4px}
+.therapist .bubble{background:var(--accent2);color:white;border-bottom-right-radius:4px}
+.narrator .bubble{background:transparent;color:var(--text-dim);font-size:var(--fs-sm);text-align:center;font-style:italic;padding:3px 12px}
+.step-badge{display:inline-block;background:rgba(61,190,138,.12);color:var(--correct);font-size:13px;font-weight:600;padding:4px 12px;border-radius:14px;margin-top:7px;letter-spacing:.3px}
+.feedback-box{border-radius:var(--radius-sm);padding:12px 14px;margin-top:6px;font-size:var(--fs-sm);line-height:1.55;animation:fadeIn .3s ease}
+.feedback-box.ok{background:rgba(61,190,138,.07);border:1.5px solid rgba(61,190,138,.2);color:var(--correct)}
+.feedback-box.fail{background:rgba(232,85,85,.07);border:1.5px solid rgba(232,85,85,.2);color:var(--wrong)}
+.typing-indicator{display:flex;gap:5px;align-items:center;padding:13px 16px;background:var(--patient-bg);border-radius:20px;border-bottom-left-radius:4px;width:fit-content}
+.typing-dot{width:8px;height:8px;background:var(--text-muted);border-radius:50%;animation:shimmer 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+.decision-area{background:var(--surface);border-top:1px solid var(--border);padding:12px 16px 30px;flex-shrink:0}
+.decision-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.step-tag{background:var(--surface2);border:1.5px solid var(--border);color:var(--text-muted);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px}
+.options-list{display:flex;flex-direction:column;gap:8px}
+.opt-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;font-family:'IBM Plex Sans',sans-serif;font-size:var(--fs-body);color:var(--text);cursor:pointer;text-align:left;line-height:1.5;transition:all .18s}
+.opt-btn:hover{background:var(--surface3);border-color:rgba(255,255,255,.14);transform:translateX(2px)}
+.opt-btn:active{transform:scale(.98)}
+.opt-btn.correct{border-color:var(--correct);background:rgba(61,190,138,.07)}
+.opt-btn.wrong{border-color:var(--wrong);background:rgba(232,85,85,.07)}
+
+/* ===== RESULT ===== */
+#result{min-height:100%;background:var(--bg)}
+.result-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:52px 22px 20px}
+.result-name{font-family:'Lora',serif;font-size:var(--fs-h2);font-weight:600}
+.result-sub{color:var(--text-muted);font-size:var(--fs-sm);margin-top:4px}
+.score-ring-wrap{display:flex;justify-content:center;padding:30px 22px 14px;animation:pop .4s ease}
+.score-ring{width:148px;height:148px;border-radius:50%;border:7px solid var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-family:'Lora',serif;font-size:46px;font-weight:600;line-height:1}
+.score-lbl{font-size:13px;color:var(--text-muted);margin-top:4px;letter-spacing:.5px}
+.decisions-wrap{padding:4px 18px 22px}
+.sec-label{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:12px 4px 10px}
+.decision-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:15px;margin-bottom:9px;animation:fadeUp .3s ease both}
+.decision-card.first{border-color:rgba(61,190,138,.25)}
+.decision-card.retry{border-color:rgba(245,197,24,.2)}
+.dc-header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.dc-icon{font-size:16px}
+.dc-name{flex:1;font-size:var(--fs-sm);font-weight:600}
+.dc-pts{font-size:14px;font-weight:700}
+.dc-pts.full{color:var(--correct)}
+.dc-pts.half{color:var(--accent)}
+.dc-detail{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.45}
+.result-actions{padding:8px 18px 40px;display:flex;flex-direction:column;gap:10px}
+
+/* ===== CERTIFICATE ===== */
+#certificate{min-height:100%;background:var(--bg)}
+.cert-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:52px 22px 20px}
+.cert-bar h2{font-family:'Lora',serif;font-size:var(--fs-h2);font-weight:600}
+.cert-bar p{color:var(--text-muted);font-size:var(--fs-sm);margin-top:4px}
+.cert-wrap{padding:22px 18px 6px;animation:fadeUp .4s ease}
+.cert-card{background:var(--surface);border:2px solid var(--accent);border-radius:var(--radius);padding:32px 24px;position:relative;overflow:hidden;text-align:center}
+.cert-pattern{position:absolute;inset:0;opacity:.025;background-image:repeating-linear-gradient(45deg,var(--accent) 0,var(--accent) 1px,transparent 0,transparent 50%);background-size:22px 22px;pointer-events:none}
+.cert-line{width:54px;height:4px;background:var(--accent);border-radius:2px;margin:0 auto 20px}
+.cert-micro{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.cert-main{font-family:'Lora',serif;font-size:22px;font-weight:600;line-height:1.3;margin-bottom:20px}
+.cert-to{font-size:var(--fs-sm);color:var(--text-dim);margin-bottom:6px}
+.cert-name{font-family:'Lora',serif;font-size:28px;font-style:italic;color:var(--accent2);margin-bottom:20px;min-height:38px}
+.cert-chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.cert-chip{background:var(--surface2);border:1.5px solid var(--border);color:var(--text-muted);font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px}
+.cert-score{font-family:'Lora',serif;font-size:40px;font-weight:600;color:var(--accent);margin-bottom:4px}
+.cert-score-lbl{font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:20px}
+.cert-divider{height:1px;background:var(--border);margin:16px 0}
+.cert-disclaimer{font-size:11px;color:var(--text-dim);line-height:1.6}
+.cert-handle{font-size:12px;color:var(--text-dim);margin-top:6px;letter-spacing:.4px}
+.cert-input-wrap{padding:18px 18px 6px}
+.cert-input-lbl{font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:8px;display:block}
+.cert-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:var(--fs-body);color:var(--text);outline:none;transition:border-color .2s}
+.cert-input:focus{border-color:var(--accent)}
+.cert-actions{padding:14px 18px 40px;display:flex;flex-direction:column;gap:10px}
+
+/* ===== GUIDE MODAL ===== */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:100;animation:fadeIn .2s ease}
+.overlay.open{display:flex;align-items:flex-end}
+.sheet{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-height:88vh;overflow-y:auto;animation:fadeUp .25s ease}
+.sheet-handle{width:40px;height:4px;background:var(--surface3);border-radius:2px;margin:14px auto 4px}
+.sheet-header{padding:12px 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.sheet-header h3{font-family:'Lora',serif;font-size:var(--fs-h3);font-weight:600}
+.sheet-close{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:19px}
+.guide-tabs{display:flex;border-bottom:1px solid var(--border)}
+.guide-tab{flex:1;padding:12px;font-family:'IBM Plex Sans',sans-serif;font-size:var(--fs-sm);font-weight:600;color:var(--text-muted);background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;transition:all .2s}
+.guide-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
+.guide-body{padding:16px 20px 32px;display:flex;flex-direction:column;gap:14px}
+.g-step{display:flex;gap:13px}
+.g-num{width:32px;height:32px;border-radius:9px;background:var(--surface2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.g-text strong{display:block;font-size:var(--fs-body);font-weight:600;color:var(--text);margin-bottom:3px}
+.g-text p{font-size:var(--fs-sm);color:var(--text-muted);line-height:1.55}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="home-top">
+    <div>
+      <div class="brand-label">DBT · Entrenamiento Clínico</div>
+      <div class="brand-title">Modo<br><em>Sesión</em></div>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+  </div>
+  <div class="home-desc">
+    <p>Aprendé la teoría y practicá las habilidades de regulación emocional de <strong>DBT</strong> en simulaciones de sesión reales.</p>
+    <div class="skills-pills">
+      <span class="pill">Verificar los Hechos</span>
+      <span class="pill">Acción Opuesta</span>
+      <span class="pill">Modo sesión</span>
+    </div>
+  </div>
+  <div class="home-nav">
+    <div class="nav-card" onclick="openTheory()">
+      <div class="nav-card-accent"></div>
+      <div class="nav-card-body">
+        <div class="nav-card-title">📖 Marco teórico <span class="nav-badge badge-theory">PRIMERO</span></div>
+        <div class="nav-card-sub">Qué son las emociones, por qué se desregulan, la Teoría Biosocial y cómo funcionan las herramientas. Basado en Boggiano & Gagliesi (2020) y Linehan (2020).</div>
+      </div>
+    </div>
+    <div class="nav-card" onclick="showPractice()">
+      <div class="nav-card-accent"></div>
+      <div class="nav-card-body">
+        <div class="nav-card-title">🎯 Casos clínicos <span class="nav-badge badge-practice">PRÁCTICA</span></div>
+        <div class="nav-card-sub">Tres simulaciones en formato sesión. El paciente te escribe. Vos decidís cómo guiarlo. Cada decisión tiene consecuencias.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THEORY -->
+<div id="theory" class="screen">
+  <div class="theory-top-bar">
+    <div class="theory-top-inner">
+      <button class="back-btn" onclick="showScreen('home')">←</button>
+      <div class="theory-top-title">Marco teórico</div>
+      <div class="theory-pagination" id="theoryPagination">1 / 9</div>
+    </div>
+    <div class="theory-progress"><div class="theory-progress-fill" id="theoryProgress" style="width:11%"></div></div>
+  </div>
+  <div class="theory-slides" id="theorySlidesContainer"></div>
+  <div class="theory-nav">
+    <button class="t-nav-btn t-nav-prev" id="tPrev" onclick="theoryNav(-1)" disabled>← Anterior</button>
+    <button class="t-nav-btn t-nav-next" id="tNext" onclick="theoryNav(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<div id="practice" class="screen">
+  <div class="practice-bar">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="practice-bar-title">Casos clínicos</div>
+    <button class="theme-btn" onclick="toggleTheme()" style="font-size:17px;width:38px;height:38px">☀️</button>
+  </div>
+  <div class="levels-wrap">
+    <div class="levels-label">Seleccioná un caso</div>
+    <div id="levelCards"></div>
+  </div>
+</div>
+
+<!-- SESSION -->
+<div id="session" class="screen">
+  <div class="sess-bar">
+    <button class="back-btn" onclick="showPractice()">←</button>
+    <div class="sess-info">
+      <div class="sess-patient" id="sessPatient"></div>
+      <div class="sess-level" id="sessLevel"></div>
+    </div>
+    <div class="sess-controls">
+      <div class="score-pill" id="scorePill">0 pts</div>
+      <button class="guide-btn" onclick="openGuide()">📋</button>
+    </div>
+  </div>
+  <div class="chat-area" id="chatArea"></div>
+  <div class="decision-area" id="decisionArea" style="display:none">
+    <div class="decision-label">Tu respuesta <span class="step-tag" id="stepTag"></span></div>
+    <div class="options-list" id="optionsList"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="result-bar">
+    <div class="result-name" id="resultName"></div>
+    <div class="result-sub" id="resultSub"></div>
+  </div>
+  <div class="score-ring-wrap">
+    <div class="score-ring" id="scoreRing">
+      <div class="score-num" id="scoreNum">—</div>
+      <div class="score-lbl">puntos</div>
+    </div>
+  </div>
+  <div class="decisions-wrap">
+    <div class="sec-label">Decisiones clínicas</div>
+    <div id="decisionsBody"></div>
+  </div>
+  <div class="result-actions" id="resultActions"></div>
+</div>
+
+<!-- CERTIFICATE -->
+<div id="certificate" class="screen">
+  <div class="cert-bar">
+    <h2>🏅 Certificado de Entrenamiento</h2>
+    <p>Completaste los 3 casos del simulador DBT.</p>
+  </div>
+  <div class="cert-wrap">
+    <div class="cert-card">
+      <div class="cert-pattern"></div>
+      <div class="cert-line"></div>
+      <div class="cert-micro">Certificado de participación</div>
+      <div class="cert-main">Entrenamiento en<br>Regulación Emocional DBT</div>
+      <div class="cert-to">Otorgado a</div>
+      <div class="cert-name" id="certNameDisplay">Tu nombre</div>
+      <div class="cert-chips">
+        <span class="cert-chip">✓ Verificar los Hechos</span>
+        <span class="cert-chip">✓ Acción Opuesta</span>
+        <span class="cert-chip">✓ 3 casos clínicos</span>
+      </div>
+      <div class="cert-score" id="certScore">—</div>
+      <div class="cert-score-lbl">puntos totales obtenidos</div>
+      <div class="cert-divider"></div>
+      <div class="cert-disclaimer">Este certificado no tiene validez académica ni profesional.<br>Es un recurso de entrenamiento clínico.</div>
+      <div class="cert-handle">@leo.eyzaguirre · DBT Simulador</div>
+    </div>
+  </div>
+  <div class="cert-input-wrap">
+    <label class="cert-input-lbl">¿Cómo querés que aparezca tu nombre?</label>
+    <input type="text" class="cert-input" id="certNameInput" placeholder="Ej: Lic. María García" oninput="updateCertName(this.value)">
+  </div>
+  <div class="cert-actions">
+    <button class="btn-primary" onclick="shareCert()">Compartir certificado</button>
+    <button class="btn-secondary" onclick="showScreen('home')">Volver al inicio</button>
+  </div>
+</div>
+
+<!-- GUIDE MODAL -->
+<div class="overlay" id="guideOverlay" onclick="closeGuideOverlay(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <h3>Referencia de pasos</h3>
+      <button class="sheet-close" onclick="closeGuide()">✕</button>
+    </div>
+    <div class="guide-tabs">
+      <button class="guide-tab active" onclick="switchTab('vh',this)">Verificar los Hechos</button>
+      <button class="guide-tab" onclick="switchTab('ao',this)">Acción Opuesta</button>
+    </div>
+    <div class="guide-body" id="guideBody"></div>
+  </div>
+</div>
+
+<script>
+// ===================== THEORY SLIDES =====================
+const THEORY_SLIDES = [
+  {
+    num:'01 · Origen',
+    title:'La Terapia Dialéctico Conductual',
+    content:`
+      <p>La <strong>Terapia Dialéctico Conductual (DBT)</strong> fue desarrollada por la Dra. Marsha Linehan en la Universidad de Washington. Es el tratamiento con mayor evidencia para la desregulación emocional severa.</p>
+      <p>Su nombre refleja la tensión central del tratamiento: la dialéctica entre <strong>aceptación y cambio</strong>. Las habilidades de regulación emocional son uno de sus cuatro módulos, junto a mindfulness, efectividad interpersonal y tolerancia al malestar.</p>
+      <div class="highlight-box">"La Terapia Dialéctico Conductual ha demostrado eficacia en el tratamiento y prevención de los problemas de salud mental asociados a la desregulación emocional." — Linehan (2020)</div>
+      <span class="source-tag">Linehan, 2020 · Boggiano & Gagliesi, 2020</span>
+    `
+  },
+  {
+    num:'02 · Emociones',
+    title:'Las emociones tienen función',
+    content:`
+      <p>Antes de hablar de regulación, necesitamos entender qué estamos regulando. Las emociones no son ruido ni debilidad — son respuestas adaptativas con funciones precisas.</p>
+      <p>Según Boggiano y Gagliesi, las emociones hacen tres cosas fundamentales:</p>
+      <div class="function-blocks">
+        <div class="func-block">
+          <div class="func-icon">⚡</div>
+          <div class="func-title">Organizan y motivan la acción</div>
+          <div class="func-desc">El miedo al ver un objeto sinuoso te hace saltar antes de saber si es una serpiente o una rama. Es preferible confundir una rama con una serpiente que una serpiente con una rama — el miedo salva la vida.</div>
+        </div>
+        <div class="func-block">
+          <div class="func-icon">📡</div>
+          <div class="func-title">Comunican a otros</div>
+          <div class="func-desc">Si decís que estás triste pero tu expresión no lo dice, el otro le cree a tu cara. Las emociones son comunicación no verbal de alta fidelidad — muchas veces más creíble que las palabras.</div>
+        </div>
+        <div class="func-block">
+          <div class="func-icon">🪞</div>
+          <div class="func-title">Nos influyen a nosotros mismos</div>
+          <div class="func-desc">Si me siento enojado, valida que algo fue injusto. Las emociones tienen una función autorreferencial — y eso puede volverse problemático cuando la intensidad no encaja con los hechos.</div>
+        </div>
+      </div>
+      <span class="source-tag">Boggiano & Gagliesi, 2020</span>
+    `
+  },
+  {
+    num:'03 · Teoría Biosocial',
+    title:'Por qué se desregulan las emociones',
+    content:`
+      <p>La desregulación emocional no es un defecto de carácter. DBT la explica como el resultado de la <strong>interacción a través del tiempo</strong> de dos factores:</p>
+      <div class="biosocial-grid">
+        <div class="bio-col bio-side">
+          <div class="bio-col-title">Vulnerabilidad Emocional</div>
+          <ul>
+            <li>Alta sensibilidad a los estímulos</li>
+            <li>Alta reactividad emocional</li>
+            <li>Lento retorno a la calma</li>
+          </ul>
+        </div>
+        <div class="bio-col env-side">
+          <div class="bio-col-title">Ambiente Invalidante</div>
+          <ul>
+            <li>Minimiza experiencias privadas</li>
+            <li>No enseña habilidades de regulación</li>
+            <li>Refuerza conductas disfuncionales</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:14px">Ninguno de los dos por sí solo. La vulnerabilidad genera invalidación, y la invalidación amplifica la vulnerabilidad. Es un modelo <strong>transaccional</strong>, no aditivo.</p>
+      <div class="highlight-box">Linehan compara la Vulnerabilidad Emocional con tener quemaduras de tercer grado: el más mínimo movimiento genera un malestar extremo que no termina de apaciguarse cuando llega una nueva ola.</div>
+      <span class="source-tag">Boggiano & Gagliesi, 2020</span>
+    `
+  },
+  {
+    num:'04 · Regulación',
+    title:'Regular no es apagar las emociones',
+    content:`
+      <p>Linehan define la regulación emocional como la capacidad de inhibir la conducta impulsiva inapropiada, organizarse para accionar en función a un objetivo, autocalmar la activación fisiológica, y reenfocar la atención — incluso en presencia de emociones fuertes.</p>
+      <div class="thermo-block">
+        <div class="thermo-icon">🌡️</div>
+        <div class="thermo-text">
+          <strong>Como un termostato, no un interruptor</strong>
+          <p>Regular es ajustar la intensidad al nivel que tiene sentido para la situación. No eliminar. Si un contratiempo menor genera la misma intensidad que una crisis real, el termostato está roto.</p>
+        </div>
+      </div>
+      <p>El objetivo de las habilidades no es que los consultantes sientan menos — es que puedan <strong>elegir cómo actuar incluso cuando sienten mucho</strong>.</p>
+      <span class="source-tag">Linehan, 2020</span>
+    `
+  },
+  {
+    num:'05 · Las herramientas',
+    title:'Cuándo usar cada herramienta',
+    content:`
+      <p>DBT tiene herramientas específicas para cambiar respuestas emocionales. No son intercambiables — cada una responde a una pregunta diferente.</p>
+      <div class="when-grid">
+        <div class="when-card vh-card">
+          <div class="when-card-label">🔍 Verificar los Hechos — cuando</div>
+          <p>Reaccionamos a interpretaciones en lugar de hechos, y la emoción puede no ajustarse a la realidad. Verificar modifica la emoción modificando la lectura del evento.</p>
+        </div>
+        <div class="when-card ao-card">
+          <div class="when-card-label">↩️ Acción Opuesta — cuando</div>
+          <p>La emoción no encaja con los hechos — o su intensidad es desproporcionada — y verificar no es suficiente. Actuamos opuesto al impulso para romper el ciclo de refuerzo.</p>
+        </div>
+      </div>
+      <div class="highlight-box">⚠️ Si la emoción sí encaja con los hechos, la herramienta es Resolución de Problemas — no Acción Opuesta. Confundir esto es el error más frecuente en terapeutas en formación.</div>
+      <span class="source-tag">Linehan, 2020</span>
+    `
+  },
+  {
+    num:'06 · Verificar los Hechos',
+    title:'Los 6 pasos para verificar',
+    content:`
+      <p>A menudo no reaccionamos a los hechos — reaccionamos a nuestras interpretaciones de los hechos. Estos son los seis pasos del protocolo (Ficha RE8, Linehan 2020):</p>
+      <div class="steps-list">
+        <div class="step-item"><div class="step-n vh-n">1</div><div class="step-text"><strong>¿Cuál es la emoción que quiero cambiar?</strong><p>Etiquetar con precisión. No "me siento mal" — ¿es bronca, miedo, vergüenza, culpa? Agregar intensidad 0-100.</p></div></div>
+        <div class="step-item"><div class="step-n vh-n">2</div><div class="step-text"><strong>¿Cuál es el evento desencadenante?</strong><p>Solo hechos observables. Sin juicios ni absolutos. Lo que cualquiera con ojos podría haber visto.</p></div></div>
+        <div class="step-item"><div class="step-n vh-n">3</div><div class="step-text"><strong>¿Cuáles son mis interpretaciones?</strong><p>Separar el hecho de la historia construida encima. Las interpretaciones generan emociones tan intensas como los hechos reales.</p></div></div>
+        <div class="step-item"><div class="step-n vh-n">4</div><div class="step-text"><strong>¿Estoy asumiendo una amenaza?</strong><p>Etiquetar la amenaza. Evaluar su probabilidad real. Pensar en todos los otros resultados posibles.</p></div></div>
+        <div class="step-item"><div class="step-n vh-n">5</div><div class="step-text"><strong>¿Cuál es la catástrofe?</strong><p>Si el peor resultado ocurriera, ¿cuáles son las consecuencias realistas? Imaginar que podemos manejarlo bien.</p></div></div>
+        <div class="step-item"><div class="step-n vh-n">6</div><div class="step-text"><strong>¿Mi emoción y su intensidad encajan con los hechos?</strong><p>El veredicto. No si la emoción existe — sino si su nivel tiene sentido dado lo que realmente ocurrió.</p></div></div>
+      </div>
+      <span class="source-tag">Linehan, 2020 · Fichas RE8–8A</span>
+    `
+  },
+  {
+    num:'07 · Acción Opuesta',
+    title:'El impulso de acción: qué es y cómo notarlo',
+    content:`
+      <p>Cada emoción genera un <strong>impulso de acción</strong>: una urgencia de hacer algo en particular. El miedo urge a huir, el enojo urge a atacar, la tristeza urge a aislarse. El impulso no es la acción — es la presión interna hacia ella.</p>
+      <p>Acción Opuesta es interrumpir ese circuito: actuar en dirección opuesta al impulso cuando la emoción no encaja con los hechos.</p>
+      <div class="impulso-notice">
+        <div class="impulso-notice-title">¿Cómo notar el impulso de acción?</div>
+        <div class="notice-item"><div class="notice-dot"></div><p><strong>En el cuerpo:</strong> la tensión muscular del enojo, el peso en el pecho de la tristeza, la energía de huida del miedo.</p></div>
+        <div class="notice-item"><div class="notice-dot"></div><p><strong>En los pensamientos:</strong> "debería irme", "necesito confrontarlo", "no quiero ver a nadie".</p></div>
+        <div class="notice-item"><div class="notice-dot"></div><p><strong>En los movimientos:</strong> cerrarse, retirarse, avanzar agresivamente, bajar la mirada.</p></div>
+        <div class="notice-item"><div class="notice-dot"></div><p><strong>Pregunta directa:</strong> "¿Qué te está urgiendo hacer ahora mismo?"</p></div>
+      </div>
+      <div class="highlight-box">Cuando actuamos sobre un impulso que no es efectivo, reforzamos la emoción. Acción Opuesta rompe ese ciclo de refuerzo — es una variación de los tratamientos de exposición. — Linehan (2020)</div>
+      <span class="source-tag">Linehan, 2020</span>
+    `
+  },
+  {
+    num:'08 · Acción Opuesta',
+    title:'Emoción, impulso y acción opuesta',
+    content:`
+      <p>Cada emoción tiene sus propios impulsos típicos. Acción Opuesta no significa actuar opuesto a cualquier lista — significa actuar opuesto al <strong>impulso real de esa persona en esa situación</strong>.</p>
+      <div class="emotion-table">
+        <div class="et-header">
+          <div>Emoción</div>
+          <div>Impulso de acción</div>
+          <div>Acción opuesta</div>
+        </div>
+        <div class="et-row">
+          <div class="et-emotion">Miedo</div>
+          <div class="et-impulse">Huir / Evitar</div>
+          <div class="et-opposite">Abordar / No evitar</div>
+        </div>
+        <div class="et-row">
+          <div class="et-emotion">Enojo</div>
+          <div class="et-impulse">Atacar / Confrontar</div>
+          <div class="et-opposite">Ser amable / Media sonrisa</div>
+        </div>
+        <div class="et-row">
+          <div class="et-emotion">Tristeza</div>
+          <div class="et-impulse">Aislarte / Paralizarte</div>
+          <div class="et-opposite">Activarte / Abordar</div>
+        </div>
+        <div class="et-row">
+          <div class="et-emotion">Vergüenza</div>
+          <div class="et-impulse">Esconderte / Evitar</div>
+          <div class="et-opposite">Mostrarte con personas seguras</div>
+        </div>
+        <div class="et-row">
+          <div class="et-emotion">Culpa</div>
+          <div class="et-impulse">Justificarte</div>
+          <div class="et-opposite">Reparar / Pedir disculpas</div>
+        </div>
+        <div class="et-row">
+          <div class="et-emotion">Asco</div>
+          <div class="et-impulse">Alejarte</div>
+          <div class="et-opposite">Acercarte gradualmente</div>
+        </div>
+      </div>
+      <div class="highlight-box">Entrena a los consultantes hasta que puedan decirlo automáticamente: "¿Qué hacés cuando tenés miedo?" — "¡Hacé lo que temés!" — Linehan (2020)</div>
+      <span class="source-tag">Linehan, 2020 · Fichas RE10–11</span>
+    `
+  },
+  {
+    num:'09 · Acción Opuesta',
+    title:'Los 6 pasos y la regla del "por completo"',
+    content:`
+      <p>Estos son los seis pasos del protocolo de Acción Opuesta (Ficha RE10, Linehan 2020):</p>
+      <div class="steps-list">
+        <div class="step-item"><div class="step-n ao-n">1</div><div class="step-text"><strong>Identificar y nombrar la emoción</strong><p>El mismo punto de partida. Sin nombre preciso, no hay blanco al que apuntar.</p></div></div>
+        <div class="step-item"><div class="step-n ao-n">2</div><div class="step-text"><strong>Verificar los hechos</strong><p>Confirmar que la emoción no encaja — o que actuar sobre ella no es efectivo. Es el puente entre las dos habilidades.</p></div></div>
+        <div class="step-item"><div class="step-n ao-n">3</div><div class="step-text"><strong>Identificar el impulso de acción</strong><p>¿Qué te urge hacer o decir? Ese impulso específico es el que vas a invertir.</p></div></div>
+        <div class="step-item"><div class="step-n ao-n">4</div><div class="step-text"><strong>¿Actuar sobre el impulso es efectivo?</strong><p>Preguntale a la Mente Sabia. Si la respuesta es no, seguís al paso 5.</p></div></div>
+        <div class="step-item"><div class="step-n ao-n">5</div><div class="step-text"><strong>Actuá de forma opuesta al impulso</strong><p>Opuesto a tu impulso real — no a una lista genérica. La emoción es la guía.</p></div></div>
+        <div class="step-item"><div class="step-n ao-n">6</div><div class="step-text"><strong>Hacelo por completo</strong><p>Postura, tono de voz, gestos, pensamientos — todo en la misma dirección. Ir a una fiesta para reducir la fobia social pero pasar toda la noche mirando el piso es Acción Opuesta a medias. No funciona.</p></div></div>
+      </div>
+      <span class="source-tag">Linehan, 2020 · Fichas RE10–11</span>
+    `
+  },
+];
+
+// ===================== GUIDE DATA =====================
+const GUIDE = {
+  vh:[
+    {q:'¿Cuál es la emoción que quiero cambiar?',d:'Etiquetar con precisión. No "me siento mal" — ¿bronca, miedo, vergüenza, culpa? Intensidad 0-100.'},
+    {q:'¿Cuál es el evento desencadenante?',d:'Solo hechos observables. Sin juicios ni absolutos.'},
+    {q:'¿Cuáles son mis interpretaciones?',d:'Separar el hecho de la historia construida encima.'},
+    {q:'¿Estoy asumiendo una amenaza?',d:'Etiquetar la amenaza. Evaluar probabilidad real. Pensar en otros resultados posibles.'},
+    {q:'¿Cuál es la catástrofe?',d:'Si el peor resultado ocurriera, ¿cuáles son las consecuencias realistas?'},
+    {q:'¿La emoción y su intensidad encajan con los hechos?',d:'El veredicto — no si existe, sino si su nivel tiene sentido.'},
+  ],
+  ao:[
+    {q:'Identificar y nombrar la emoción',d:'Sin nombre preciso, no hay blanco al que apuntar.'},
+    {q:'Verificar los hechos',d:'Confirmar que la emoción no encaja o no es efectivo actuar sobre ella.'},
+    {q:'Identificar el impulso de acción',d:'¿Qué te urge hacer? Ese impulso es el que vas a invertir.'},
+    {q:'¿Actuar sobre el impulso es efectivo?',d:'Preguntale a tu Mente Sabia. Si no, seguís al paso 5.'},
+    {q:'Actuá de forma opuesta al impulso',d:'Opuesto a tu impulso real — no a una lista genérica.'},
+    {q:'Hacelo por completo',d:'Postura, tono, gestos, pensamientos: todo en la misma dirección.'},
+  ]
+};
+
+// ===================== CASES =====================
+const LEVELS=[
+  {id:0,title:'Valentina',sub:'26 años · Psicóloga junior',desc:'Vergüenza intensa después de equivocarse en una reunión. La emoción no encaja a esa intensidad.',diff:'Fácil',diffClass:'badge-easy',icon:'😟',maxScore:50,
+  beats:[
+    {type:'narrator',text:'— Valentina te escribe por WhatsApp —'},
+    {type:'patient',text:'Hola, necesito que me ayudes. Pasé algo horrible hoy y no me lo puedo sacar de la cabeza.'},
+    {type:'patient',text:'Estoy pensando en pedir licencia o algo así.'},
+    {type:'decision',stepLabel:'VH · Paso 1',options:[
+      {text:'¿Qué emoción estás sintiendo ahora mismo?',correct:true,pts:10,reaction:'Vergüenza. Mucha. Un 85/100. Hoy en la reunión di una respuesta completamente equivocada delante de todo el equipo.',ok:'Correcto — el primer movimiento es identificar y nombrar la emoción antes de cualquier otra cosa.',badge:'VH Paso 1: emoción identificada'},
+      {text:'¿Qué fue lo que pasó? Contame todo.',correct:false,reaction:'Hoy en la reunión me confundí con los datos y di información incorrecta. Ahora todos van a pensar que soy incompetente...',fail:'Fuiste directo al contenido antes de anclar la emoción. El relato se expande y perdés el foco clínico.'},
+      {text:'Tranquila, seguro no fue para tanto.',correct:false,reaction:'...Fácil decirlo desde afuera.',fail:'Minimizaste antes de explorar. El paciente se siente invalidado y se cierra.'}
+    ]},
+    {type:'decision',stepLabel:'VH · Pasos 2 y 3',options:[
+      {text:'¿Qué es exactamente lo que pasó — solo hechos, sin interpretaciones?',correct:true,pts:10,reaction:'Hmm... el hecho es que di una respuesta incorrecta cuando me preguntaron. Lo otro — que todos piensan que soy incompetente — eso no lo sé en realidad.',ok:'Separaste el evento observable de las interpretaciones. Esos son los Pasos 2 y 3.',badge:'VH Pasos 2-3: hechos vs. interpretaciones'},
+      {text:'¿Cómo reaccionaron tus compañeros exactamente?',correct:false,reaction:'Algunos me miraron, uno me preguntó si estaba bien... no sé, quizás notaron que algo estaba mal.',fail:'Fuiste a las consecuencias en lugar de separar hechos de interpretaciones.'},
+      {text:'¿Esto te pasó antes?',correct:false,reaction:'Sí, una o dos veces. Siempre me pasa en las reuniones importantes...',fail:'Buscar patrones históricos puede amplificar la emoción cuando aún no separaste los hechos del evento específico.'}
+    ]},
+    {type:'decision',stepLabel:'VH · Pasos 4 y 5',options:[
+      {text:'¿Cuál es la peor consecuencia realista de lo que pasó hoy?',correct:true,pts:10,reaction:'Que alguien piense que me equivoqué... una vez. Dicho así suena muy diferente a lo que sentía. Pero igual lo siento muy fuerte.',ok:'Evaluaste la catástrofe real vs. la imaginada. La última frase de Valentina es la señal exacta de que la emoción no encaja a esa intensidad.',badge:'VH Pasos 4-5: amenaza y catástrofe'},
+      {text:'Basta de catastrofizar, eso no ayuda.',correct:false,reaction:'Sé que soy exagerada, me lo dicen siempre...',fail:'Etiquetaste el pensamiento sin explorarlo. La autoinvalidación se refuerza.'},
+      {text:'¿Y si tu jefe estuvo en esa reunión?',correct:false,reaction:'No... no lo sé. Ahora estoy peor.',fail:'Amplificaste la amenaza en lugar de evaluarla.'}
+    ]},
+    {type:'decision',stepLabel:'VH · Paso 6',options:[
+      {text:'¿Un 85% de vergüenza tiene sentido por haberte equivocado una vez en una reunión?',correct:true,pts:10,reaction:'No... supongo que no. Pero mi cuerpo no lo registra así todavía.',ok:'La emoción existe pero su intensidad no encaja con los hechos. Eso es exactamente cuándo entrás en Acción Opuesta.',badge:'VH Paso 6: intensidad no encaja'},
+      {text:'Entonces ya sabés que exageraste.',correct:false,reaction:'...Sí. Siempre soy exagerada.',fail:'Diagnosticaste sin explorar. El paciente internaliza el juicio en lugar de desarrollar la habilidad.'},
+      {text:'¿Qué soluciones tenés para evitar que vuelva a pasar?',correct:false,reaction:'Podría prepararme más...',fail:'Saltaste a Resolución de Problemas antes de completar Verificar los Hechos.'}
+    ]},
+    {type:'patient',text:'Entiendo lo que decís. Pero cuando pienso en ir a trabajar mañana se me cierra el pecho.'},
+    {type:'decision',stepLabel:'AO · Pasos 3–6',options:[
+      {text:'¿Qué te urge hacer con tus compañeros mañana, y cómo sería hacer exactamente lo contrario — con cuerpo, tono y postura?',correct:true,pts:10,reaction:'Me urge evitarlos, no hablar en las reuniones. Lo contrario sería ir, participar, hablar cuando tenga algo para decir. Con postura recta, no con la cabeza baja.',ok:'Identificaste el impulso, evaluaste efectividad y definiste la acción opuesta completa — postura, voz, presencia. No a medias.',badge:'AO Pasos 3-6: impulso → opuesto completo'},
+      {text:'Forzate a ir a trabajar mañana y ya.',correct:false,reaction:'Sí... supongo.',fail:'Diste la instrucción sin identificar el impulso ni trabajar la dimensión corporal. Acción Opuesta a medias.'},
+      {text:'¿Podés comprometerte a no evitar a tus compañeros?',correct:false,reaction:'Voy a intentarlo...',fail:'El compromiso es vago y no define el comportamiento concreto. Sin postura y tono, el paciente no sabe qué hacer.'}
+    ]}
+  ]},
+  {id:1,title:'Marcos',sub:'34 años · Contador',desc:'Bronca intensa con su hermano que le debe dinero. Emociones mezcladas y resistencia al proceso.',diff:'Intermedio',diffClass:'badge-mid',icon:'😤',maxScore:50,
+  beats:[
+    {type:'narrator',text:'— Marcos te escribe en medio de una situación activa —'},
+    {type:'patient',text:'Necesito hablar. Mi hermano me debe plata hace 4 meses y hoy lo vi en Instagram de vacaciones. Estoy que exploto.'},
+    {type:'patient',text:'Tengo ganas de mandarle un mensajón o ir a su casa directamente.'},
+    {type:'decision',stepLabel:'VH · Paso 1',options:[
+      {text:'Antes de hacer cualquier cosa — ¿qué emoción estás sintiendo, y qué tan intensa?',correct:true,pts:10,reaction:'Bronca. Un 80/100. Y algo de tristeza también — me siento traicionado por alguien que es mi familia.',ok:'Nombraste dos emociones y pediste intensidad. Cuando hay emociones mezcladas es clave identificar cuál es la primaria.',badge:'VH Paso 1: emociones mixtas identificadas'},
+      {text:'¿Qué le vas a decir cuando lo contactes?',correct:false,reaction:'Eso es lo que no sé. Si le mando lo que tengo ganas de mandar va a ser un desastre.',fail:'Fuiste directo a la acción. Sin identificar emociones primero, cualquier estrategia va a estar al servicio de la urgencia.'},
+      {text:'Entiendo que estés enojado, es muy injusto.',correct:false,reaction:'Sí, exactamente. O sea, ¿cómo puede...?',fail:'Validar es importante, pero acá amplificó la emoción. Primero identificar, después validar selectivamente.'}
+    ]},
+    {type:'decision',stepLabel:'VH · Pasos 2 y 3',options:[
+      {text:'¿Qué es lo que viste hoy exactamente — solo hechos observables, sin lo que interpretás?',correct:true,pts:10,reaction:'Una foto en Instagram donde está en la playa con amigos. Lo que interpreto — que tiene plata para vacaciones y no para devolverme lo mío — eso no lo sé con certeza.',ok:'La foto es el hecho. "Tiene plata y no me paga" es la interpretación. Esa distinción cambia todo.',badge:'VH Pasos 2-3: hechos vs. interpretaciones'},
+      {text:'¿Antes de esto te había dado señales de que no iba a pagar?',correct:false,reaction:'Siempre fue así. Una vez tardó meses en devolverme algo...',fail:'Buscaste patrones históricos antes de clarificar los hechos del evento actual. Eso puede solidificar la interpretación como si fuera un hecho.'},
+      {text:'Y tu hermano, ¿sabe que lo necesitás?',correct:false,reaction:'Le mandé tres mensajes. Los vio. No contestó.',fail:'Buen dato pero salteaste la distinción hechos-interpretaciones. Sin ese paso, la bronca sigue mezclada con suposiciones.'}
+    ]},
+    {type:'decision',stepLabel:'VH · Paso 6',options:[
+      {text:'La bronca por sentirte ignorado tiene sentido. Pero ¿80/100 encaja con lo que podés confirmar?',correct:true,pts:10,reaction:'No sé... sí me ignoró, eso es real. Pero tampoco sé si tiene plata o no. Quizás el 80 es mucho para lo que puedo confirmar.',ok:'Validaste la emoción y trabajaste la intensidad sin invalidarla. La bronca puede encajar — pero no al 80 con la información disponible.',badge:'VH Paso 6: intensidad vs. hechos confirmados'},
+      {text:'Tu hermano te ignoró, así que la bronca está justificada.',correct:false,reaction:'Exacto, y encima de vacaciones...',fail:'Validaste la emoción pero reforzaste la intensidad sin verificar la interpretación.'},
+      {text:'En realidad no sabés si tiene plata, así que no tenés razones para estar enojado.',correct:false,reaction:'Pero me ignoró. Eso es real.',fail:'Invalidaste la emoción en lugar de trabajar la intensidad. Marcos tiene razón: el ignorar sí ocurrió.'}
+    ]},
+    {type:'patient',text:'Pero igual, aunque sea un 60, sigue siendo mi hermano y me falló. No puedo simplemente actuar como si nada.'},
+    {type:'decision',stepLabel:'AO · Concepto + Paso 3',options:[
+      {text:'Acción Opuesta no es actuar como si nada. Es que cuando actuás sobre un impulso que no es efectivo, lo reforzás. ¿Qué te urge hacer ahora mismo?',correct:true,pts:10,reaction:'Confrontarlo. Ir a su casa o mandarle un mensaje diciéndole todo lo que pienso.',ok:'Clarificaste el concepto sin invalidar. Ahora tenés el impulso de acción identificado con precisión.',badge:'AO Paso 3: impulso identificado'},
+      {text:'Entiendo, pero si actuás sobre la emoción vas a empeorar las cosas.',correct:false,reaction:'Eso no me ayuda. ¿Qué hago entonces?',fail:'Avanzaste sin validar ni explicar la lógica de Acción Opuesta.'},
+      {text:'Tenés razón. Mejor hablemos de cómo recuperar el dinero.',correct:false,reaction:'Sí, eso es lo que necesito...',fail:'Saltaste a Resolución de Problemas antes de regular la emoción. Con 60/100 de bronca, cualquier estrategia va a estar contaminada.'}
+    ]},
+    {type:'decision',stepLabel:'AO · Pasos 4–6',options:[
+      {text:'¿Confrontarlo ahora, con esta intensidad, te va a acercar a recuperar el dinero o a mantener la relación?',correct:true,pts:10,reaction:'No... probablemente empeore todo. Aunque tampoco puedo ignorarlo.',ok:'Evaluaste efectividad con Mente Sabia y Marcos llegó solo a la conclusión. La parte válida se puede trabajar con Resolución de Problemas después.',badge:'AO Pasos 4-6: efectividad evaluada'},
+      {text:'Hacé lo contrario: no le escribas, esperá a estar más tranquilo.',correct:false,reaction:'Sí, supongo.',fail:'Diste la instrucción sin el proceso. Marcos no entiende por qué — y probablemente igualmente le mande el mensajón.'},
+      {text:'¿Y si le mandás un mensaje breve y concreto pidiendo una fecha de pago?',correct:false,reaction:'Con la bronca que tengo igual le escribo mal.',fail:'Fuiste a Resolución de Problemas sin regular la emoción primero.'}
+    ]}
+  ]},
+  {id:2,title:'Elena',sub:'41 años · Gerente de proyectos',desc:'Fue despedida después de 8 años. Su tristeza encaja con los hechos. Caso para terapeutas avanzados.',diff:'Avanzado',diffClass:'badge-hard',icon:'😔',maxScore:40,
+  beats:[
+    {type:'narrator',text:'— Elena llega a sesión tres días después de ser despedida —'},
+    {type:'patient',text:'Me despidieron el jueves. Ocho años en esa empresa. Me lo comunicaron por mail.'},
+    {type:'patient',text:'Estoy muy triste. No puedo dormir, no tengo ganas de nada. Y también estoy enojada, pero lo que más siento es tristeza.'},
+    {type:'decision',stepLabel:'VH · Paso 1',options:[
+      {text:'¿Cuál es la emoción más fuerte ahora, y qué tan intensa?',correct:true,pts:10,reaction:'Tristeza. Un 75/100. Perdí algo que fue muy importante para mí. Y la forma en que lo manejaron — por mail, sin ni una reunión.',ok:'Identificaste la emoción primaria. Elena distingue la tristeza (por la pérdida) de la bronca (por el trato). Dos emociones, dos rutas distintas.',badge:'VH Paso 1: emoción primaria identificada'},
+      {text:'Eso es muy duro. ¿Tenés apoyo en casa?',correct:false,reaction:'Sí, mi pareja está muy presente. Pero igual no puedo con esto.',fail:'Exploraste la red de apoyo antes de anclar la emoción. Útil, pero no es el primer movimiento en este protocolo.'},
+      {text:'¿Qué vas a hacer ahora con el trabajo?',correct:false,reaction:'No sé. No puedo ni pensar en eso todavía.',fail:'Fuiste a la acción. La respuesta de Elena lo dice claramente: no está lista para eso.'}
+    ]},
+    {type:'decision',stepLabel:'VH · Paso 6 — decisión clave',options:[
+      {text:'Perdiste un trabajo de 8 años de forma abrupta. La tristeza ante una pérdida real encaja completamente con los hechos.',correct:true,pts:10,reaction:'Sí... sé que tiene sentido sentirme así. Pero igual es muy difícil.',ok:'Cuando la emoción encaja con los hechos, Acción Opuesta no es la herramienta. La tristeza es válida y tiene función.',badge:'VH Paso 6: la emoción SÍ encaja'},
+      {text:'Igual, 75% parece mucho. Vamos a trabajar con Acción Opuesta.',correct:false,reaction:'¿Actuar opuesto a la tristeza? ¿Forzarme a estar bien?',fail:'Este es el error central del nivel avanzado: aplicar Acción Opuesta cuando la emoción sí encaja. La tristeza por una pérdida real no se regula con AO.'},
+      {text:'La tristeza es normal pero no podés quedarte paralizada.',correct:false,reaction:'Lo sé, pero no puedo hacer nada ahora mismo.',fail:'Invalidaste la función adaptativa de la tristeza. Ante una pérdida real, el sistema necesita conservar recursos primero.'}
+    ]},
+    {type:'patient',text:'Y lo de la bronca — me parece que ahí sí hay algo para hacer. La forma en que me lo comunicaron fue un faltazo.'},
+    {type:'decision',stepLabel:'Integración: dos emociones, dos rutas',options:[
+      {text:'La tristeza por la pérdida encaja y necesita validación y Resolución de Problemas. La bronca por el trato — ahí verificamos si la intensidad encaja.',correct:true,pts:10,reaction:'Eso tiene mucho sentido. Son dos cosas distintas.',ok:'Misma situación, dos emociones, dos rutas. Tristeza → Resolución de Problemas. Bronca → verificar intensidad → ¿AO o PS?',badge:'Integración: cada emoción tiene su ruta'},
+      {text:'Las dos emociones encajan, así que Resolución de Problemas para ambas.',correct:false,reaction:'Las dos... sí, supongo.',fail:'La bronca todavía necesita verificación de intensidad. No toda emoción que encaja tiene la intensidad justa.'},
+      {text:'Concentrémonos en la tristeza, la bronca la dejamos para después.',correct:false,reaction:'De acuerdo.',fail:'Elena misma señaló que en la bronca hay algo para hacer. Ignorarlo puede sentirse como invalidación.'}
+    ]},
+    {type:'decision',stepLabel:'Resolución de Problemas',options:[
+      {text:'La tristeza tiene función: primero conservar recursos, después movilizar. ¿Qué necesitás ahora para atravesarla sin hundirte?',correct:true,pts:10,reaction:'Creo que necesito un poco de tiempo para procesarlo. Y después — hablar con personas de la industria, actualizar el CV. Pero no hoy.',ok:'Acompañaste la función de la tristeza y abriste la puerta a la movilización cuando Elena esté lista. Resolución de Problemas al servicio de la emoción, no contra ella.',badge:'Resolución de Problemas: con la emoción'},
+      {text:'¿Qué estrategias concretas tenés para encontrar un nuevo trabajo?',correct:false,reaction:'Ahora mismo no tengo cabeza para eso...',fail:'Fuiste a estrategias concretas demasiado pronto. Elena lo dice claramente.'},
+      {text:'Lo más importante ahora es que no te quedes sola con esto.',correct:false,reaction:'Sí, mi pareja...',fail:'El apoyo social es válido pero no es Resolución de Problemas. Elena necesita un plan alineado con dónde está emocionalmente.'}
+    ]}
+  ]}
+];
+
+// ===================== THEORY STATE =====================
+let currentSlide = 0;
+const totalSlides = THEORY_SLIDES.length;
+
+function openTheory() {
+  buildTheorySlides();
+  currentSlide = 0;
+  renderSlide(0);
+  showScreen('theory');
+}
+
+function buildTheorySlides() {
+  const container = document.getElementById('theorySlidesContainer');
+  if (container.children.length > 0) return; // already built
+  container.innerHTML = THEORY_SLIDES.map((s, i) => `
+    <div class="theory-slide ${i===0?'active':''}" id="slide-${i}">
+      <div class="slide-card">
+        <div class="slide-card-head">
+          <div class="slide-num">${s.num}</div>
+          <div class="slide-title">${s.title}</div>
+        </div>
+        <div class="slide-card-body">${s.content}</div>
+      </div>
+      ${i === totalSlides-1 ? `
+        <div style="margin-top:16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:22px;text-align:center">
+          <p style="font-size:var(--fs-body);color:var(--text-muted);margin-bottom:16px;line-height:1.65">Ahora que tenés el marco completo, <strong style="color:var(--text)">practicá con casos reales</strong>. El paciente te escribe — vos decidís.</p>
+          <button class="btn-primary" onclick="showPractice()">Ir a los casos clínicos →</button>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+function renderSlide(idx) {
+  document.querySelectorAll('.theory-slide').forEach(s => s.classList.remove('active'));
+  document.getElementById(`slide-${idx}`).classList.add('active');
+  document.getElementById(`slide-${idx}`).scrollTop = 0;
+  document.getElementById('theoryPagination').textContent = `${idx+1} / ${totalSlides}`;
+  document.getElementById('theoryProgress').style.width = `${((idx+1)/totalSlides)*100}%`;
+  document.getElementById('tPrev').disabled = idx === 0;
+  document.getElementById('tNext').textContent = idx === totalSlides-1 ? '✓ Practicar' : 'Siguiente →';
+  if (idx === totalSlides-1) {
+    document.getElementById('tNext').onclick = () => showPractice();
+  } else {
+    document.getElementById('tNext').onclick = () => theoryNav(1);
+  }
+}
+
+function theoryNav(dir) {
+  const next = currentSlide + dir;
+  if (next < 0 || next >= totalSlides) return;
+  currentSlide = next;
+  renderSlide(currentSlide);
+}
+
+// ===================== PRACTICE =====================
+function showPractice() {
+  renderLevelCards();
+  showScreen('practice');
+}
+
+function renderLevelCards() {
+  const c = document.getElementById('levelCards');
+  c.innerHTML = LEVELS.map((l,i) => {
+    const done = ST.completedLevels[i];
+    const locked = i>0 && !ST.completedLevels[i-1];
+    return `<div class="level-card lvl-${i} ${done?'completed':''} ${locked?'locked':''}" onclick="${locked?'':'startLevel('+i+')'}">
+      <div class="level-stripe"></div>
+      ${done?`<span class="score-chip">${done.score}/${done.max}</span>`:''}
+      ${locked?`<span class="lock-icon">🔒</span>`:''}
+      <div class="level-icon-box">${l.icon}</div>
+      <div class="level-info">
+        <div class="level-name">${l.title}</div>
+        <div class="level-person">${l.sub}</div>
+        <div class="level-desc">${l.desc}</div>
+        <span class="level-badge ${l.diffClass}">${l.diff}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===================== SESSION STATE =====================
+const ST = {
+  theme:'dark', currentLevel:null, beatIndex:0, score:0, results:[],
+  completedLevels:{}, totalScore:0, currentDecision:null, waiting:false,
+  firstTry:true, resolve:null
+};
+
+function startLevel(idx) {
+  const l = LEVELS[idx];
+  if (idx>0 && !ST.completedLevels[idx-1]) return;
+  ST.currentLevel=idx; ST.beatIndex=0; ST.score=0; ST.results=[]; ST.waiting=false; ST.firstTry=true;
+  document.getElementById('sessPatient').textContent=`${l.title} · ${l.sub}`;
+  document.getElementById('sessLevel').textContent=`Nivel ${idx+1} — ${l.diff}`;
+  document.getElementById('scorePill').textContent='0 pts';
+  document.getElementById('chatArea').innerHTML='';
+  document.getElementById('decisionArea').style.display='none';
+  showScreen('session');
+  setTimeout(()=>runBeats(), 300);
+}
+
+async function runBeats() {
+  const l = LEVELS[ST.currentLevel];
+  while (ST.beatIndex < l.beats.length) {
+    const b = l.beats[ST.beatIndex];
+    if (b.type==='decision') { await showDecision(b); ST.beatIndex++; }
+    else { await showMsg(b.type, b.text); ST.beatIndex++; await delay(420); }
+  }
+  await delay(600); showResult();
+}
+
+function showMsg(type, text, badge) {
+  return new Promise(res => {
+    const chat = document.getElementById('chatArea');
+    if (type==='patient') {
+      const typing = document.createElement('div');
+      typing.className='chat-msg patient';
+      typing.innerHTML='<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+      chat.appendChild(typing); scrollChat();
+      setTimeout(()=>{
+        typing.innerHTML=`<div class="bubble">${text}</div>`;
+        if(badge){const b=document.createElement('div');b.className='chat-msg patient';b.innerHTML=`<span class="step-badge">✓ ${badge}</span>`;chat.appendChild(b);}
+        scrollChat(); res();
+      }, 950);
+    } else {
+      const m = document.createElement('div');
+      m.className=`chat-msg ${type}`;
+      m.innerHTML=`<div class="bubble">${text}</div>`;
+      chat.appendChild(m);
+      if(badge){const b=document.createElement('div');b.className='chat-msg patient';b.innerHTML=`<span class="step-badge">✓ ${badge}</span>`;chat.appendChild(b);}
+      scrollChat(); setTimeout(res, 200);
+    }
+  });
+}
+
+function showDecision(beat) {
+  return new Promise(res => {
+    ST.currentDecision=beat; ST.waiting=true; ST.firstTry=true; ST.resolve=res;
+    document.getElementById('stepTag').textContent=beat.stepLabel;
+    document.getElementById('optionsList').innerHTML=beat.options.map((o,i)=>`<button class="opt-btn" onclick="selectOpt(${i})">${o.text}</button>`).join('');
+    document.getElementById('decisionArea').style.display='block';
+    document.querySelectorAll('.opt-btn').forEach((b,i)=>{b.style.animation=`fadeUp .22s ${i*.06}s ease both`;});
+  });
+}
+
+async function selectOpt(idx) {
+  if (!ST.waiting) return;
+  const beat = ST.currentDecision; const opt = beat.options[idx];
+  document.querySelectorAll('.opt-btn').forEach(b=>b.style.pointerEvents='none');
+  const chat = document.getElementById('chatArea');
+  const tm = document.createElement('div'); tm.className='chat-msg therapist';
+  tm.innerHTML=`<div class="bubble">${opt.text}</div>`;
+  chat.appendChild(tm); scrollChat();
+  await delay(550);
+  if (opt.correct) {
+    await showMsg('patient', opt.reaction);
+    const fb = document.createElement('div'); fb.className='feedback-box ok'; fb.textContent=opt.ok; chat.appendChild(fb);
+    if(opt.badge){const b=document.createElement('div');b.className='chat-msg patient';b.innerHTML=`<span class="step-badge">✓ ${opt.badge}</span>`;chat.appendChild(b);}
+    scrollChat();
+    const pts = ST.firstTry ? opt.pts : Math.floor(opt.pts/2);
+    ST.score += pts;
+    ST.results.push({label:beat.stepLabel, pts, maxPts:opt.pts, firstTry:ST.firstTry, badge:opt.badge});
+    document.getElementById('scorePill').textContent=`${ST.score} pts`;
+    document.getElementById('decisionArea').style.display='none';
+    ST.waiting=false; await delay(500); ST.resolve();
+  } else {
+    ST.firstTry=false;
+    document.querySelectorAll('.opt-btn')[idx].classList.add('wrong');
+    await delay(300);
+    await showMsg('patient', opt.reaction);
+    const fb = document.createElement('div'); fb.className='feedback-box fail'; fb.textContent=opt.fail; chat.appendChild(fb);
+    scrollChat(); await delay(1300);
+    document.getElementById('optionsList').innerHTML=beat.options.map((o,i)=>`<button class="opt-btn" onclick="selectOpt(${i})">${o.text}</button>`).join('');
+    document.querySelectorAll('.opt-btn').forEach((b,i)=>{b.style.animation=`fadeUp .2s ${i*.05}s ease both`;});
+  }
+}
+
+function scrollChat() {
+  const c = document.getElementById('chatArea');
+  setTimeout(()=>c.scrollTo({top:c.scrollHeight, behavior:'smooth'}), 50);
+}
+
+// ===================== RESULT =====================
+function showResult() {
+  const l = LEVELS[ST.currentLevel];
+  const pct = Math.round(ST.score/l.maxScore*100);
+  document.getElementById('resultName').textContent=`${l.title} · Completado`;
+  document.getElementById('resultSub').textContent=`${l.diff} · ${ST.results.length} pasos trabajados`;
+  const ring = document.getElementById('scoreRing');
+  const num = document.getElementById('scoreNum');
+  num.textContent = ST.score;
+  const color = pct>=80?'#3DBE8A':pct>=60?'#F5C518':'#E85555';
+  ring.style.borderColor=color; num.style.color=color;
+  document.getElementById('decisionsBody').innerHTML=ST.results.map((r,i)=>`
+    <div class="decision-card ${r.firstTry?'first':'retry'}" style="animation-delay:${i*.07}s">
+      <div class="dc-header">
+        <span class="dc-icon">${r.firstTry?'✓':'↺'}</span>
+        <span class="dc-name">${r.badge||r.label}</span>
+        <span class="dc-pts ${r.pts===r.maxPts?'full':'half'}">${r.pts}/${r.maxPts}</span>
+      </div>
+      <div class="dc-detail">${r.firstTry?'Primer intento correcto':'Correcto tras reintento'}</div>
+    </div>`).join('');
+  ST.completedLevels[ST.currentLevel]={score:ST.score, max:l.maxScore};
+  const allDone = Object.keys(ST.completedLevels).length===3;
+  const actions = document.getElementById('resultActions');
+  if (allDone) {
+    ST.totalScore = Object.values(ST.completedLevels).reduce((a,b)=>a+b.score,0);
+    actions.innerHTML=`<button class="btn-primary" onclick="showCertificate()">Ver mi certificado 🏅</button><button class="btn-secondary" onclick="showPractice()">Volver a los casos</button>`;
+  } else {
+    const next = ST.currentLevel+1;
+    actions.innerHTML=`${next<LEVELS.length?`<button class="btn-primary" onclick="startLevel(${next})">Siguiente caso →</button>`:''}
+      <button class="btn-secondary" onclick="showPractice()">Volver a los casos</button>`;
+  }
+  showScreen('result');
+}
+
+// ===================== CERTIFICATE =====================
+function showCertificate() {
+  document.getElementById('certScore').textContent=ST.totalScore;
+  document.getElementById('certNameDisplay').textContent='Tu nombre';
+  document.getElementById('certNameInput').value='';
+  showScreen('certificate');
+}
+function updateCertName(v){document.getElementById('certNameDisplay').textContent=v||'Tu nombre';}
+function shareCert() {
+  const text=`Completé el entrenamiento en Regulación Emocional DBT (Verificar los Hechos + Acción Opuesta) con ${ST.totalScore} puntos en el simulador de @leo.eyzaguirre 🧠\n\n#DBT #PsicologíaContextual #RegulacionEmocional`;
+  if(navigator.share)navigator.share({title:'Certificado DBT Simulador',text});
+  else navigator.clipboard.writeText(text).then(()=>alert('Texto copiado al portapapeles'));
+}
+
+// ===================== GUIDE =====================
+let guideTab='vh';
+function openGuide(){document.getElementById('guideOverlay').classList.add('open');renderGuide(guideTab);}
+function closeGuide(){document.getElementById('guideOverlay').classList.remove('open');}
+function closeGuideOverlay(e){if(e.target===document.getElementById('guideOverlay'))closeGuide();}
+function switchTab(tab,el){guideTab=tab;document.querySelectorAll('.guide-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderGuide(tab);}
+function renderGuide(tab) {
+  const isAO=tab==='ao';
+  document.getElementById('guideBody').innerHTML=GUIDE[tab].map((s,i)=>`
+    <div class="g-step">
+      <div class="g-num" style="color:${isAO?'var(--accent2)':'var(--accent3)'}">${i+1}</div>
+      <div class="g-text"><strong>${s.q}</strong><p>${s.d}</p></div>
+    </div>`).join('');
+}
+
+// ===================== THEME =====================
+function toggleTheme() {
+  ST.theme=ST.theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',ST.theme);
+  document.getElementById('themeBtn').textContent=ST.theme==='dark'?'🌙':'☀️';
+}
+
+// ===================== NAV =====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTop=0;
+}
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+</script>
+</body>
+</html>

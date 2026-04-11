@@ -1,0 +1,2731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rumiación como Conducta | Entrenamiento Clínico</title>
+  <meta name="description" content="Entrena tu habilidad para identificar e intervenir la rumiación desde la Activación Conductual (Martell et al., 2010)">
+  <meta name="theme-color" content="#EDE7F6">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;overflow-x:hidden;background:#E0D6EE}
+    #root{min-height:100vh}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+    @keyframes checkPop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    button{font-family:inherit}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script>
+const {
+  useState,
+  useEffect,
+  useRef
+} = React;
+
+// ===== COLORS =====
+const C = {
+  bg: "#EDE7F6",
+  bgLight: "#F3EFF8",
+  card: "#FFFFFF",
+  border: "#C5B8DC",
+  text: "#1a1a2e",
+  textMid: "#4a4a6a",
+  textLight: "#8888aa",
+  lv: ["#5C6BC0", "#42A5F5", "#EF6C00", "#26A69A", "#EF5350"],
+  accent: "#7E57C2",
+  ok: "#C8E6C9",
+  okBd: "#43A047",
+  okTx: "#1B5E20",
+  no: "#FFCDD2",
+  noBd: "#E53935",
+  noTx: "#B71C1C",
+  hi: "#F5F0FF"
+};
+
+// ===== LEVEL META =====
+const META = [{
+  t: "¿Qué es rumiar?",
+  e: "\u{1F9E0}",
+  d: "Detecta rumiación vs reflexión productiva"
+}, {
+  t: "¿Para qué rumia?",
+  e: "\u{1F50D}",
+  d: "Identifica la función evitativa"
+}, {
+  t: "Herramientas de Martell",
+  e: "\u{1F527}",
+  d: "Aprende las 3 técnicas de intervención"
+}, {
+  t: "Aplica con guía",
+  e: "\u{1F4AA}",
+  d: "Integra herramientas en secuencias clínicas"
+}, {
+  t: "Consulta simulada",
+  e: "\u{1F3AF}",
+  d: "Resuelve un caso clínico completo"
+}];
+
+// ===== SKILL NAMES =====
+const SKILLS = [["\u{1F50D}", "Detectar rumiación"], ["\u{1F3AD}", "Identificar función"], ["\u{1F527}", "Aplicar herramientas"], ["\u{1F3AF}", "Integrar en caso"]];
+
+// ===== THEORY CONTENT =====
+// Using arrays of {title, paragraphs[], quote?}
+// paragraphs are arrays of segments: string or {b: "bold text"}
+
+function seg(text) {
+  // Convert **bold** markers to segments
+  var parts = [];
+  var regex = /\*\*(.+?)\*\*/g;
+  var last = 0;
+  var match;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > last) parts.push(text.slice(last, match.index));
+    parts.push({
+      b: match[1]
+    });
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+
+// ===== ALL THEORY DATA =====
+var THEORY = {
+  1: [{
+    title: "\u{1F914} \u00BFPor qu\u00E9 esto?",
+    text: "Tu paciente te dice: \u201CEstuve toda la semana d\u00E1ndole vueltas a lo mismo\u201D. \u00BFEso es bueno o malo?\n\nDepende. A veces pensar en un problema lleva a resolverlo. Otras veces, el pensamiento **reemplaza** la acci\u00F3n y mantiene al paciente atrapado.\n\nEl primer paso: entender que **el pensamiento es una conducta** \u2014 y como toda conducta, se analiza por su funci\u00F3n, no por su contenido."
+  }, {
+    title: "\u{1F9E0} El pensamiento es conducta",
+    text: "Desde la Activaci\u00F3n Conductual (Martell et al., 2010), pensar no es algo que simplemente \u201Cle pasa\u201D al paciente. Es algo que el paciente **hace**.\n\n**No preguntas \u201C\u00BFqu\u00E9 piensas?\u201D** (contenido)\n**Preguntas \u201C\u00BFqu\u00E9 hace tu pensamiento?\u201D** (funci\u00F3n)\n\nLa misma frase \u2014 \u201Cestoy pensando en qu\u00E9 hacer con mi trabajo\u201D \u2014 puede ser reflexi\u00F3n productiva o rumiaci\u00F3n seg\u00FAn su efecto.",
+    quote: "\u201CLos pensamientos, al igual que cualquier otra conducta, pueden analizarse en t\u00E9rminos de su funci\u00F3n\u201D \u2014 Martell, Dimidjian & Herman-Dunn (2010)"
+  }, {
+    title: "\u{1F50D} Reflexi\u00F3n vs Rumiaci\u00F3n",
+    text: "Ambas son \u201Cpensar\u201D, pero funcionan diferente:\n\n**Reflexi\u00F3n productiva** \u2705\n\u2192 Tiene direcci\u00F3n: va hacia alg\u00FAn lado\n\u2192 Genera opciones nuevas\n\u2192 Lleva a una acci\u00F3n concreta\n\u2192 Tiene un punto final natural\n\n**Rumiaci\u00F3n** \u{1F504}\n\u2192 Es circular: vuelve al mismo punto\n\u2192 Repite las mismas ideas sin novedades\n\u2192 No produce acci\u00F3n\n\u2192 No tiene fin natural\n\nLa rumiaci\u00F3n **se parece** a resolver un problema. Pero su efecto es lo opuesto: mantiene el estancamiento."
+  }],
+  2: [{
+    title: "\u{1F914} \u00BFPor qu\u00E9 esto?",
+    text: "Ya sabes detectar rumiaci\u00F3n. Ahora: **\u00BFpara qu\u00E9 rumia tu paciente?**\n\nLa rumiaci\u00F3n no es un accidente mental. Se mantiene porque **cumple una funci\u00F3n**. Y generalmente esa funci\u00F3n es **evitaci\u00F3n**.\n\nSi no identificas de qu\u00E9 est\u00E1 evitando, tu intervenci\u00F3n ser\u00E1 gen\u00E9rica. Si lo identificas, ser\u00E1 precisa."
+  }, {
+    title: "\u{1F3AD} La rumiaci\u00F3n como evitaci\u00F3n",
+    text: "La rumiaci\u00F3n da la ilusi\u00F3n de estar \u201Ctrabajando en el problema\u201D. Pero su efecto real es evitar:\n\n**Evitar ACTUAR** \u{1F6AB}\n\u201CNecesito pensarlo m\u00E1s antes de hacer algo\u201D\n\u2192 Pensar sustituye hacer\n\n**Evitar SENTIR** \u{1F4AD}\n\u201CSi lo analizo suficiente, voy a entender por qu\u00E9 me siento as\u00ED\u201D\n\u2192 Analizar sustituye contactar la emoci\u00F3n\n\n**Evitar DECIDIR** \u2696\uFE0F\n\u201CTodav\u00EDa no tengo claro qu\u00E9 hacer\u201D\n\u2192 Dar vueltas sustituye elegir",
+    quote: "\u201CLa rumiaci\u00F3n puede funcionar como una forma de evitaci\u00F3n experiencial\u201D \u2014 Martell et al. (2010)"
+  }, {
+    title: "\u{1F511} La pregunta clave",
+    text: "Para identificar la funci\u00F3n, hazte esta pregunta:\n\n**\u201C\u00BFQu\u00E9 dejar\u00EDa de evitar mi paciente si dejara de rumiar?\u201D**\n\nSi dejara de \u201Canalizar\u201D su matrimonio... tendr\u00EDa que decidir si se queda o se va.\n\nSi dejara de \u201Cinvestigar\u201D por qu\u00E9 lo despidieron... tendr\u00EDa que actualizar su CV y enfrentar el rechazo.\n\nLa rumiaci\u00F3n es el escudo. \u00BFDe qu\u00E9 protege?"
+  }, {
+    title: "\u{1F4CB} An\u00E1lisis funcional aplicado",
+    text: "Aplicar el an\u00E1lisis funcional a la rumiaci\u00F3n:\n\n**Antecedente:** \u00BFQu\u00E9 dispara la rumiaci\u00F3n?\n\u2192 Un evento, una emoci\u00F3n, un momento del d\u00EDa\n\n**Conducta:** Rumiar sobre X\n\u2192 Repasar, analizar, imaginar escenarios\n\n**Consecuencia a corto plazo:** Alivio temporal\n\u2192 Se siente \u201Cproductivo\u201D, evita lo que teme\n\n**Consecuencia a largo plazo:** Mantenimiento\n\u2192 No act\u00FAa, no siente, no decide \u2192 sigue igual o empeora"
+  }],
+  3: [{
+    title: "\u{1F914} \u00BFPor qu\u00E9 esto?",
+    text: "Ya sabes detectar rumiaci\u00F3n y entiendes para qu\u00E9 la usa tu paciente.\n\nAhora: **\u00BFqu\u00E9 haces con eso en sesi\u00F3n?**\n\nMartell et al. (2010) proponen una **l\u00F3gica de intervenci\u00F3n** con 3 herramientas que se complementan."
+  }, {
+    title: "\u{1FA9E} Herramienta 1: Hacer visible el loop",
+    text: "Muchos pacientes no saben que est\u00E1n rumiando. Creen que est\u00E1n \u201Cpensando para resolver\u201D.\n\nTu primer trabajo: **hacerlo visible sin invalidar.**\n\nPreguntas clave:\n\n\u{1F4AC} \u201C\u00BFCu\u00E1nto tiempo llevas pensando en esto?\u201D\n\u{1F4AC} \u201C\u00BFHas llegado a alguna conclusi\u00F3n nueva?\u201D\n\u{1F4AC} \u201C\u00BFQu\u00E9 has hecho diferente despu\u00E9s de pensarlo?\u201D\n\nEl insight no viene de que t\u00FA se lo digas. Viene de que \u00E9l lo descubra al responder.",
+    quote: "\u201CSe les puede ense\u00F1ar a los clientes a observar cu\u00E1ndo est\u00E1n rumiando y a reconocer las se\u00F1ales\u201D \u2014 Martell et al. (2010)"
+  }, {
+    title: "\u{1F9ED} Herramienta 2: Experiencia vs An\u00E1lisis",
+    text: "Esta es LA distinci\u00F3n central del cap\u00EDtulo 7 de Martell.\n\n**Modo an\u00E1lisis** \u{1F534}\nEl paciente PIENSA SOBRE su experiencia: analiza, interpreta, busca causas.\n\u2192 \u201C\u00BFPor qu\u00E9 me siento as\u00ED?\u201D\n\u2192 \u201C\u00BFCu\u00E1l es la causa de mi tristeza?\u201D\n\n**Modo experiencia** \u{1F7E2}\nEl paciente CONTACTA su experiencia directamente.\n\u2192 \u201C\u00BFQu\u00E9 siento ahora mismo en mi cuerpo?\u201D\n\u2192 \u201C\u00BFC\u00F3mo es esta emoci\u00F3n si no intento explicarla?\u201D\n\nLa intervenci\u00F3n: ayudar a **salir de modo an\u00E1lisis y entrar en modo experiencia.**\n\nNo es mindfulness por moda. Es interrumpir la funci\u00F3n evitativa.",
+    quote: "\u201CAtender a la experiencia es una alternativa a la rumiaci\u00F3n\u201D \u2014 Martell et al. (2010)"
+  }, {
+    title: "\u{1F527} Herramienta 3: Redirecci\u00F3n conductual",
+    text: "Una vez visible el loop, no le pides que \u201Cdeje de pensar\u201D. Eso es **supresi\u00F3n**, y no funciona.\n\nLe ayudas a **hacer algo diferente**:\n\n\u{1F4AC} \u201CCuando notes que empiezas a darle vueltas, \u00BFqu\u00E9 podr\u00EDas HACER en ese momento?\u201D\n\nLa salida de la rumiaci\u00F3n es ACCI\u00D3N, no pensamiento.\n\nEl plan de redirecci\u00F3n se construye CON el paciente, no para \u00E9l."
+  }, {
+    title: "\u26A0\uFE0F \u00BFQu\u00E9 NO es esto?",
+    text: "Es importante distinguir:\n\n**NO es supresi\u00F3n** \u274C\n\u201CDeja de pensar en eso\u201D \u2192 Genera efecto rebote.\n\n**NO es distracci\u00F3n** \u274C\n\u201CPiensa en algo positivo\u201D \u2192 No cambia nada a largo plazo.\n\n**NO es reestructuraci\u00F3n cognitiva** \u274C\n\u201C\u00BFHay evidencia de que eso es cierto?\u201D \u2192 Interviene en contenido, no en funci\u00F3n.\n\n**NO es mindfulness gen\u00E9rico** \u274C\n\u201CMedita 10 minutos\u201D \u2192 Atender a la experiencia es espec\u00EDfico y contextual.\n\nLa intervenci\u00F3n de Martell es **funcional**: cambia lo que el paciente HACE, no lo que piensa."
+  }],
+  4: [{
+    title: "\u{1F914} \u00BFPor qu\u00E9 esto?",
+    text: "Ya tienes las 3 herramientas:\n\n\u{1FA9E} Hacer visible el loop\n\u{1F9ED} Experiencia vs An\u00E1lisis\n\u{1F527} Redirecci\u00F3n conductual\n\nEn sesi\u00F3n real no aparecen por separado. Necesitas **integrarlas** y manejar cuando el paciente no responde como esperabas."
+  }, {
+    title: "\u23F1\uFE0F El timing importa",
+    text: "**Primero: Hacer visible** \u{1FA9E}\nSi el paciente no sabe que rumia, cualquier otra intervenci\u00F3n es prematura.\n\n**Segundo: Experiencia o Redirecci\u00F3n** \u{1F9ED}\u{1F527}\n\u2192 Si evita sentir \u2192 Atender a la experiencia\n\u2192 Si evita actuar/decidir \u2192 Redirecci\u00F3n conductual\n\nRegla: **primero conciencia, despu\u00E9s intervenci\u00F3n.**"
+  }, {
+    title: "\u{1F6E1}\uFE0F Resistencias comunes",
+    text: "Tu paciente va a resistirse. Frases comunes:\n\n**\u201CPero NECESITO entender qu\u00E9 pas\u00F3\u201D**\n\u2192 Si dejo de analizar, tendr\u00E9 que actuar/sentir/decidir\n\n**\u201CNo puedo dejar de pensar en eso\u201D**\n\u2192 No tengo alternativa conductual\n\n**\u201CSi no lo pienso bien, voy a cometer el mismo error\u201D**\n\u2192 El an\u00E1lisis me da ilusi\u00F3n de control\n\nNinguna se resuelve con argumentos. Se resuelven con experiencia: ayudando al paciente a **probar algo diferente**."
+  }],
+  5: [{
+    title: "\u{1F3AF} Consulta simulada",
+    text: "Es hora de integrar todo.\n\nVas a atender a **Valentina**, un caso donde la rumiaci\u00F3n mantiene su depresi\u00F3n.\n\nCada decisi\u00F3n afectar\u00E1 c\u00F3mo responde. Si eliges bien, se abre. Si eliges mal, se cierra.\n\nConf\u00EDa en tu entrenamiento. Empecemos."
+  }]
+};
+
+// ===== EXERCISE DATA =====
+var EX = {
+  1: [
+  // Exercise 1: Classify
+  {
+    type: "classify",
+    instruction: "Lee cada vi\u00F1eta cl\u00EDnica. \u00BFEl paciente est\u00E1 reflexionando o rumiando?",
+    items: [{
+      text: "Ana estuvo 2 horas pensando por qu\u00E9 su ex la dej\u00F3. Revis\u00F3 cada conversaci\u00F3n mentalmente. No lleg\u00F3 a ninguna conclusi\u00F3n nueva. Se sinti\u00F3 peor.",
+      a: 1,
+      fb: "Circular, sin opciones nuevas, sin acci\u00F3n, sin punto final. Los 4 indicadores se\u00F1alan rumiaci\u00F3n."
+    }, {
+      text: "Carlos pens\u00F3 20 minutos sobre su conflicto laboral. Identific\u00F3 3 opciones: hablar con su jefe, pedir mediaci\u00F3n, o buscar otro empleo. Decidi\u00F3 hablar con su jefe el lunes.",
+      a: 0,
+      fb: "Tuvo direcci\u00F3n, gener\u00F3 opciones, produjo una decisi\u00F3n concreta y termin\u00F3. Reflexi\u00F3n productiva."
+    }, {
+      text: "Luc\u00EDa lleva 3 d\u00EDas d\u00E1ndole vueltas a si deber\u00EDa terminar su relaci\u00F3n. Cada d\u00EDa cambia de opini\u00F3n. No ha hablado con nadie. Piensa \u2018necesito pensarlo m\u00E1s\u2019.",
+      a: 1,
+      fb: "3 d\u00EDas sin conclusi\u00F3n, sin acci\u00F3n, sin consultar a nadie. \u2018Necesito pensarlo m\u00E1s\u2019 es la se\u00F1al cl\u00E1sica del loop."
+    }, {
+      text: "Pedro se sent\u00F3 15 minutos a pensar c\u00F3mo abordar una conversaci\u00F3n dif\u00EDcil con su hermano. Escribi\u00F3 3 puntos. Lo llam\u00F3 esa tarde.",
+      a: 0,
+      fb: "Breve, gener\u00F3 un plan concreto, llev\u00F3 a acci\u00F3n el mismo d\u00EDa."
+    }, {
+      text: "Marta analiza cada noche por qu\u00E9 se siente tan cansada. Repasa su d\u00EDa buscando \u2018la causa\u2019. Despu\u00E9s de 1 hora llega a la misma conclusi\u00F3n de siempre: \u2018es que no duermo bien\u2019. Pero no cambia nada de su rutina.",
+      a: 1,
+      fb: "Cada noche, misma conclusi\u00F3n, sin cambio conductual. El an\u00E1lisis reemplaza la acci\u00F3n."
+    }]
+  },
+  // Exercise 2: Spot shift
+  {
+    type: "spot",
+    instruction: "El paciente empieza reflexionando pero cruza al loop. Identifica D\u00D3NDE cambia.",
+    lines: [{
+      s: "P",
+      t: "He estado pensando en el problema con mi socia."
+    }, {
+      s: "T",
+      t: "\u00BFY a qu\u00E9 conclusiones llegaste?"
+    }, {
+      s: "P",
+      t: "El problema es que no hemos definido bien los roles. Ella toma decisiones que me corresponden."
+    }, {
+      s: "T",
+      t: "Eso suena claro. \u00BFQu\u00E9 podr\u00EDas hacer con eso?"
+    }, {
+      s: "P",
+      t: "Podr\u00EDa proponer una reuni\u00F3n para redefinir roles... pero ahora que lo pienso, \u00BFy si se lo toma mal?"
+    }, {
+      s: "P",
+      t: "La \u00FAltima vez que intent\u00E9 hablar de algo as\u00ED se ofendi\u00F3. Y antes de eso tambi\u00E9n..."
+    }, {
+      s: "P",
+      t: "Quiz\u00E1s el error fue asociarme con ella desde el principio..."
+    }],
+    correct: 4,
+    fb: "Hasta la l\u00EDnea 4 hay direcci\u00F3n: identifica problema, genera opci\u00F3n. En la l\u00EDnea 5, el \u2018pero ahora que lo pienso\u2019 abre el loop: deja la acci\u00F3n y entra a revisar el pasado."
+  },
+  // Exercise 3: Expert trap
+  {
+    type: "trap",
+    title: "\u{1FA9C} Trampa cl\u00EDnica",
+    scenario: "Tu paciente reflexiona brillantemente en sesi\u00F3n. Identifica patrones, hace conexiones, tiene insights. Pero semana tras semana, fuera de sesi\u00F3n no cambia nada.",
+    q: "\u00BFQu\u00E9 est\u00E1 pasando?",
+    opts: [{
+      t: "Necesita m\u00E1s sesiones para profundizar sus insights",
+      c: false,
+      fb: "M\u00E1s an\u00E1lisis no es la soluci\u00F3n. La reflexi\u00F3n en sesi\u00F3n est\u00E1 funcionando como rumiaci\u00F3n."
+    }, {
+      t: "La reflexi\u00F3n en sesi\u00F3n funciona como rumiaci\u00F3n si no lleva a acci\u00F3n fuera",
+      c: true,
+      fb: "Exacto. Si \u2018pensar bien\u2019 en sesi\u00F3n no se traduce en HACER diferente fuera, la reflexi\u00F3n tiene funci\u00F3n de evitaci\u00F3n."
+    }, {
+      t: "No est\u00E1 motivado para cambiar",
+      c: false,
+      fb: "No es falta de motivaci\u00F3n. La reflexi\u00F3n alivia temporalmente sin requerir la acci\u00F3n que generar\u00EDa cambio real."
+    }]
+  }],
+  2: [
+  // Identify function
+  {
+    type: "function",
+    instruction: "Identifica la funci\u00F3n evitativa principal de la rumiaci\u00F3n.",
+    cases: [{
+      text: "Sof\u00EDa fue despedida hace 2 meses. Cada d\u00EDa pasa horas analizando \u2018qu\u00E9 hizo mal\u2019. No ha actualizado su CV ni buscado empleo.",
+      opts: ["Evitar actuar", "Evitar sentir", "Evitar decidir"],
+      c: 0,
+      fb: "Mientras \u2018analiza\u2019, no tiene que enfrentar la b\u00FAsqueda de empleo con su riesgo de rechazo."
+    }, {
+      text: "Marcos perdi\u00F3 a su padre hace 6 meses. Pasa horas reconstruyendo mentalmente los \u00FAltimos d\u00EDas, buscando \u2018entender\u2019. Cuando le preguntan c\u00F3mo est\u00E1, da explicaciones racionales.",
+      opts: ["Evitar actuar", "Evitar sentir", "Evitar decidir"],
+      c: 1,
+      fb: "El an\u00E1lisis racional sustituye el contacto emocional. Marcos \u2018entiende\u2019 su p\u00E9rdida pero no la siente."
+    }, {
+      text: "Elena lleva 8 meses \u2018pensando\u2019 si terminar su relaci\u00F3n. Cada semana cambia de opini\u00F3n. Nunca llega a conclusi\u00F3n.",
+      opts: ["Evitar actuar", "Evitar sentir", "Evitar decidir"],
+      c: 2,
+      fb: "Mientras \u2018piensa\u2019, no tiene que elegir. Decidir implica asumir p\u00E9rdida y consecuencias."
+    }, {
+      text: "Roberto tiene un conflicto con su hermano. Cada noche repasa mentalmente argumentos. Pero cuando lo ve, no dice nada.",
+      opts: ["Evitar actuar", "Evitar sentir", "Evitar decidir"],
+      c: 0,
+      fb: "Preparar argumentos mentalmente sustituye la acci\u00F3n de hablar. Ensaya infinitamente pero nunca act\u00FAa."
+    }]
+  },
+  // Unmask
+  {
+    type: "unmask",
+    instruction: "Estas conductas parecen productivas pero son rumiaci\u00F3n disfrazada. Toca para revelar.",
+    items: [{
+      beh: "Leer 15 art\u00EDculos sobre ansiedad para \u2018entender mi problema\u2019",
+      mask: "Informarse",
+      real: "Evitar actuar: leer SOBRE el problema reemplaza hacer algo CON el problema"
+    }, {
+      beh: "Escribir un diario de 3 p\u00E1ginas cada noche analizando el d\u00EDa",
+      mask: "Autoconocimiento",
+      real: "Evitar sentir: narrar y analizar la experiencia reemplaza contactarla emocionalmente"
+    }, {
+      beh: "Hablar con 5 amigos sobre la misma decisi\u00F3n",
+      mask: "Buscar perspectivas",
+      real: "Evitar decidir: recolectar opiniones infinitamente pospone elegir"
+    }]
+  },
+  // Functional analysis
+  {
+    type: "fa",
+    instruction: "Completa el an\u00E1lisis funcional de este caso.",
+    caseText: "Andrea, 28 a\u00F1os. Cada domingo por la noche empieza a pensar en todo lo que tiene que hacer en la semana. Repasa mentalmente cada tarea, imagina problemas, anticipa fracasos. Dura 2-3 horas. No escribe nada, no planifica. El lunes se siente agotada y empieza tarde.",
+    fields: [{
+      label: "Antecedente",
+      correct: 0,
+      opts: ["Domingo por la noche, pensar en la semana", "Sentirse agotada el lunes", "No escribir un plan concreto", "Imaginar problemas posibles"]
+    }, {
+      label: "Conducta",
+      correct: 1,
+      opts: ["Empezar tarde el lunes", "Repasar mentalmente tareas 2-3h sin planificar", "Sentir ansiedad anticipatoria", "Domingo por la noche"]
+    }, {
+      label: "Consecuencia corto plazo",
+      correct: 1,
+      opts: ["Se siente agotada el lunes", "Siente que \u2018est\u00E1 trabajando en ello\u2019, reduce ansiedad", "Acumula m\u00E1s tareas", "Deja de pensar en la semana"]
+    }, {
+      label: "Consecuencia largo plazo",
+      correct: 2,
+      opts: ["Se siente mejor los domingos", "Aprende a manejar ansiedad", "No planifica, empieza tarde, confirma \u2018no puedo con todo\u2019", "Reduce su carga laboral"]
+    }]
+  }],
+  3: [
+  // Tool match
+  {
+    type: "toolmatch",
+    instruction: "\u00BFCu\u00E1l de las 3 herramientas es m\u00E1s apropiada?",
+    tools: ["\u{1FA9E} Hacer visible", "\u{1F9ED} Experiencia vs An\u00E1lisis", "\u{1F527} Redirecci\u00F3n conductual"],
+    moments: [{
+      text: "Tu paciente no se da cuenta de que lleva 40 min hablando en c\u00EDrculos.",
+      c: 0,
+      fb: "Necesita hacer visible el loop primero."
+    }, {
+      text: "Dice \u2018s\u00E9 que estoy dando vueltas, pero necesito ENTENDER por qu\u00E9 pas\u00F3\u2019.",
+      c: 1,
+      fb: "Ya sabe que rumia. Redirige de modo an\u00E1lisis a modo experiencia."
+    }, {
+      text: "Reconoce el loop: \u2018ok, pero \u00BFqu\u00E9 hago cuando empiece a darle vueltas en casa?\u2019",
+      c: 2,
+      fb: "Pide un plan de acci\u00F3n alternativa. Momento para redirecci\u00F3n conductual."
+    }, {
+      text: "Analiza racionalmente su tristeza: \u2018es mi cortisol, la falta de sue\u00F1o, mi infancia\u2019.",
+      c: 1,
+      fb: "Modo an\u00E1lisis puro. Necesita experiencia: \u00BFc\u00F3mo se siente esa tristeza en tu cuerpo ahora?"
+    }, {
+      text: "Empieza la sesi\u00F3n: \u2018me pas\u00E9 3 horas pensando en lo del trabajo y no s\u00E9 qu\u00E9 hacer\u2019.",
+      c: 0,
+      fb: "Primero hacer visible: \u20183 horas... \u00BFllegaste a algo nuevo?\u2019"
+    }, {
+      text: "Dice: \u2018ya entend\u00ED que rumio, ya s\u00E9 que es para no sentir. Pero el domingo vuelvo a caer.\u2019",
+      c: 2,
+      fb: "Tiene conciencia. Necesita plan conductual concreto para el domingo."
+    }]
+  },
+  // Best question
+  {
+    type: "bestq",
+    instruction: "Elige la mejor pregunta para hacer visible el loop.",
+    scenarios: [{
+      ctx: "Lleva 15 min repasando una pelea con su madre. Repite los mismos argumentos.",
+      opts: [{
+        t: "\u00BFPor qu\u00E9 crees que tu madre reaccion\u00F3 as\u00ED?",
+        c: false,
+        fb: "Entra al contenido. Refuerza la rumiaci\u00F3n."
+      }, {
+        t: "\u00BFQu\u00E9 conclusi\u00F3n nueva has sacado en estos 15 minutos?",
+        c: true,
+        fb: "Hace visible que el loop no produce nada nuevo, sin invalidar."
+      }, {
+        t: "Intenta no pensar tanto en eso.",
+        c: false,
+        fb: "Supresi\u00F3n + invalidaci\u00F3n. No funciona."
+      }, {
+        t: "\u00BFC\u00F3mo te hace sentir lo que pas\u00F3 con tu madre?",
+        c: false,
+        fb: "Puede abrir otro loop de an\u00E1lisis emocional. Primero hacer visible el patr\u00F3n."
+      }]
+    }, {
+      ctx: "Dice que necesita \u2018entender\u2019 por qu\u00E9 su pareja lo dej\u00F3. Lleva 2 meses en lo mismo.",
+      opts: [{
+        t: "\u00BFQu\u00E9 crees que necesitas entender exactamente?",
+        c: false,
+        fb: "Invita a m\u00E1s an\u00E1lisis. 2 meses sin respuesta; m\u00E1s an\u00E1lisis tampoco servir\u00E1."
+      }, {
+        t: "En estos 2 meses, \u00BFhas llegado a alguna respuesta que te satisfaga?",
+        c: true,
+        fb: "Hace visible el loop temporal: 2 meses sin resultado."
+      }, {
+        t: "Quiz\u00E1s nunca vas a entender completamente.",
+        c: false,
+        fb: "Confrontativo sin herramienta. Primero hacer visible, luego ofrecer alternativa."
+      }, {
+        t: "\u00BFHas considerado que ella ten\u00EDa sus razones?",
+        c: false,
+        fb: "Entra al contenido del pensamiento."
+      }]
+    }]
+  },
+  // Find error
+  {
+    type: "error",
+    instruction: "El terapeuta comete un error. \u00BFCu\u00E1l es?",
+    dialogues: [{
+      lines: [{
+        s: "P",
+        t: "No puedo dejar de pensar en que voy a fracasar en el nuevo trabajo."
+      }, {
+        s: "T",
+        t: "\u00BFHay evidencia real de que vas a fracasar? \u00BFQu\u00E9 datos tienes a favor y en contra?"
+      }],
+      errs: [{
+        t: "Hace reestructuraci\u00F3n cognitiva en vez de abordar la funci\u00F3n",
+        c: true,
+        fb: "Exacto. Debatir evidencia es intervenir en contenido. La pregunta funcional: \u2018\u00BFCu\u00E1nto tiempo llevas pensando en esto? \u00BFTe ha ayudado?\u2019"
+      }, {
+        t: "Deber\u00EDa validar el miedo primero",
+        c: false,
+        fb: "El error principal es reestructurar contenido."
+      }, {
+        t: "Deber\u00EDa explorar el origen del miedo",
+        c: false,
+        fb: "Explorar el origen es m\u00E1s an\u00E1lisis."
+      }]
+    }, {
+      lines: [{
+        s: "P",
+        t: "Cada noche repaso todo lo que hice mal. No puedo parar."
+      }, {
+        s: "T",
+        t: "Cuando eso pase, intenta pensar en 3 cosas positivas del d\u00EDa."
+      }],
+      errs: [{
+        t: "Propone distracci\u00F3n, no redirecci\u00F3n funcional",
+        c: true,
+        fb: "\u2018Pensar en cosas positivas\u2019 es distracci\u00F3n. La redirecci\u00F3n: \u2018\u00BFQu\u00E9 podr\u00EDas HACER en ese momento?\u2019"
+      }, {
+        t: "Deber\u00EDa explorar qu\u00E9 hizo mal",
+        c: false,
+        fb: "Eso profundizar\u00EDa la rumiaci\u00F3n."
+      }, {
+        t: "Deber\u00EDa hacer mindfulness",
+        c: false,
+        fb: "Mindfulness gen\u00E9rico no es lo que propone Martell."
+      }]
+    }, {
+      lines: [{
+        s: "P",
+        t: "S\u00E9 que estoy rumiando pero no puedo evitarlo."
+      }, {
+        s: "T",
+        t: "Tienes que esforzarte m\u00E1s. Cuando notes que empiezas, simplemente para."
+      }],
+      errs: [{
+        t: "Propone supresi\u00F3n e invalida la dificultad",
+        c: true,
+        fb: "\u2018Simplemente para\u2019 es supresi\u00F3n. La alternativa: \u2018\u00BFQu\u00E9 podr\u00EDas hacer EN VEZ de rumiar?\u2019"
+      }, {
+        t: "Deber\u00EDa explorar por qu\u00E9 no puede parar",
+        c: false,
+        fb: "Explorar \u2018por qu\u00E9 no puede parar\u2019 puede ser meta-rumiaci\u00F3n."
+      }, {
+        t: "Deber\u00EDa derivar a psiquiatr\u00EDa",
+        c: false,
+        fb: "No hay indicaci\u00F3n para derivar."
+      }]
+    }]
+  }],
+  4: [
+  // Mini dialogue 1
+  {
+    type: "dialogue",
+    title: "Julia y el trabajo",
+    turns: [{
+      p: "Esta semana estuve 4 noches sin dormir pensando en si deber\u00EDa renunciar. Analic\u00E9 todo: los pros, los contras...",
+      opts: [{
+        t: "\u00BFY a qu\u00E9 conclusi\u00F3n llegaste despu\u00E9s de 4 noches?",
+        ok: true,
+        next: 1,
+        fb: "Hace visible el loop: 4 noches, \u00BFllegaste a alg\u00FAn lado?"
+      }, {
+        t: "\u00BFQu\u00E9 es lo que m\u00E1s te preocupa de tu trabajo?",
+        ok: false,
+        next: 2,
+        fb: "Abre m\u00E1s an\u00E1lisis de contenido."
+      }]
+    }, {
+      p: "...La verdad que no. Cada noche llego al mismo punto. Es frustrante.",
+      opts: [{
+        t: "4 noches y siempre vuelves al mismo punto. \u00BFQu\u00E9 te dice eso sobre este tipo de \u2018an\u00E1lisis\u2019?",
+        ok: true,
+        next: 3,
+        fb: "Consolida la conciencia del loop."
+      }, {
+        t: "Quiz\u00E1s necesitas m\u00E1s informaci\u00F3n para decidir.",
+        ok: false,
+        next: 3,
+        fb: "Refuerza la rumiaci\u00F3n."
+      }]
+    }, {
+      p: "Me preocupa no poder pagar mis gastos si renuncio. Y el seguro m\u00E9dico...",
+      opts: [{
+        t: "Miedos v\u00E1lidos. \u00BFCu\u00E1nto tiempo llevas pensando sin llegar a una decisi\u00F3n?",
+        ok: true,
+        next: 3,
+        fb: "Validas y redireccionas. Buen recovery."
+      }, {
+        t: "\u00BFHay forma de tener un plan B financiero?",
+        ok: false,
+        next: 3,
+        fb: "Soluciona contenido sin abordar el patr\u00F3n."
+      }]
+    }, {
+      p: "Que darle vueltas no me est\u00E1 sirviendo... pero no s\u00E9 qu\u00E9 m\u00E1s hacer.",
+      opts: [{
+        t: "\u00BFQu\u00E9 podr\u00EDas hacer ESTA SEMANA \u2014 algo peque\u00F1o \u2014 que te d\u00E9 info real?",
+        ok: true,
+        next: "good",
+        fb: "Redirecci\u00F3n conductual. Acci\u00F3n concreta."
+      }, {
+        t: "\u00BFQu\u00E9 sientes ahora cuando dices que no sabes qu\u00E9 hacer?",
+        ok: true,
+        next: "good",
+        fb: "Redirige a experiencia. Buen paso previo a la acci\u00F3n."
+      }]
+    }],
+    good: "Julia reconoce el patr\u00F3n y est\u00E1 abierta a probar acci\u00F3n concreta. Buen trabajo. \u{1F44F}",
+    bad: "Julia sigue en el loop. La intervenci\u00F3n fue emp\u00E1tica pero no funcional."
+  },
+  // Resistance handler
+  {
+    type: "resistance",
+    instruction: "El paciente \u2018rebota\u2019 tu intervenci\u00F3n. Elige la mejor respuesta.",
+    items: [{
+      p: "Pero NECESITO entender qu\u00E9 pas\u00F3. Si no lo entiendo, \u00BFc\u00F3mo evito que vuelva a pasar?",
+      opts: [{
+        t: "Llevas meses intentando entender sin respuesta. \u00BFY si la forma de evitar que pase de nuevo es practicar algo diferente en el presente?",
+        ok: true,
+        fb: "Confrontas la premisa y redireccionas de an\u00E1lisis a acci\u00F3n."
+      }, {
+        t: "Tienes raz\u00F3n, es importante entender. Vamos a analizarlo juntos.",
+        ok: false,
+        fb: "Validas la premisa rumiativa y te unes al loop."
+      }, {
+        t: "Simplemente no pienses en eso y enf\u00F3cate en el futuro.",
+        ok: false,
+        fb: "Supresi\u00F3n + invalidaci\u00F3n."
+      }]
+    }, {
+      p: "No puedo dejar de pensar en eso. Es m\u00E1s fuerte que yo.",
+      opts: [{
+        t: "No te pido que dejes de pensar. Te propongo que cuando notes el loop, HAGAS algo peque\u00F1o que te importe. No parar de pensar, sino empezar a hacer.",
+        ok: true,
+        fb: "No suprimir sino redirigir. La acci\u00F3n reemplaza naturalmente."
+      }, {
+        t: "Entiendo. \u00BFQu\u00E9 sientes cuando no puedes parar?",
+        ok: false,
+        fb: "Puede abrir meta-rumiaci\u00F3n: rumiar sobre por qu\u00E9 no puede dejar de rumiar."
+      }, {
+        t: "Si te esfuerzas m\u00E1s, vas a poder controlarlo.",
+        ok: false,
+        fb: "Supresi\u00F3n + invalidaci\u00F3n."
+      }]
+    }, {
+      p: "Si no lo pienso bien, voy a cometer el mismo error. Necesito estar 100% segura.",
+      opts: [{
+        t: "\u00BFTe ha dado el an\u00E1lisis de estas semanas esa seguridad del 100%? \u00BFO cada vez aparece una duda nueva?",
+        ok: true,
+        fb: "Confrontas la ilusi\u00F3n de control: la certeza del 100% nunca llega."
+      }, {
+        t: "\u00BFQu\u00E9 es lo peor que podr\u00EDa pasar si act\u00FAas sin estar segura?",
+        ok: false,
+        fb: "Puede abrir otro loop de escenarios catastr\u00F3ficos."
+      }, {
+        t: "Puedes investigar un poco m\u00E1s.",
+        ok: false,
+        fb: "Refuerza el patr\u00F3n rumiativo directamente."
+      }]
+    }]
+  }]
+};
+
+// ===== LEVEL 5 CASE =====
+var CASE5 = {
+  intro: "Valentina, 35 a\u00F1os, psic\u00F3loga organizacional. Despedida hace 4 meses. Pasa horas analizando \u2018qu\u00E9 hizo mal\u2019. Dice que necesita \u2018entender para avanzar\u2019. No ha actualizado su CV. Rechaza invitaciones diciendo que \u2018no est\u00E1 de humor hasta resolver esto en su cabeza\u2019.",
+  stages: [{
+    title: "Etapa 1: Detectar \u{1F50D}",
+    prompt: "Valentina dice: \u2018Mira, yo s\u00E9 que deber\u00EDa estar buscando trabajo, pero primero necesito entender qu\u00E9 pas\u00F3. Cada d\u00EDa repaso las reuniones, los mails, las conversaciones. Algo tuve que haber hecho mal.\u2019",
+    q: "\u00BFQu\u00E9 conductas son rumiaci\u00F3n y cu\u00E1l es su funci\u00F3n?",
+    opts: [{
+      t: "Repasar es reflexi\u00F3n productiva para no repetir errores",
+      ok: false,
+      cons: "Te uniste al loop. Pasas 30 min explorando reuniones sin avance.",
+      fb: "4 meses sin conclusi\u00F3n nueva indica rumiaci\u00F3n, no reflexi\u00F3n."
+    }, {
+      t: "La rumiaci\u00F3n (repasar sin fin) funciona como evitaci\u00F3n de actuar",
+      ok: true,
+      cons: "Identificas el patr\u00F3n correctamente. Ahora necesitas ayudarla a verlo.",
+      fb: "4 meses, ninguna conclusi\u00F3n nueva, ninguna acci\u00F3n concreta."
+    }, {
+      t: "El problema es baja autoestima, no rumiaci\u00F3n",
+      ok: false,
+      cons: "Exploras autoestima y Valentina analiza \u2018por qu\u00E9 soy tan insegura\u2019. Otro loop.",
+      fb: "La conducta mantenedora observable es la rumiaci\u00F3n como evitaci\u00F3n."
+    }]
+  }, {
+    title: "Etapa 2: Hacer visible \u{1FA9E}",
+    prompt: "Necesitas ayudar a Valentina a ver el loop sin invalidarla.",
+    q: "\u00BFQu\u00E9 le dices?",
+    opts: [{
+      t: "Valentina, llevas 4 meses analizando. \u00BFHas llegado a alguna respuesta que no tuvieras el primer mes?",
+      ok: true,
+      cons: "Se queda en silencio. \u2018...La verdad que no. Siempre vuelvo al mismo punto. Pero si lo dejo, es como rendirme.\u2019",
+      fb: "Pregunta temporal que hace visible la circularidad sin atacar."
+    }, {
+      t: "Est\u00E1s rumiando y eso te mantiene estancada.",
+      ok: false,
+      cons: "Se defiende: \u2018No estoy rumiando, estoy intentando resolver algo importante.\u2019",
+      fb: "Demasiado directo. Etiquetar sin que descubra genera resistencia."
+    }, {
+      t: "Entiendo. Cu\u00E9ntame m\u00E1s sobre qu\u00E9 pas\u00F3 en esas reuniones.",
+      ok: false,
+      cons: "Habla 20 minutos sobre reuniones. Detallada pero nada nuevo. Sesion al loop.",
+      fb: "Te uniste al an\u00E1lisis. Emp\u00E1tico pero no funcional."
+    }]
+  }, {
+    title: "Etapa 3: Resistencia \u{1F6E1}\uFE0F",
+    prompt: "Valentina dice: \u2018Pero si lo dejo de pensar es como rendirme. NECESITO entender qu\u00E9 hice mal.\u2019",
+    q: "\u00BFC\u00F3mo respondes?",
+    opts: [{
+      t: "\u00BFY si la forma de que no te pase de nuevo no es analizar el pasado sino practicar habilidades diferentes?",
+      ok: true,
+      cons: "Pausa. \u2018Nunca lo hab\u00EDa visto as\u00ED... pero \u00BFqu\u00E9 hago entonces?\u2019",
+      fb: "Cuestionas la premisa sin invalidar. Reencuadras: la protecci\u00F3n no viene del an\u00E1lisis."
+    }, {
+      t: "Es normal tener miedo. T\u00F3mate el tiempo que necesites.",
+      ok: false,
+      cons: "\u2018S\u00ED, necesito m\u00E1s tiempo para procesarlo.\u2019 Semana 20 de lo mismo.",
+      fb: "Validas pero refuerzas la estrategia disfuncional."
+    }, {
+      t: "Te propongo un experimento: 1 hora de an\u00E1lisis y 1 hora de acci\u00F3n concreta esta semana.",
+      ok: true,
+      cons: "\u2018\u00BFQu\u00E9 tipo de acci\u00F3n?\u2019 \u2014 est\u00E1 abierta.",
+      fb: "No suprimes, introduces acci\u00F3n junto al an\u00E1lisis. Pragm\u00E1tico."
+    }]
+  }, {
+    title: "Etapa 4: Intervenir \u{1F527}",
+    prompt: "Valentina: \u2018\u00BFQu\u00E9 se supone que haga? \u00BFBuscar trabajo as\u00ED, sin haber resuelto esto?\u2019",
+    q: "\u00BFC\u00F3mo dise\u00F1as la intervenci\u00F3n?",
+    opts: [{
+      t: "Algo peque\u00F1o: esta semana actualiza solo la primera p\u00E1gina de tu CV. Solo eso.",
+      ok: true,
+      cons: "\u2018Eso s\u00ED podr\u00EDa hacerlo... es solo una p\u00E1gina.\u2019 Rompiste el loop.",
+      fb: "Espec\u00EDfico, peque\u00F1o, factible. Activaci\u00F3n conductual graduada."
+    }, {
+      t: "Necesitas un plan completo: CV, LinkedIn, contactar tu red.",
+      ok: false,
+      cons: "\u2018Es demasiado. No estoy lista.\u2019 Vuelve al an\u00E1lisis como refugio.",
+      fb: "Demasiado ambicioso. Un paso tan grande activa la evitaci\u00F3n."
+    }, {
+      t: "Cierra los ojos. \u00BFQu\u00E9 sientes cuando piensas en buscar trabajo? \u00BFD\u00F3nde lo sientes?",
+      ok: true,
+      cons: "\u2018Siento un nudo en el est\u00F3mago. Miedo. Mucho miedo a que me rechacen.\u2019 Primera vez que contacta la emoci\u00F3n.",
+      fb: "Experiencia vs An\u00E1lisis. Deja de pensar SOBRE su miedo y lo SIENTE."
+    }]
+  }, {
+    title: "Etapa 5: Reca\u00EDda \u{1F504}",
+    prompt: "Siguiente sesi\u00F3n. Actualiz\u00F3 su CV (\u00A1avance!). Pero se cruz\u00F3 con un ex-compa\u00F1ero: \u2018Qu\u00E9 l\u00E1stima lo que pas\u00F3\u2019. Volvi\u00F3 al loop 3 noches. Llega desanimada: \u2018Ves, sab\u00EDa que no estaba lista.\u2019",
+    q: "\u00BFC\u00F3mo trabajas la reca\u00EDda?",
+    opts: [{
+      t: "Primero: actualizaste tu CV. Eso es real. El comentario dispar\u00F3 el loop otra vez. No borra tu avance. \u00BFQu\u00E9 puedes hacer la pr\u00F3xima vez que un trigger aparezca?",
+      ok: true,
+      cons: "Se relaja. \u2018Es verdad que hice el CV...\u2019 Empiezan plan para triggers.",
+      fb: "Validas avance, normalizas reca\u00EDda como informaci\u00F3n, redireccionas a plan futuro."
+    }, {
+      t: "Quiz\u00E1s necesitas m\u00E1s tiempo antes de exponerte.",
+      ok: false,
+      cons: "\u2018S\u00ED, no estoy lista.\u2019 El loop se reinstala.",
+      fb: "Refuerzas la evitaci\u00F3n."
+    }, {
+      t: "\u00BFQu\u00E9 sientes ahora cuando cuentas lo del ex-compa\u00F1ero?",
+      ok: true,
+      cons: "\u2018Verg\u00FCenza. Mucha verg\u00FCenza.\u2019 Es la emoci\u00F3n que la rumiaci\u00F3n evitaba.",
+      fb: "Experiencia vs An\u00E1lisis. Contacta la verg\u00FCenza directamente."
+    }]
+  }]
+};
+
+// ===== PRE/POST ASSESSMENT =====
+var ASSESS = [{
+  q: "Tu paciente dice: \u2018Estuve toda la semana pensando en por qu\u00E9 mi jefe me trat\u00F3 as\u00ED\u2019. \u00BFQu\u00E9 haces primero?",
+  opts: ["Explorar contenido: \u00BFqu\u00E9 te dijo exactamente?", "Evaluar funci\u00F3n: \u00BFese pensar te llev\u00F3 a hacer algo diferente?", "Reestructurar: \u00BFhay evidencia de que te trat\u00F3 mal?", "Validar: es normal que pienses en eso"],
+  best: 1
+}, {
+  q: "\u00BFCu\u00E1l NO es una herramienta de Martell para la rumiaci\u00F3n?",
+  opts: ["Hacer visible el loop", "Redirigir a acci\u00F3n valiosa", "Debatir el contenido del pensamiento", "Atender a la experiencia vs an\u00E1lisis"],
+  best: 2
+}, {
+  q: "Paciente rumia sobre su divorcio hace 3 meses. Dice \u2018necesito entender qu\u00E9 pas\u00F3\u2019. Funci\u00F3n probable?",
+  opts: ["Resolver el problema activamente", "Evitar tomar decisiones sobre su nueva vida", "Procesar emocionalmente la p\u00E9rdida", "Buscar justicia"],
+  best: 1
+}];
+var SUMMARIES = ["La rumiaci\u00F3n no se define por el contenido sino por su efecto: circular, sin opciones nuevas, sin acci\u00F3n, sin fin natural.", "La rumiaci\u00F3n funciona como evitaci\u00F3n: de actuar, de sentir o de decidir. Preg\u00FAntate: \u00BFde qu\u00E9 protege este pensamiento?", "3 herramientas de Martell: hacer visible el loop, redirigir de an\u00E1lisis a experiencia, y redirecci\u00F3n conductual. Nunca supresi\u00F3n.", "Primero conciencia, despu\u00E9s intervenci\u00F3n. Cuando el paciente resiste: no argumentes, propone un experimento conductual.", "Las reca\u00EDdas son informaci\u00F3n, no fracasos. Cada trigger es oportunidad de plan."];
+
+// ===== HELPER: Render text with bold =====
+function RichText({
+  text
+}) {
+  var parts = text.split(/(\*\*.+?\*\*)/g);
+  return React.createElement("span", null, parts.map(function (part, i) {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return React.createElement("strong", {
+        key: i
+      }, part.slice(2, -2));
+    }
+    return React.createElement("span", {
+      key: i
+    }, part);
+  }));
+}
+function TextBlock({
+  text
+}) {
+  var paragraphs = text.split("\n\n");
+  return React.createElement("div", null, paragraphs.map(function (p, i) {
+    var lines = p.split("\n");
+    return React.createElement("p", {
+      key: i,
+      style: {
+        marginBottom: 12,
+        lineHeight: 1.7,
+        fontSize: 18
+      }
+    }, lines.map(function (line, j) {
+      return React.createElement(React.Fragment, {
+        key: j
+      }, j > 0 ? React.createElement("br") : null, React.createElement(RichText, {
+        text: line
+      }));
+    }));
+  }));
+}
+
+// ===== UI COMPONENTS =====
+
+function Btn({
+  children,
+  onClick,
+  color,
+  disabled,
+  full,
+  outline,
+  small
+}) {
+  return React.createElement("button", {
+    onClick: onClick,
+    disabled: disabled,
+    style: {
+      width: full ? "100%" : "auto",
+      padding: small ? "10px 14px" : "14px 18px",
+      background: outline ? "transparent" : disabled ? "#ccc" : color || C.accent,
+      color: outline ? color || C.accent : disabled ? "#999" : "#fff",
+      border: outline ? "2px solid " + (color || C.accent) : "none",
+      borderRadius: 14,
+      fontSize: small ? 17 : 19,
+      fontWeight: 700,
+      cursor: disabled ? "not-allowed" : "pointer",
+      fontFamily: "inherit",
+      marginTop: 12,
+      transition: "all 0.3s"
+    }
+  }, children);
+}
+function Card({
+  children,
+  style
+}) {
+  return React.createElement("div", {
+    style: Object.assign({
+      background: C.card,
+      borderRadius: 18,
+      padding: 20,
+      border: "1px solid " + C.border,
+      boxShadow: "0 4px 24px #00000018"
+    }, style || {})
+  }, children);
+}
+function FeedbackBox({
+  ok,
+  text
+}) {
+  return React.createElement("div", {
+    style: {
+      padding: 14,
+      borderRadius: 12,
+      marginTop: 12,
+      background: ok ? C.ok : C.no,
+      border: "1px solid " + (ok ? C.okBd : C.noBd),
+      animation: ok ? "checkPop 0.3s ease-out" : "shake 0.3s ease-out"
+    }
+  }, React.createElement("span", {
+    style: {
+      fontSize: 21,
+      marginRight: 8
+    }
+  }, ok ? "\u2705" : "\u274C"), React.createElement("span", {
+    style: {
+      fontSize: 17,
+      color: ok ? C.okTx : C.noTx,
+      lineHeight: 1.5
+    }
+  }, text));
+}
+function ProgressBar({
+  current,
+  total,
+  color
+}) {
+  return React.createElement("div", {
+    style: {
+      width: "100%",
+      height: 6,
+      background: "#E0D8EA",
+      borderRadius: 3,
+      overflow: "hidden",
+      marginBottom: 16
+    }
+  }, React.createElement("div", {
+    style: {
+      height: "100%",
+      width: current / total * 100 + "%",
+      background: color,
+      borderRadius: 3,
+      transition: "width 0.5s"
+    }
+  }));
+}
+function SkillTracker({
+  skills
+}) {
+  return React.createElement("div", {
+    style: {
+      background: C.card,
+      borderRadius: 16,
+      padding: 16,
+      border: "1px solid " + C.border,
+      marginBottom: 20
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      fontWeight: 700,
+      color: C.textMid,
+      marginBottom: 12
+    }
+  }, "\u{1F3AF} Competencias"), React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: 8
+    }
+  }, SKILLS.map(function (s, i) {
+    return React.createElement("div", {
+      key: i,
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 6
+      }
+    }, React.createElement("span", {
+      style: {
+        fontSize: 19
+      }
+    }, s[0]), React.createElement("div", {
+      style: {
+        flex: 1
+      }
+    }, React.createElement("div", {
+      style: {
+        fontSize: 14,
+        color: C.textMid,
+        marginBottom: 2
+      }
+    }, s[1]), React.createElement("div", {
+      style: {
+        height: 4,
+        background: "#E8E0F0",
+        borderRadius: 2
+      }
+    }, React.createElement("div", {
+      style: {
+        height: "100%",
+        width: Math.min((skills[i] || 0) * 20, 100) + "%",
+        background: C.lv[i],
+        borderRadius: 2,
+        transition: "width 0.5s"
+      }
+    }))));
+  })));
+}
+function OptionBtn({
+  text,
+  selected,
+  correct,
+  showResult,
+  onClick
+}) {
+  var bg = C.card;
+  var bd = C.border;
+  if (showResult && selected) {
+    bg = correct ? C.ok : C.no;
+    bd = correct ? C.okBd : C.noBd;
+  } else if (showResult && correct) {
+    bg = C.ok;
+    bd = C.okBd;
+  }
+  return React.createElement("button", {
+    onClick: onClick,
+    disabled: showResult,
+    style: {
+      textAlign: "left",
+      padding: "12px 14px",
+      borderRadius: 12,
+      cursor: showResult ? "default" : "pointer",
+      width: "100%",
+      background: bg,
+      border: "2px solid " + bd,
+      fontSize: 17,
+      color: C.text,
+      lineHeight: 1.5,
+      transition: "all 0.3s",
+      fontFamily: "inherit",
+      marginBottom: 6
+    }
+  }, text);
+}
+
+// ===== EXERCISE COMPONENTS =====
+
+function ExClassify({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(0),
+    sc = _s3[0],
+    setSc = _s3[1];
+  var item = data.items[cur];
+  var labels = ["\u2705 Reflexi\u00F3n", "\u{1F504} Rumiaci\u00F3n"];
+  function pick(v) {
+    if (sel !== null) return;
+    setSel(v);
+    if (v === item.a) setSc(function (s) {
+      return s + 1;
+    });
+  }
+  function next() {
+    if (cur >= data.items.length - 1) {
+      onDone(sc + (sel === item.a ? 1 : 0));
+      return;
+    }
+    setCur(function (c) {
+      return c + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 8
+    }
+  }, data.instruction), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginBottom: 10
+    }
+  }, "Vi\u00F1eta " + (cur + 1) + " de " + data.items.length), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 14,
+      fontSize: 17,
+      lineHeight: 1.7
+    }
+  }, item.text), React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 10
+    }
+  }, labels.map(function (l, i) {
+    var isSelected = sel === i;
+    var isCorrect = i === item.a;
+    var bg = C.card,
+      bd = C.border;
+    if (sel !== null && isSelected) {
+      bg = isCorrect ? C.ok : C.no;
+      bd = isCorrect ? C.okBd : C.noBd;
+    }
+    return React.createElement("button", {
+      key: i,
+      onClick: function () {
+        pick(i);
+      },
+      disabled: sel !== null,
+      style: {
+        flex: 1,
+        padding: "14px 12px",
+        borderRadius: 12,
+        fontSize: 17,
+        fontWeight: 700,
+        cursor: sel !== null ? "default" : "pointer",
+        background: bg,
+        border: "2px solid " + bd,
+        color: C.text,
+        transition: "all 0.3s",
+        fontFamily: "inherit"
+      }
+    }, l);
+  })), sel !== null ? React.createElement(FeedbackBox, {
+    ok: sel === item.a,
+    text: item.fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= data.items.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+function ExSpot({
+  data,
+  onDone
+}) {
+  var _s = useState(null),
+    sel = _s[0],
+    setSel = _s[1];
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 12
+    }
+  }, data.instruction), data.lines.map(function (line, i) {
+    var isCorrect = i === data.correct;
+    var bg = C.card,
+      bd = C.border;
+    if (sel !== null && isCorrect) {
+      bg = C.ok;
+      bd = C.okBd;
+    } else if (sel === i && !isCorrect) {
+      bg = C.no;
+      bd = C.noBd;
+    }
+    return React.createElement("button", {
+      key: i,
+      onClick: function () {
+        if (sel === null) setSel(i);
+      },
+      disabled: sel !== null,
+      style: {
+        textAlign: "left",
+        padding: "10px 14px",
+        borderRadius: 12,
+        width: "100%",
+        marginBottom: 6,
+        cursor: sel !== null ? "default" : "pointer",
+        background: bg,
+        border: "1px solid " + bd,
+        transition: "all 0.3s",
+        fontFamily: "inherit"
+      }
+    }, React.createElement("span", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: line.s === "P" ? C.lv[1] : C.lv[3]
+      }
+    }, line.s === "P" ? "Paciente:" : "Terapeuta:"), React.createElement("p", {
+      style: {
+        fontSize: 17,
+        color: C.text,
+        lineHeight: 1.5,
+        marginTop: 2
+      }
+    }, "\u201C" + line.t + "\u201D"), sel !== null && isCorrect ? React.createElement("span", {
+      style: {
+        fontSize: 15,
+        color: C.okTx,
+        fontWeight: 600
+      }
+    }, "\u{1F504} Aqu\u00ED cambia") : null);
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: sel === data.correct,
+    text: data.fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: function () {
+      onDone(sel === data.correct ? 1 : 0);
+    },
+    full: true
+  }, "Continuar \u2192") : null);
+}
+function ExTrap({
+  data,
+  onDone
+}) {
+  var _s = useState(null),
+    sel = _s[0],
+    setSel = _s[1];
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("h3", {
+    style: {
+      fontSize: 20,
+      fontWeight: 800,
+      color: C.lv[2],
+      marginBottom: 8
+    }
+  }, data.title), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 12,
+      fontSize: 17,
+      lineHeight: 1.7
+    }
+  }, data.scenario), React.createElement("p", {
+    style: {
+      fontSize: 17,
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, data.q), data.opts.map(function (opt, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: opt.t,
+      selected: sel === i,
+      correct: opt.c,
+      showResult: sel !== null,
+      onClick: function () {
+        if (sel === null) setSel(i);
+      }
+    });
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: data.opts[sel].c,
+    text: data.opts[sel].fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: function () {
+      onDone(data.opts[sel].c ? 1 : 0);
+    },
+    full: true
+  }, "Continuar \u2192") : null);
+}
+function ExFunction({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(0),
+    sc = _s3[0],
+    setSc = _s3[1];
+  var c = data.cases[cur];
+  var icons = ["\u{1F6AB} ", "  \u{1F4AD} ", "\u2696\uFE0F "];
+  function pick(i) {
+    if (sel !== null) return;
+    setSel(i);
+    if (i === c.c) setSc(function (s) {
+      return s + 1;
+    });
+  }
+  function next() {
+    if (cur >= data.cases.length - 1) {
+      onDone(sc + (sel === c.c ? 1 : 0));
+      return;
+    }
+    setCur(function (x) {
+      return x + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 8
+    }
+  }, data.instruction), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginBottom: 10
+    }
+  }, "Caso " + (cur + 1) + " de " + data.cases.length), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 14,
+      fontSize: 17,
+      lineHeight: 1.7
+    }
+  }, c.text), c.opts.map(function (opt, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: icons[i] + opt,
+      selected: sel === i,
+      correct: i === c.c,
+      showResult: sel !== null,
+      onClick: function () {
+        pick(i);
+      }
+    });
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: sel === c.c,
+    text: c.fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= data.cases.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+function ExUnmask({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(false),
+    rev = _s2[0],
+    setRev = _s2[1];
+  var item = data.items[cur];
+  function next() {
+    if (cur >= data.items.length - 1) {
+      onDone(data.items.length);
+      return;
+    }
+    setCur(function (c) {
+      return c + 1;
+    });
+    setRev(false);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 12
+    }
+  }, data.instruction), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginBottom: 10
+    }
+  }, "Caso " + (cur + 1) + " de " + data.items.length), React.createElement(Card, null, React.createElement("p", {
+    style: {
+      fontSize: 18,
+      fontWeight: 700,
+      marginBottom: 8
+    }
+  }, "Conducta:"), React.createElement("p", {
+    style: {
+      fontSize: 17,
+      lineHeight: 1.6,
+      marginBottom: 10
+    }
+  }, "\u201C" + item.beh + "\u201D"), React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.lv[2],
+      fontWeight: 600
+    }
+  }, "\u{1F3AD} Parece: " + item.mask), !rev ? React.createElement(Btn, {
+    onClick: function () {
+      setRev(true);
+    },
+    color: C.lv[2],
+    full: true
+  }, "Revelar funci\u00F3n oculta \u{1F50D}") : null, rev ? React.createElement("div", {
+    style: {
+      marginTop: 12,
+      padding: 14,
+      background: C.no,
+      borderRadius: 10,
+      border: "1px solid " + C.noBd
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      fontWeight: 700,
+      color: C.noTx
+    }
+  }, "\u26A0\uFE0F Funci\u00F3n real:"), React.createElement("p", {
+    style: {
+      fontSize: 17,
+      color: C.noTx,
+      lineHeight: 1.5,
+      marginTop: 4
+    }
+  }, item.real)) : null), rev ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= data.items.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+function ExFA({
+  data,
+  onDone
+}) {
+  var _s = useState({}),
+    ans = _s[0],
+    setAns = _s[1];
+  var _s2 = useState(false),
+    rev = _s2[0],
+    setRev = _s2[1];
+  var colors = [C.lv[0], C.lv[1], C.lv[2], C.lv[3]];
+  function pick(fi, oi) {
+    if (rev) return;
+    setAns(function (a) {
+      var n = Object.assign({}, a);
+      n[fi] = oi;
+      return n;
+    });
+  }
+  var allDone = data.fields.every(function (_, i) {
+    return ans[i] !== undefined;
+  });
+  var score = data.fields.filter(function (f, i) {
+    return ans[i] === f.correct;
+  }).length;
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 8
+    }
+  }, data.instruction), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 14,
+      borderRadius: 12,
+      marginBottom: 14,
+      fontSize: 17,
+      lineHeight: 1.7
+    }
+  }, data.caseText), data.fields.map(function (field, fi) {
+    return React.createElement("div", {
+      key: fi,
+      style: {
+        marginBottom: 14
+      }
+    }, React.createElement("p", {
+      style: {
+        fontSize: 16,
+        fontWeight: 700,
+        color: colors[fi],
+        marginBottom: 6
+      }
+    }, field.label + ":"), field.opts.map(function (opt, oi) {
+      var isSel = ans[fi] === oi;
+      var isCorrect = oi === field.correct;
+      var bg = C.card,
+        bd = C.border;
+      if (rev && isCorrect) {
+        bg = C.ok;
+        bd = C.okBd;
+      } else if (rev && isSel && !isCorrect) {
+        bg = C.no;
+        bd = C.noBd;
+      } else if (!rev && isSel) {
+        bg = C.hi;
+        bd = C.accent;
+      }
+      return React.createElement("button", {
+        key: oi,
+        onClick: function () {
+          pick(fi, oi);
+        },
+        disabled: rev,
+        style: {
+          textAlign: "left",
+          padding: "10px 14px",
+          borderRadius: 10,
+          fontSize: 16,
+          width: "100%",
+          cursor: rev ? "default" : "pointer",
+          background: bg,
+          border: "2px solid " + bd,
+          color: C.text,
+          lineHeight: 1.4,
+          marginBottom: 4,
+          transition: "all 0.3s",
+          fontFamily: "inherit"
+        }
+      }, opt);
+    }));
+  }), allDone && !rev ? React.createElement(Btn, {
+    onClick: function () {
+      setRev(true);
+    },
+    full: true
+  }, "Verificar \u2713") : null, rev ? React.createElement(FeedbackBox, {
+    ok: score === 4,
+    text: score === 4 ? "\u00A1Perfecto! 4 de 4 correctos." : "Acertaste " + score + " de 4. Revisa los elementos en verde."
+  }) : null, rev ? React.createElement(Btn, {
+    onClick: function () {
+      onDone(score);
+    },
+    full: true
+  }, "Continuar \u2192") : null);
+}
+function ExToolMatch({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(0),
+    sc = _s3[0],
+    setSc = _s3[1];
+  var m = data.moments[cur];
+  function pick(i) {
+    if (sel !== null) return;
+    setSel(i);
+    if (i === m.c) setSc(function (s) {
+      return s + 1;
+    });
+  }
+  function next() {
+    if (cur >= data.moments.length - 1) {
+      onDone(sc + (sel === m.c ? 1 : 0));
+      return;
+    }
+    setCur(function (x) {
+      return x + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 8
+    }
+  }, data.instruction), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginBottom: 10
+    }
+  }, "Momento " + (cur + 1) + " de " + data.moments.length), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 14,
+      fontSize: 17,
+      lineHeight: 1.7
+    }
+  }, m.text), data.tools.map(function (tool, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: tool,
+      selected: sel === i,
+      correct: i === m.c,
+      showResult: sel !== null,
+      onClick: function () {
+        pick(i);
+      }
+    });
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: sel === m.c,
+    text: m.fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= data.moments.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+function ExBestQ({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(0),
+    sc = _s3[0],
+    setSc = _s3[1];
+  var s = data.scenarios[cur];
+  function pick(i) {
+    if (sel !== null) return;
+    setSel(i);
+    if (s.opts[i].c) setSc(function (x) {
+      return x + 1;
+    });
+  }
+  function next() {
+    if (cur >= data.scenarios.length - 1) {
+      onDone(sc + (s.opts[sel].c ? 1 : 0));
+      return;
+    }
+    setCur(function (x) {
+      return x + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 8
+    }
+  }, data.instruction), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 14,
+      borderRadius: 12,
+      marginBottom: 14,
+      fontSize: 17,
+      lineHeight: 1.6
+    }
+  }, React.createElement("strong", null, "Contexto: "), s.ctx), s.opts.map(function (opt, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: "\u{1F4AC} \"" + opt.t + "\"",
+      selected: sel === i,
+      correct: opt.c,
+      showResult: sel !== null,
+      onClick: function () {
+        pick(i);
+      }
+    });
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: s.opts[sel].c,
+    text: s.opts[sel].fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= data.scenarios.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+function ExError({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(0),
+    sc = _s3[0],
+    setSc = _s3[1];
+  var d = data.dialogues[cur];
+  function pick(i) {
+    if (sel !== null) return;
+    setSel(i);
+    if (d.errs[i].c) setSc(function (s) {
+      return s + 1;
+    });
+  }
+  function next() {
+    if (cur >= data.dialogues.length - 1) {
+      onDone(sc + (d.errs[sel].c ? 1 : 0));
+      return;
+    }
+    setCur(function (x) {
+      return x + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 12
+    }
+  }, data.instruction), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginBottom: 10
+    }
+  }, "Di\u00E1logo " + (cur + 1) + " de " + data.dialogues.length), React.createElement(Card, {
+    style: {
+      marginBottom: 14
+    }
+  }, d.lines.map(function (line, i) {
+    return React.createElement("div", {
+      key: i,
+      style: {
+        marginBottom: 8
+      }
+    }, React.createElement("span", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: line.s === "P" ? C.lv[1] : C.lv[4]
+      }
+    }, line.s === "P" ? "Paciente:" : "Terapeuta:"), React.createElement("p", {
+      style: {
+        fontSize: 17,
+        lineHeight: 1.5
+      }
+    }, "\u201C" + line.t + "\u201D"));
+  })), React.createElement("p", {
+    style: {
+      fontSize: 16,
+      fontWeight: 700,
+      marginBottom: 8
+    }
+  }, "\u00BFCu\u00E1l es el error?"), d.errs.map(function (err, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: err.t,
+      selected: sel === i,
+      correct: err.c,
+      showResult: sel !== null,
+      onClick: function () {
+        pick(i);
+      }
+    });
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: d.errs[sel].c,
+    text: d.errs[sel].fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= data.dialogues.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+function ExDialogue({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    ti = _s[0],
+    setTi = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(null),
+    ended = _s3[0],
+    setEnded = _s3[1];
+  var _s4 = useState(0),
+    sc = _s4[0],
+    setSc = _s4[1];
+  if (ended) {
+    return React.createElement("div", {
+      style: {
+        animation: "fadeIn 0.4s"
+      }
+    }, React.createElement("div", {
+      style: {
+        padding: 20,
+        borderRadius: 14,
+        background: ended === "good" ? C.ok : C.no,
+        border: "2px solid " + (ended === "good" ? C.okBd : C.noBd)
+      }
+    }, React.createElement("p", {
+      style: {
+        fontSize: 19,
+        fontWeight: 700,
+        color: ended === "good" ? C.okTx : C.noTx,
+        marginBottom: 8
+      }
+    }, ended === "good" ? "\u2705 Buen resultado" : "\u26A0\uFE0F Resultado sub\u00F3ptimo"), React.createElement("p", {
+      style: {
+        fontSize: 17,
+        color: ended === "good" ? C.okTx : C.noTx,
+        lineHeight: 1.6
+      }
+    }, ended === "good" ? data.good : data.bad)), React.createElement(Btn, {
+      onClick: function () {
+        onDone(sc);
+      },
+      full: true
+    }, "Continuar \u2192"));
+  }
+  var turn = data.turns[ti];
+  function pick(i) {
+    if (sel !== null) return;
+    setSel(i);
+    if (turn.opts[i].ok) setSc(function (s) {
+      return s + 1;
+    });
+  }
+  function next() {
+    var nxt = turn.opts[sel].next;
+    if (nxt === "good") {
+      setEnded("good");
+      return;
+    }
+    if (nxt === "bad") {
+      setEnded("bad");
+      return;
+    }
+    setTi(nxt);
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("h3", {
+    style: {
+      fontSize: 19,
+      fontWeight: 700,
+      marginBottom: 12
+    }
+  }, data.title), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 14,
+      borderRadius: 12,
+      marginBottom: 14
+    }
+  }, React.createElement("span", {
+    style: {
+      fontSize: 14,
+      fontWeight: 700,
+      color: C.lv[1]
+    }
+  }, "Paciente:"), React.createElement("p", {
+    style: {
+      fontSize: 17,
+      lineHeight: 1.6,
+      marginTop: 4
+    }
+  }, "\u201C" + turn.p + "\u201D")), React.createElement("p", {
+    style: {
+      fontSize: 16,
+      fontWeight: 700,
+      marginBottom: 8
+    }
+  }, "Tu respuesta:"), turn.opts.map(function (opt, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: "\u{1F4AC} \"" + opt.t + "\"",
+      selected: sel === i,
+      correct: opt.ok,
+      showResult: sel !== null,
+      onClick: function () {
+        pick(i);
+      }
+    });
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: turn.opts[sel].ok,
+    text: turn.opts[sel].fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, "Continuar \u2192") : null);
+}
+function ExResistance({
+  data,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(0),
+    sc = _s3[0],
+    setSc = _s3[1];
+  var r = data.items[cur];
+  function pick(i) {
+    if (sel !== null) return;
+    setSel(i);
+    if (r.opts[i].ok) setSc(function (s) {
+      return s + 1;
+    });
+  }
+  function next() {
+    if (cur >= data.items.length - 1) {
+      onDone(sc + (r.opts[sel].ok ? 1 : 0));
+      return;
+    }
+    setCur(function (x) {
+      return x + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      fontWeight: 600,
+      marginBottom: 12
+    }
+  }, data.instruction), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginBottom: 10
+    }
+  }, "Resistencia " + (cur + 1) + " de " + data.items.length), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 14,
+      borderRadius: 12,
+      marginBottom: 14
+    }
+  }, React.createElement("span", {
+    style: {
+      fontSize: 14,
+      fontWeight: 700,
+      color: C.lv[1]
+    }
+  }, "Paciente:"), React.createElement("p", {
+    style: {
+      fontSize: 18,
+      lineHeight: 1.6,
+      marginTop: 4,
+      fontStyle: "italic"
+    }
+  }, "\u201C" + r.p + "\u201D")), r.opts.map(function (opt, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: opt.t,
+      selected: sel === i,
+      correct: opt.ok,
+      showResult: sel !== null,
+      onClick: function () {
+        pick(i);
+      }
+    });
+  }), sel !== null ? React.createElement(FeedbackBox, {
+    ok: r.opts[sel].ok,
+    text: r.opts[sel].fb
+  }) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= data.items.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+function ExCase({
+  caseData,
+  onDone
+}) {
+  var _s = useState(0),
+    stage = _s[0],
+    setStage = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState(0),
+    sc = _s3[0],
+    setSc = _s3[1];
+  var st = caseData.stages[stage];
+  function pick(i) {
+    if (sel !== null) return;
+    setSel(i);
+    if (st.opts[i].ok) setSc(function (x) {
+      return x + 1;
+    });
+  }
+  function next() {
+    if (stage >= caseData.stages.length - 1) {
+      onDone(sc + (st.opts[sel].ok ? 1 : 0));
+      return;
+    }
+    setStage(function (x) {
+      return x + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, stage === 0 ? React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 16,
+      borderRadius: 14,
+      marginBottom: 16,
+      border: "2px solid " + C.lv[4] + "40"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 16,
+      fontWeight: 700,
+      color: C.lv[4],
+      marginBottom: 6
+    }
+  }, "\u{1F4CB} Caso cl\u00EDnico"), React.createElement("p", {
+    style: {
+      fontSize: 17,
+      lineHeight: 1.7
+    }
+  }, caseData.intro)) : null, React.createElement("h3", {
+    style: {
+      fontSize: 19,
+      fontWeight: 800,
+      color: C.lv[4],
+      marginBottom: 8
+    }
+  }, st.title), React.createElement(Card, {
+    style: {
+      marginBottom: 12
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 17,
+      lineHeight: 1.7,
+      fontStyle: "italic"
+    }
+  }, "\u201C" + st.prompt + "\u201D")), React.createElement("p", {
+    style: {
+      fontSize: 17,
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, st.q), st.opts.map(function (opt, i) {
+    return React.createElement(OptionBtn, {
+      key: i,
+      text: opt.t,
+      selected: sel === i,
+      correct: opt.ok,
+      showResult: sel !== null,
+      onClick: function () {
+        pick(i);
+      }
+    });
+  }), sel !== null ? React.createElement("div", {
+    style: {
+      marginTop: 12
+    }
+  }, React.createElement("div", {
+    style: {
+      padding: 14,
+      borderRadius: 12,
+      marginBottom: 8,
+      background: st.opts[sel].ok ? "#E8F0FF" : "#FFF4E8",
+      border: "1px solid " + (st.opts[sel].ok ? "#3B82F680" : "#EF6C0080")
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 15,
+      fontWeight: 700,
+      color: C.textMid,
+      marginBottom: 4
+    }
+  }, "\u{1F4CE} Consecuencia:"), React.createElement("p", {
+    style: {
+      fontSize: 17,
+      lineHeight: 1.6,
+      fontStyle: "italic"
+    }
+  }, st.opts[sel].cons)), React.createElement(FeedbackBox, {
+    ok: st.opts[sel].ok,
+    text: st.opts[sel].fb
+  })) : null, sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    color: C.lv[4],
+    full: true
+  }, stage >= caseData.stages.length - 1 ? "Ver resultado final" : "Siguiente etapa \u2192") : null);
+}
+
+// ===== ASSESSMENT =====
+function Assessment({
+  questions,
+  isPost,
+  onDone
+}) {
+  var _s = useState(0),
+    cur = _s[0],
+    setCur = _s[1];
+  var _s2 = useState(null),
+    sel = _s2[0],
+    setSel = _s2[1];
+  var _s3 = useState([]),
+    answers = _s3[0],
+    setAnswers = _s3[1];
+  var q = questions[cur];
+  function next() {
+    var newA = answers.concat([sel]);
+    if (cur >= questions.length - 1) {
+      onDone(newA);
+      return;
+    }
+    setAnswers(newA);
+    setCur(function (c) {
+      return c + 1;
+    });
+    setSel(null);
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.4s"
+    }
+  }, React.createElement("h2", {
+    style: {
+      fontSize: 23,
+      fontWeight: 800,
+      marginBottom: 4
+    }
+  }, isPost ? "\u{1F4CA} Post-evaluaci\u00F3n" : "\u{1F4CB} Pre-evaluaci\u00F3n"), React.createElement("p", {
+    style: {
+      fontSize: 16,
+      color: C.textMid,
+      marginBottom: 16
+    }
+  }, isPost ? "Las mismas preguntas. Veamos cu\u00E1nto cambi\u00F3 tu criterio." : "Responde r\u00E1pido, sin pensarlo mucho."), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginBottom: 12
+    }
+  }, "Pregunta " + (cur + 1) + " de " + questions.length), React.createElement("div", {
+    style: {
+      background: C.hi,
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 14,
+      fontSize: 18,
+      fontWeight: 600,
+      lineHeight: 1.6
+    }
+  }, q.q), q.opts.map(function (opt, i) {
+    var isSel = sel === i;
+    return React.createElement("button", {
+      key: i,
+      onClick: function () {
+        if (sel === null) setSel(i);
+      },
+      disabled: sel !== null,
+      style: {
+        textAlign: "left",
+        padding: "12px 14px",
+        borderRadius: 12,
+        width: "100%",
+        marginBottom: 6,
+        cursor: sel !== null ? "default" : "pointer",
+        background: isSel ? C.hi : C.card,
+        border: "2px solid " + (isSel ? C.accent : C.border),
+        fontSize: 17,
+        color: C.text,
+        lineHeight: 1.5,
+        transition: "all 0.3s",
+        fontFamily: "inherit"
+      }
+    }, opt);
+  }), sel !== null ? React.createElement(Btn, {
+    onClick: next,
+    full: true
+  }, cur >= questions.length - 1 ? "Finalizar" : "Siguiente \u2192") : null);
+}
+
+// ===== CERTIFICATE =====
+function CertScreen({
+  skills,
+  onRestart
+}) {
+  var _s = useState(function () {
+      try {
+        return localStorage.getItem("rumi_name") || "";
+      } catch (e) {
+        return "";
+      }
+    }),
+    name = _s[0],
+    setName = _s[1];
+  var _s2 = useState(false),
+    gen = _s2[0],
+    setGen = _s2[1];
+  var canvasRef = useRef(null);
+  function generate() {
+    try {
+      localStorage.setItem("rumi_name", name);
+    } catch (e) {}
+    var cv = canvasRef.current;
+    var ctx = cv.getContext("2d");
+    cv.width = 1080;
+    cv.height = 1920;
+    var g = ctx.createLinearGradient(0, 0, 0, 1920);
+    g.addColorStop(0, "#EDE7F6");
+    g.addColorStop(0.5, "#F3EFF8");
+    g.addColorStop(1, "#E8E0F0");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 1080, 1920);
+    ctx.strokeStyle = "#7E57C2";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(40, 40, 1000, 1840);
+    ctx.fillStyle = "#1a1a2e";
+    ctx.textAlign = "center";
+    ctx.font = "bold 36px Segoe UI, system-ui, sans-serif";
+    ctx.fillText("CERTIFICADO DE ENTRENAMIENTO", 540, 200);
+    ctx.font = "80px serif";
+    ctx.fillText("\u{1F9E0}", 540, 320);
+    ctx.fillStyle = "#7E57C2";
+    ctx.font = "bold 42px Segoe UI, system-ui, sans-serif";
+    ctx.fillText("Rumiaci\u00F3n como Conducta", 540, 430);
+    ctx.font = "28px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#4a4a6a";
+    ctx.fillText("Identificaci\u00F3n e Intervenci\u00F3n", 540, 480);
+    ctx.font = "24px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#8888aa";
+    ctx.fillText("Certifica que", 540, 580);
+    ctx.font = "bold 48px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#1a1a2e";
+    ctx.fillText(name || "Participante", 540, 650);
+    ctx.strokeStyle = "#7E57C260";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(240, 670);
+    ctx.lineTo(840, 670);
+    ctx.stroke();
+    ctx.font = "22px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#4a4a6a";
+    ctx.fillText("Ha completado los 5 niveles de entrenamiento cl\u00EDnico", 540, 740);
+    ctx.fillText("en el abordaje funcional de la rumiaci\u00F3n", 540, 775);
+    ctx.fillText("desde la Activaci\u00F3n Conductual", 540, 810);
+    ctx.font = "bold 22px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#1a1a2e";
+    ctx.fillText("Competencias entrenadas:", 540, 910);
+    var sl = ["\u{1F50D} Detectar rumiaci\u00F3n", "\u{1F3AD} Identificar funci\u00F3n", "\u{1F527} Aplicar herramientas de Martell", "\u{1F3AF} Integrar en caso cl\u00EDnico"];
+    ctx.font = "22px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#4a4a6a";
+    sl.forEach(function (s, i) {
+      ctx.fillText(s, 540, 960 + i * 45);
+    });
+    ctx.font = "italic 20px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#8888aa";
+    ctx.fillText("Basado en: Activaci\u00F3n Conductual para la Depresi\u00F3n", 540, 1350);
+    ctx.fillText("Martell, Dimidjian & Herman-Dunn (2010)", 540, 1385);
+    var date = new Date().toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+    ctx.font = "22px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#4a4a6a";
+    ctx.fillText(date, 540, 1470);
+    ctx.font = "bold 24px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#7E57C2";
+    ctx.fillText("@leo.eyzaguirre", 540, 1600);
+    ctx.font = "18px Segoe UI, system-ui, sans-serif";
+    ctx.fillStyle = "#8888aa";
+    ctx.fillText("Entrenamiento en Psicoterapia Conductual Contextual", 540, 1640);
+    setGen(true);
+  }
+  function download() {
+    var cv = canvasRef.current;
+    var link = document.createElement("a");
+    link.download = "certificado-rumiacion.png";
+    link.href = cv.toDataURL("image/png");
+    link.click();
+  }
+  return React.createElement("div", {
+    style: {
+      animation: "fadeIn 0.5s",
+      textAlign: "center"
+    }
+  }, React.createElement("div", {
+    style: {
+      fontSize: 80,
+      marginBottom: 16,
+      animation: "pulse 2s infinite"
+    }
+  }, "\u{1F3C6}"), React.createElement("h1", {
+    style: {
+      fontSize: 30,
+      fontWeight: 900,
+      marginBottom: 12,
+      color: C.accent
+    }
+  }, "\u00A1Completaste el entrenamiento!"), React.createElement("p", {
+    style: {
+      fontSize: 18,
+      color: C.textMid,
+      lineHeight: 1.6,
+      marginBottom: 24
+    }
+  }, "Has entrenado las 4 competencias cl\u00EDnicas para abordar la rumiaci\u00F3n desde la Activaci\u00F3n Conductual."), React.createElement(SkillTracker, {
+    skills: skills
+  }), React.createElement("canvas", {
+    ref: canvasRef,
+    style: {
+      display: gen ? "block" : "none",
+      width: "100%",
+      maxWidth: 360,
+      borderRadius: 12,
+      border: "2px solid " + C.accent,
+      margin: "0 auto"
+    }
+  }), !gen ? React.createElement(Card, null, React.createElement("p", {
+    style: {
+      fontSize: 18,
+      fontWeight: 700,
+      marginBottom: 12
+    }
+  }, "Genera tu certificado \u{1F4DC}"), React.createElement("input", {
+    type: "text",
+    value: name,
+    onChange: function (e) {
+      setName(e.target.value);
+    },
+    placeholder: "Tu nombre completo",
+    style: {
+      width: "100%",
+      padding: "14px 16px",
+      borderRadius: 12,
+      border: "2px solid " + C.border,
+      background: C.hi,
+      fontSize: 19,
+      textAlign: "center",
+      outline: "none",
+      fontFamily: "inherit",
+      color: C.text
+    }
+  }), React.createElement(Btn, {
+    onClick: generate,
+    disabled: !name.trim(),
+    full: true
+  }, "Generar certificado \u{1F393}")) : React.createElement("div", null, React.createElement(Btn, {
+    onClick: download,
+    full: true
+  }, "Descargar para Instagram Stories \u{1F4F2}"), React.createElement("p", {
+    style: {
+      fontSize: 15,
+      color: C.textLight,
+      marginTop: 8
+    }
+  }, "Formato 1080\u00D71920 \u00B7 Listo para compartir")), React.createElement(Btn, {
+    onClick: onRestart,
+    outline: true,
+    full: true
+  }, "Volver al inicio \u{1F3E0}"), React.createElement("div", {
+    style: {
+      padding: "24px 0",
+      fontSize: 15,
+      color: C.textLight
+    }
+  }, "Creado con \u{1F49C} \u00B7 @leo.eyzaguirre"));
+}
+
+// ===== MAIN APP =====
+function App() {
+  var _s = useState("home"),
+    screen = _s[0],
+    setScreen = _s[1];
+  var _s2 = useState(1),
+    lvl = _s2[0],
+    setLvl = _s2[1];
+  var _s3 = useState("theory"),
+    phase = _s3[0],
+    setPhase = _s3[1];
+  var _s4 = useState(0),
+    tSlide = _s4[0],
+    setTSlide = _s4[1];
+  var _s5 = useState(0),
+    exIdx = _s5[0],
+    setExIdx = _s5[1];
+  var _s6 = useState(function () {
+      try {
+        var s = localStorage.getItem("rumi_done");
+        return s ? JSON.parse(s) : [];
+      } catch (e) {
+        return [];
+      }
+    }),
+    done = _s6[0],
+    setDone = _s6[1];
+  var _s7 = useState(function () {
+      try {
+        var s = localStorage.getItem("rumi_sk");
+        return s ? JSON.parse(s) : [0, 0, 0, 0];
+      } catch (e) {
+        return [0, 0, 0, 0];
+      }
+    }),
+    sk = _s7[0],
+    setSk = _s7[1];
+  var _s8 = useState(null),
+    preA = _s8[0],
+    setPreA = _s8[1];
+  useEffect(function () {
+    try {
+      localStorage.setItem("rumi_done", JSON.stringify(done));
+    } catch (e) {}
+  }, [done]);
+  useEffect(function () {
+    try {
+      localStorage.setItem("rumi_sk", JSON.stringify(sk));
+    } catch (e) {}
+  }, [sk]);
+  function scrollUp() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+  function addSkill(i, amt) {
+    setSk(function (s) {
+      var n = s.slice();
+      n[i] = Math.min(n[i] + amt, 5);
+      return n;
+    });
+  }
+  function startLvl(l) {
+    setLvl(l);
+    setPhase("theory");
+    setTSlide(0);
+    setExIdx(0);
+    setScreen("level");
+    scrollUp();
+  }
+  function theoryNext() {
+    var t = THEORY[lvl];
+    if (tSlide < t.length - 1) {
+      setTSlide(function (s) {
+        return s + 1;
+      });
+      scrollUp();
+    } else {
+      setPhase("exercise");
+      setExIdx(0);
+      scrollUp();
+    }
+  }
+  function exDone(score) {
+    if (lvl === 1) addSkill(0, 1);
+    if (lvl === 2) addSkill(1, 1);
+    if (lvl === 3) addSkill(2, 1);
+    if (lvl === 4) {
+      addSkill(2, 0.5);
+      addSkill(3, 0.5);
+    }
+    if (lvl === 5) addSkill(3, 1);
+    var exCount = lvl === 5 ? 1 : EX[lvl].length;
+    if (exIdx >= exCount - 1) {
+      setPhase("summary");
+      scrollUp();
+    } else {
+      setExIdx(function (i) {
+        return i + 1;
+      });
+      scrollUp();
+    }
+  }
+  function lvlDone() {
+    if (done.indexOf(lvl) === -1) setDone(function (d) {
+      return d.concat([lvl]);
+    });
+    if (lvl === 5) {
+      setScreen("certificate");
+    } else {
+      startLvl(lvl + 1);
+    }
+    scrollUp();
+  }
+
+  // ===== RENDER SCREENS =====
+  var wrap = {
+    minHeight: "100vh",
+    background: "linear-gradient(180deg,#E0D6EE 0%,#E8DFF3 50%,#DDD5E8 100%)",
+    color: C.text,
+    fontFamily: "'Segoe UI',system-ui,-apple-system,sans-serif"
+  };
+  var inner = {
+    padding: "44px 16px 20px",
+    maxWidth: 520,
+    margin: "0 auto"
+  };
+  if (screen === "home") {
+    return React.createElement("div", {
+      style: wrap
+    }, React.createElement("div", {
+      style: inner
+    }, React.createElement("div", {
+      style: {
+        textAlign: "center",
+        marginBottom: 28
+      }
+    }, React.createElement("div", {
+      style: {
+        fontSize: 64,
+        marginBottom: 8
+      }
+    }, "\u{1F9E0}"), React.createElement("h1", {
+      style: {
+        fontSize: 30,
+        fontWeight: 900,
+        lineHeight: 1.2,
+        marginBottom: 8
+      }
+    }, "Rumiaci\u00F3n como Conducta"), React.createElement("p", {
+      style: {
+        fontSize: 17,
+        color: C.textMid,
+        lineHeight: 1.5
+      }
+    }, "Entrenamiento cl\u00EDnico en identificaci\u00F3n e intervenci\u00F3n"), React.createElement("p", {
+      style: {
+        fontSize: 15,
+        color: C.textLight,
+        marginTop: 4
+      }
+    }, "Basado en Martell, Dimidjian & Herman-Dunn (2010)")), React.createElement(SkillTracker, {
+      skills: sk
+    }), META.map(function (m, i) {
+      var completed = done.indexOf(i + 1) >= 0;
+      var locked = i > 0 && done.indexOf(i) < 0;
+      return React.createElement("button", {
+        key: i,
+        disabled: locked,
+        onClick: function () {
+          if (!locked) {
+            if (preA || i > 0) startLvl(i + 1);else setScreen("pre");
+          }
+        },
+        style: {
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          padding: "16px 18px",
+          borderRadius: 16,
+          background: C.card,
+          border: "2px solid " + (completed ? C.lv[i] : locked ? C.border : C.lv[i] + "60"),
+          cursor: locked ? "not-allowed" : "pointer",
+          opacity: locked ? 0.5 : 1,
+          textAlign: "left",
+          width: "100%",
+          marginBottom: 10,
+          transition: "all 0.3s",
+          fontFamily: "inherit"
+        }
+      }, React.createElement("div", {
+        style: {
+          width: 50,
+          height: 50,
+          borderRadius: 14,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: completed ? C.lv[i] : C.lv[i] + "15",
+          fontSize: 32
+        }
+      }, completed ? "\u2705" : locked ? "\u{1F512}" : m.e), React.createElement("div", {
+        style: {
+          flex: 1
+        }
+      }, React.createElement("p", {
+        style: {
+          fontSize: 14,
+          fontWeight: 700,
+          color: C.lv[i]
+        }
+      }, "NIVEL " + (i + 1)), React.createElement("p", {
+        style: {
+          fontSize: 18,
+          fontWeight: 700
+        }
+      }, m.t), React.createElement("p", {
+        style: {
+          fontSize: 15,
+          color: C.textMid
+        }
+      }, m.d)));
+    }), done.length === 5 ? React.createElement(Btn, {
+      onClick: function () {
+        setScreen("certificate");
+      },
+      full: true,
+      color: "linear-gradient(135deg," + C.accent + ",#5E35B1)"
+    }, "Ver mi certificado \u{1F3C6}") : null, React.createElement("div", {
+      style: {
+        textAlign: "center",
+        padding: "16px 0",
+        fontSize: 15,
+        color: C.textLight
+      }
+    }, "Creado con \u{1F49C} \u00B7 @leo.eyzaguirre")));
+  }
+  if (screen === "pre") {
+    return React.createElement("div", {
+      style: wrap
+    }, React.createElement("div", {
+      style: inner
+    }, React.createElement(Assessment, {
+      questions: ASSESS,
+      isPost: false,
+      onDone: function (a) {
+        setPreA(a);
+        startLvl(1);
+      }
+    })));
+  }
+  if (screen === "certificate") {
+    return React.createElement("div", {
+      style: wrap
+    }, React.createElement("div", {
+      style: inner
+    }, React.createElement(CertScreen, {
+      skills: sk,
+      onRestart: function () {
+        setScreen("home");
+      }
+    })));
+  }
+  if (screen === "level") {
+    var m = META[lvl - 1];
+    var theoryList = THEORY[lvl];
+    return React.createElement("div", {
+      style: wrap
+    }, React.createElement("div", {
+      style: {
+        padding: "20px 16px",
+        maxWidth: 520,
+        margin: "0 auto"
+      }
+    },
+    // Header
+    React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        marginBottom: 16
+      }
+    }, React.createElement("button", {
+      onClick: function () {
+        setScreen("home");
+      },
+      style: {
+        background: C.card,
+        border: "1px solid " + C.border,
+        borderRadius: 10,
+        width: 36,
+        height: 36,
+        cursor: "pointer",
+        fontSize: 19,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "inherit"
+      }
+    }, "\u2190"), React.createElement("div", {
+      style: {
+        flex: 1
+      }
+    }, React.createElement("p", {
+      style: {
+        fontSize: 14,
+        fontWeight: 700,
+        color: C.lv[lvl - 1]
+      }
+    }, "NIVEL " + lvl), React.createElement("p", {
+      style: {
+        fontSize: 19,
+        fontWeight: 800
+      }
+    }, m.e + " " + m.t)), React.createElement("div", {
+      style: {
+        padding: "4px 10px",
+        borderRadius: 20,
+        fontSize: 14,
+        fontWeight: 700,
+        background: phase === "theory" ? C.lv[lvl - 1] + "15" : phase === "exercise" ? C.accent + "15" : C.lv[3] + "15",
+        color: phase === "theory" ? C.lv[lvl - 1] : phase === "exercise" ? C.accent : C.lv[3]
+      }
+    }, phase === "theory" ? "\u{1F4D6} Teor\u00EDa" : phase === "exercise" ? "\u270F\uFE0F Ejercicio" : "\u2705 Resumen")),
+    // Content
+    React.createElement(Card, null,
+    // Theory
+    phase === "theory" ? React.createElement("div", {
+      style: {
+        animation: "fadeIn 0.4s"
+      }
+    }, React.createElement(ProgressBar, {
+      current: tSlide + 1,
+      total: theoryList.length,
+      color: C.lv[lvl - 1]
+    }), React.createElement("h2", {
+      style: {
+        fontSize: 25,
+        fontWeight: 800,
+        marginBottom: 16
+      }
+    }, theoryList[tSlide].title), React.createElement(TextBlock, {
+      text: theoryList[tSlide].text
+    }), theoryList[tSlide].quote ? React.createElement("div", {
+      style: {
+        margin: "16px 0",
+        padding: "12px 16px",
+        background: C.hi,
+        borderLeft: "3px solid " + C.lv[lvl - 1],
+        borderRadius: "0 10px 10px 0",
+        fontSize: 16,
+        color: C.textMid,
+        fontStyle: "italic",
+        lineHeight: 1.6
+      }
+    }, theoryList[tSlide].quote) : null, React.createElement(Btn, {
+      onClick: theoryNext,
+      color: C.lv[lvl - 1],
+      full: true
+    }, "Continuar \u2192")) : null,
+    // Exercises
+    phase === "exercise" && lvl === 1 ? exIdx === 0 ? React.createElement(ExClassify, {
+      data: EX[1][0],
+      onDone: exDone
+    }) : exIdx === 1 ? React.createElement(ExSpot, {
+      data: EX[1][1],
+      onDone: exDone
+    }) : React.createElement(ExTrap, {
+      data: EX[1][2],
+      onDone: exDone
+    }) : null, phase === "exercise" && lvl === 2 ? exIdx === 0 ? React.createElement(ExFunction, {
+      data: EX[2][0],
+      onDone: exDone
+    }) : exIdx === 1 ? React.createElement(ExUnmask, {
+      data: EX[2][1],
+      onDone: exDone
+    }) : React.createElement(ExFA, {
+      data: EX[2][2],
+      onDone: exDone
+    }) : null, phase === "exercise" && lvl === 3 ? exIdx === 0 ? React.createElement(ExToolMatch, {
+      data: EX[3][0],
+      onDone: exDone
+    }) : exIdx === 1 ? React.createElement(ExBestQ, {
+      data: EX[3][1],
+      onDone: exDone
+    }) : React.createElement(ExError, {
+      data: EX[3][2],
+      onDone: exDone
+    }) : null, phase === "exercise" && lvl === 4 ? exIdx === 0 ? React.createElement(ExDialogue, {
+      data: EX[4][0],
+      onDone: exDone
+    }) : React.createElement(ExResistance, {
+      data: EX[4][1],
+      onDone: exDone
+    }) : null, phase === "exercise" && lvl === 5 ? React.createElement(ExCase, {
+      caseData: CASE5,
+      onDone: exDone
+    }) : null,
+    // Summary
+    phase === "summary" ? React.createElement("div", {
+      style: {
+        animation: "fadeIn 0.4s",
+        textAlign: "center"
+      }
+    }, React.createElement("div", {
+      style: {
+        fontSize: 52,
+        marginBottom: 12
+      }
+    }, m.e), React.createElement("h2", {
+      style: {
+        fontSize: 25,
+        fontWeight: 800,
+        marginBottom: 8
+      }
+    }, "Nivel " + lvl + " completado"), React.createElement(Card, {
+      style: {
+        textAlign: "left",
+        marginBottom: 20
+      }
+    }, React.createElement("p", {
+      style: {
+        fontSize: 17,
+        color: C.lv[lvl - 1],
+        fontWeight: 700,
+        marginBottom: 8
+      }
+    }, "\u{1F511} Principio clave:"), React.createElement("p", {
+      style: {
+        fontSize: 17,
+        lineHeight: 1.7
+      }
+    }, SUMMARIES[lvl - 1])), React.createElement(Btn, {
+      onClick: lvlDone,
+      color: C.lv[lvl - 1],
+      full: true
+    }, lvl === 5 ? "Ver resultado final \u{1F3C6}" : "Siguiente nivel \u2192")) : null)));
+  }
+  return null;
+}
+try {
+  var root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(React.createElement(App));
+} catch (e) {
+  document.getElementById("root").innerHTML = "<p style='padding:20px;color:red'>Error: " + e.message + "</p>";
+}
+  </script>
+</body>
+</html>

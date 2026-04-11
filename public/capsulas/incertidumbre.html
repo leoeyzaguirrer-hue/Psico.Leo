@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IU — Entrenamiento Clínico</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+
+/* ===== TOKENS ===== */
+:root {
+  --az:#1256A0; --ce:#2EA4D5; --na:#F48220; --am:#FFC107; --ve:#27AE60; --ro:#E74C3C;
+  --trans:all 0.25s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"]  { --bg:#0e1018; --bg2:#181b2a; --bg3:#1f2235; --border:rgba(255,255,255,.1); --t1:#f0f0f6; --t2:rgba(240,240,246,.65); --t3:rgba(240,240,246,.35); }
+[data-theme="light"] { --bg:#f2f4f8; --bg2:#ffffff; --bg3:#e8eaf2; --border:rgba(0,0,0,.1); --t1:#1a1a2e; --t2:rgba(26,26,46,.65); --t3:rgba(26,26,46,.35); }
+
+/* ===== RESET ===== */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t1);font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;transition:background .3s,color .3s}
+
+/* ===== SCREENS ===== */
+.screen{display:none;position:fixed;inset:0;overflow-y:auto;scrollbar-width:none;animation:fadeUp .28s ease}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== TOPBAR ===== */
+.tb{position:sticky;top:0;z-index:99;background:var(--bg);border-bottom:1px solid var(--border);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px)}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-r{display:flex;align-items:center;gap:8px}
+.btn-back,.btn-help,.btn-theme{border:1px solid var(--border);background:var(--bg3);color:var(--t1);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;padding:7px 13px;cursor:pointer;transition:var(--trans)}
+.btn-back:active,.btn-help:active,.btn-theme:active{transform:scale(.93)}
+.btn-help{background:var(--az);color:#fff;border-color:var(--az)}
+.btn-theme{padding:7px 10px;font-size:15px}
+.tb-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--t3)}
+
+/* ===== PROGRESS BAR ===== */
+.prog-wrap{background:var(--bg);padding:8px 18px 0}
+.prog-track{height:4px;background:var(--border);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--ce),var(--am));border-radius:4px;transition:width .5s ease}
+.prog-txt{font-size:11px;color:var(--t3);text-align:right;margin-top:3px}
+
+/* ===== CONTENT ===== */
+.c{padding:22px 18px 48px}
+.big-em{font-size:52px;line-height:1;margin-bottom:14px}
+h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1.2;margin-bottom:10px;color:var(--t1)}
+h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;line-height:1.25;margin-bottom:10px;color:var(--t1)}
+h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;color:var(--t1)}
+p{font-size:15px;line-height:1.75;color:var(--t2);margin-bottom:12px}
+strong{color:var(--t1);font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:14px}
+.tag-am{background:rgba(255,193,7,.15);color:var(--am)}
+.tag-ce{background:rgba(46,164,213,.15);color:var(--ce)}
+.tag-na{background:rgba(244,130,32,.15);color:var(--na)}
+.sep{height:1px;background:var(--border);margin:16px 0}
+
+/* ===== BOXES ===== */
+.box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px}
+.box-am{border-left:3px solid var(--am);background:rgba(255,193,7,.06)}
+.box-ce{border-left:3px solid var(--ce);background:rgba(46,164,213,.06)}
+.box-na{border-left:3px solid var(--na);background:rgba(244,130,32,.06)}
+.box-ve{border-left:3px solid var(--ve);background:rgba(39,174,96,.06)}
+.box-az{border-left:3px solid var(--az);background:rgba(18,86,160,.08)}
+.vineta{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--ce);border-radius:0 14px 14px 0;padding:15px;margin-bottom:14px;font-size:14px;line-height:1.75;font-style:italic;color:var(--t2)}
+.cite{font-size:11px;font-style:normal;color:var(--t3);margin-top:6px;font-weight:600;letter-spacing:.3px}
+.quote{font-size:14px;color:var(--t2);font-style:italic;line-height:1.75;padding:12px 15px;border-radius:0 12px 12px 0;border-left:3px solid var(--am);background:rgba(255,193,7,.05);margin:12px 0}
+
+/* ===== BUTTONS ===== */
+.btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:var(--trans);margin-top:8px;letter-spacing:.2px}
+.btn:active{transform:scale(.97)}
+.btn-am{background:var(--am);color:#1a1a2e}
+.btn-ce{background:var(--ce);color:#fff}
+.btn-na{background:var(--na);color:#fff}
+.btn-az{background:var(--az);color:#fff}
+.btn-gr{background:linear-gradient(135deg,var(--na),var(--am));color:#1a1a2e}
+.btn-ghost{background:var(--bg3);color:var(--t1);border:1px solid var(--border)}
+.btn-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.btn-2 .btn{margin:0}
+
+/* ===== THEORY NAV ===== */
+.tnav{display:flex;gap:8px;overflow-x:auto;padding:12px 18px;scrollbar-width:none;border-bottom:1px solid var(--border)}
+.tnav::-webkit-scrollbar{display:none}
+.ttab{flex-shrink:0;padding:8px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:var(--trans);color:var(--t2);white-space:nowrap}
+.ttab.on{background:var(--az);border-color:var(--az);color:#fff}
+.tblock{display:none}
+.tblock.on{display:block}
+
+/* ===== LEVEL MENU ===== */
+.lv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.lv-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:18px 15px;cursor:pointer;transition:var(--trans);position:relative}
+.lv-card:active{transform:scale(.97)}
+.lv-card.locked{opacity:.4;pointer-events:none}
+.lv-card.done{border-color:var(--ve)}
+.lv-n{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--t3);line-height:1;margin-bottom:6px}
+.lv-card.done .lv-n{color:var(--ve);opacity:.5}
+.lv-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--t1);line-height:1.3;margin-bottom:5px}
+.lv-s{font-size:13px}
+.lv-ico{position:absolute;top:12px;right:12px;font-size:16px}
+.streak{display:inline-flex;align-items:center;gap:5px;background:rgba(255,193,7,.15);border:1px solid rgba(255,193,7,.3);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:700;color:var(--am)}
+
+/* ===== EXERCISE ===== */
+.opt{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:15px 16px;margin-bottom:9px;cursor:pointer;font-size:15px;line-height:1.55;color:var(--t1);transition:var(--trans)}
+.opt:active{transform:scale(.98)}
+.opt.ok{background:rgba(39,174,96,.12);border-color:var(--ve)}
+.opt.fail{background:rgba(231,76,60,.1);border-color:var(--ro)}
+.opt.dim{opacity:.38;pointer-events:none}
+.opt.off{pointer-events:none}
+.fb{display:none;border-radius:14px;padding:14px 16px;margin:10px 0;font-size:14px;line-height:1.7;color:var(--t1)}
+.fb.on{display:block}
+.fb.ok{background:rgba(39,174,96,.1);border:1px solid var(--ve)}
+.fb.fail{background:rgba(231,76,60,.08);border:1px solid var(--ro)}
+
+/* ===== CHIPS ===== */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{padding:9px 15px;background:var(--bg2);border:1.5px solid var(--border);border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:var(--trans);color:var(--t1)}
+.chip:active{transform:scale(.94)}
+.chip.sel{background:var(--ce);border-color:var(--ce);color:#fff}
+.chip.used{opacity:.3;pointer-events:none}
+.dzones{display:flex;gap:10px;margin-bottom:14px}
+.dz{flex:1;min-height:90px;border:2px dashed var(--border);border-radius:14px;padding:10px;transition:var(--trans)}
+.dz h4{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.placed{background:var(--bg3);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;margin-bottom:5px;color:var(--t2);transition:var(--trans);line-height:1.4}
+.dz.ok{border-color:var(--ve);background:rgba(39,174,96,.05)}
+.dz.fail{border-color:var(--ro);background:rgba(231,76,60,.05)}
+
+/* ===== MATCH ===== */
+.mcols{display:flex;gap:10px;margin-bottom:12px}
+.mcol{flex:1;display:flex;flex-direction:column;gap:7px}
+.mi{padding:11px 12px;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;font-size:12px;text-align:center;cursor:pointer;transition:var(--trans);line-height:1.45;color:var(--t1)}
+.mi:active{transform:scale(.95)}
+.mi.sel{background:var(--ce);border-color:var(--ce);color:#fff}
+.mi.ok{background:rgba(39,174,96,.12);border-color:var(--ve);pointer-events:none}
+.mi.fail{background:rgba(231,76,60,.1);border-color:var(--ro)}
+.mi.dim{opacity:.35;pointer-events:none}
+
+/* ===== MODAL ===== */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;backdrop-filter:blur(5px);align-items:flex-end}
+.mo.on{display:flex;animation:fadeUp .2s ease}
+.mo-box{background:var(--bg2);border-radius:24px 24px 0 0;padding:22px 18px 40px;width:100%;max-height:78vh;overflow-y:auto;animation:slideUp .28s cubic-bezier(.4,0,.2,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mo-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+.mo-close{float:right;background:var(--bg3);border:none;border-radius:10px;padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer;color:var(--t2);margin-bottom:12px}
+
+/* ===== SUMMARY ===== */
+.sum-row{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;background:var(--bg2);border-radius:12px;margin-bottom:8px;border:1px solid var(--border)}
+.sum-lbl{font-size:14px;font-weight:500;color:var(--t2)}
+.sum-sc{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.sc-p{color:var(--ve)} .sc-g{color:var(--am)} .sc-o{color:var(--na)}
+.score-big{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--am);text-align:center;line-height:1;margin:8px 0}
+
+/* ===== CERT ===== */
+.cert{background:linear-gradient(140deg,#091e42,#1256A0);border-radius:22px;padding:30px 22px;text-align:center;border:1.5px solid rgba(255,193,7,.3);box-shadow:0 10px 48px rgba(18,86,160,.35);margin-bottom:20px}
+.cert-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--am);font-weight:700;margin-bottom:4px}
+.cert-sep{height:1px;background:rgba(255,193,7,.25);margin:12px 0}
+.cert-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;margin:10px 0;word-break:break-word}
+.cert-body{font-size:13px;color:rgba(255,255,255,.75);line-height:1.75}
+.cert-ref{font-size:10px;color:rgba(255,255,255,.32);margin-top:12px;line-height:1.8}
+
+/* ===== INPUT ===== */
+input[type=text]{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:15px 16px;font-size:16px;color:var(--t1);font-family:'Plus Jakarta Sans',sans-serif;outline:none;margin-bottom:12px;transition:border-color .2s}
+input[type=text]:focus{border-color:var(--ce)}
+input::placeholder{color:var(--t3)}
+
+/* ===== PORTADA HERO ===== */
+.hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:44px 20px 28px;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="screen active" id="sp">
+  <div class="hero">
+    <div style="font-size:60px;margin-bottom:14px">🧠</div>
+    <span class="tag tag-am">Entrenamiento Clínico</span>
+    <h1>Intolerancia a la Incertidumbre</h1>
+    <p style="font-size:15px;margin-bottom:0">5 niveles para aprender a identificarla, comprender su ciclo conductual y diseñar intervenciones basadas en evidencia.</p>
+  </div>
+  <div class="c">
+    <div class="box box-ce" style="margin-bottom:14px">
+      <p style="font-size:13px;margin:0;color:var(--t2)">📚 <strong>Fuentes:</strong> Vallejo Pareja (coord., 2005) · Geninet et al. (2012) · Herbert & Dugas (2019) · Freeston et al. (1994) · Dugas et al. (1998) · Penney et al. (2020) · Carleton (2016)</p>
+    </div>
+    <div class="box" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:14px;font-weight:600">Modo de pantalla</span>
+        <button class="btn-theme" onclick="toggleTheme()" id="theme-btn">☀️</button>
+      </div>
+      <div class="sep" style="margin:12px 0 10px"></div>
+      <p style="font-size:12px;color:var(--t3);margin:0">Tu progreso se guarda automáticamente. 🔒</p>
+    </div>
+    <div class="btn-2">
+      <button class="btn btn-az" onclick="go('st')" style="margin:0">📖 Teoría</button>
+      <button class="btn btn-am" onclick="go('sniv')" style="margin:0">🎯 Niveles</button>
+    </div>
+    <button class="btn btn-ghost" onclick="go('sfin')" style="margin-top:10px">🏆 Certificado</button>
+  </div>
+</div>
+
+<!-- ===================== TEORÍA ===================== -->
+<div class="screen" id="st">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sp')">← Inicio</button>
+      <span class="tb-label">Teoría</span>
+    </div>
+    <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+  </div>
+  <div class="tnav">
+    <div class="ttab on" onclick="showT(0,this)">1. ¿Qué es?</div>
+    <div class="ttab" onclick="showT(1,this)">2. Cómo se desarrolla</div>
+    <div class="ttab" onclick="showT(2,this)">3. Mantenimiento</div>
+    <div class="ttab" onclick="showT(3,this)">4. Preocupación</div>
+    <div class="ttab" onclick="showT(4,this)">5. Tratamiento</div>
+  </div>
+
+  <!-- T1 -->
+  <div class="tblock on c" id="tb0">
+    <div class="big-em">🌫️</div>
+    <span class="tag tag-ce">Bloque 1 · Definición</span>
+    <h2>¿Qué es la intolerancia a la incertidumbre?</h2>
+    <p>No todos respondemos igual ante lo desconocido. Algunas personas funcionan relativamente bien con el "no sé qué va a pasar". Otras, en cambio, necesitan certeza antes de poder actuar con calma.</p>
+    <div class="vineta">"Alicia y Brenda reciben la misma indicación médica: un ultrasonido abdominal. Alicia hace su cita y sigue con su semana. Brenda imagina cáncer, quimioterapia, dejar a sus hijos sin madre. Busca información en internet, le pide a su esposo que la tranquilice. A pesar de todo, no puede dormir."<div class="cite">Geninet et al. (2012)</div></div>
+    <p>La diferencia no está en la situación. Está en la <strong>relación que cada persona tiene con el no saber</strong>.</p>
+    <div class="quote">"El diseño de Ladouceur et al. (2000) comprende la intolerancia a la incertidumbre, las creencias erróneas acerca de la preocupación, la mala orientación de los problemas y la evitación cognitiva."<div class="cite">Vallejo Pareja (coord., 2005), p. 164</div></div>
+    <div class="quote">"Una disposición negativa que surge de un conjunto de creencias catastróficas sobre la incertidumbre y sus consecuencias."<div class="cite">Herbert & Dugas (2019)</div></div>
+    <div class="quote">"El miedo fundamental a lo desconocido."<div class="cite">Carleton (2016)</div></div>
+    <p>Geninet et al. (2012) agregan que no se trata de creer que lo malo <em>va a pasar</em> — sino de no poder funcionar sin saber <em>si</em> pasará o no, aunque la probabilidad sea baja.</p>
+
+    <div class="box box-am">
+      <h3>💡 ¿Sabías que?</h3>
+      <p style="margin:0;font-size:14px">La IU no necesariamente afecta todas las áreas de la vida de la misma manera. Una persona puede tolerar bien la incertidumbre en el trabajo y ser muy intolerante cuando se trata de su salud. — Geninet et al. (2012)</p>
+    </div>
+
+    <div class="box box-ce">
+      <h3>🔀 Dos subtipos conductuales</h3>
+      <p style="font-size:14px;margin-bottom:10px">Penney et al. (2020) distinguen dos formas con consecuencias conductuales distintas:</p>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px">
+        <strong style="font-size:14px">🔎 IU Prospectiva</strong><br>
+        <span style="font-size:13px;color:var(--t2)">Genera conductas de <em>aproximación disfuncional</em>: buscar reaseguro, chequear, sobreinformarse. El cliente busca activamente reducir la incertidumbre.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px">
+        <strong style="font-size:14px">🚧 IU Inhibitoria</strong><br>
+        <span style="font-size:13px;color:var(--t2)">Genera <em>evitación y paralización</em> conductual. El cliente no actúa, posterga, rechaza oportunidades para no enfrentar la ambigüedad.</span>
+      </div>
+    </div>
+
+    <div class="box box-na">
+      <h3>🌐 Es transdiagnóstica</h3>
+      <p style="font-size:14px;margin:0">La IU no es exclusiva del TAG. Aparece en TOC, ansiedad social, ansiedad por salud, depresión y trastornos alimentarios — como factor de vulnerabilidad compartido. — Herbert & Dugas (2019)</p>
+    </div>
+    <button class="btn btn-az" onclick="showT(1,null)">Siguiente bloque →</button>
+  </div>
+
+  <!-- T2 -->
+  <div class="tblock c" id="tb1">
+    <div class="big-em">🌱</div>
+    <span class="tag tag-na">Bloque 2 · Adquisición</span>
+    <h2>¿Cómo se desarrolla la IU?</h2>
+    <p>La IU no aparece de la nada. Carleton (2016) la describe como una característica disposicional — similar a un rasgo — que se desarrolla a partir de experiencias repetidas con situaciones ambiguas o impredecibles.</p>
+
+    <div class="box box-az">
+      <h3>🏛️ El modelo de Ladouceur et al. (2000)</h3>
+      <p style="font-size:14px;margin:0">Vallejo Pareja (coord., 2005) resume el modelo para el TAG: el ciclo empieza con la IU, que activa creencias erróneas sobre la preocupación, genera mala orientación ante los problemas y culmina en <strong>evitación cognitiva</strong>. El resultado es un estado ansioso crónico difícil de interrumpir.</p>
+    </div>
+
+    <p>Herbert & Dugas (2019) describen el proceso de activación de la IU:</p>
+    <div class="box box-ce" style="padding:18px">
+      <div style="font-size:14px;line-height:2.2;text-align:center">
+        🌍 Situación ambigua, novedosa o impredecible<br>↓<br>
+        🔍 Detección de incertidumbre (mayor en personas con alta IU)<br>↓<br>
+        💭 Creencia catastrófica sobre la incertidumbre<br>↓<br>
+        😰 Ansiedad, preocupación y conductas de seguridad
+      </div>
+    </div>
+
+    <div class="box box-am">
+      <h3>💬 Dos tipos de creencias sobre la IU</h3>
+      <p style="font-size:14px;margin-bottom:8px">Herbert & Dugas (2019) identifican dos categorías:</p>
+      <div style="font-size:14px;line-height:1.9">
+        <strong>1️⃣</strong> La incertidumbre tiene consecuencias negativas para mi conducta — <em>"si no sé, no puedo funcionar"</em><br>
+        <strong>2️⃣</strong> La incertidumbre es injusta y arruina todo — <em>"no debería ser así", "no me lo merezco"</em>
+      </div>
+    </div>
+
+    <div class="box box-na">
+      <h3>🔍 ¿Sabías que?</h3>
+      <p style="font-size:14px;margin:0">Las personas con alta IU son más propensas a detectar novedad, ambigüedad e impredictibilidad en situaciones que para otros resultan neutras. La IU actúa como un filtro perceptual que colorea la interpretación de los eventos. — Herbert & Dugas (2019)</p>
+    </div>
+
+    <div class="quote">"Los nuevos desarrollos terapéuticos dan más importancia a la experimentación, a la práctica de la conducta, que a su interpretación. Un predominio del aprendizaje por contingencias, frente al aprendizaje por reglas."<div class="cite">Vallejo Pareja (coord., 2005), p. 33</div></div>
+    <button class="btn btn-az" onclick="showT(2,null)">Siguiente bloque →</button>
+  </div>
+
+  <!-- T3 -->
+  <div class="tblock c" id="tb2">
+    <div class="big-em">🔄</div>
+    <span class="tag tag-am">Bloque 3 · Mantenimiento</span>
+    <h2>¿Por qué se mantiene la IU?</h2>
+    <p>La IU no persiste sola. Necesita de conductas que la alimenten. Y esas conductas son exactamente las que el cliente usa para intentar reducirla.</p>
+
+    <div class="quote">"La preocupación es utilizada como estrategia ansiolítica de afrontamiento. Consigue reducir la ansiedad desencadenada por señales de amenaza, pero este <strong>refuerzo negativo</strong> incrementará la probabilidad de persistencia del cuadro ansioso."<div class="cite">Vallejo Pareja (coord., 2005), p. 151</div></div>
+    <div class="quote">"La evitación experiencial suele ser persistente porque al tratarse de una conducta reforzada negativamente, el más mínimo efecto de la persona para reducir el malestar refuerza la evitación."<div class="cite">Vallejo Pareja (coord., 2005), p. 36, citando a Boulanger et al. (2010)</div></div>
+
+    <p>Este es el mecanismo central: el alivio temporal <strong>refuerza la conducta de seguridad</strong> → la IU crece → el umbral de tolerancia baja → se necesitan más conductas de seguridad.</p>
+
+    <div class="box box-ce" style="padding:18px">
+      <h3 style="text-align:center;margin-bottom:10px">🔄 El ciclo completo</h3>
+      <div style="font-size:14px;line-height:2.2;text-align:center">
+        😰 Situación incierta<br>↓<br>
+        💭 Creencia catastrófica activada<br>↓<br>
+        🛡️ Conducta de seguridad<br>↓<br>
+        😮‍💨 Alivio breve (refuerzo negativo)<br>↓<br>
+        📉 Menos tolerancia → más conductas → ciclo
+      </div>
+    </div>
+
+    <div class="box box-na">
+      <h3>🛡️ Conductas de seguridad más frecuentes</h3>
+      <p style="font-size:14px;margin-bottom:8px">Geninet et al. (2012) listan:</p>
+      <div style="font-size:14px;line-height:1.9">
+        🔍 Buscar reaseguro · 📋 Hacer listas interminables · 🚫 Evitar ciertas actividades · 📱 Chequear repetidamente · 🙈 Procrastinar · 🤝 No delegar tareas · 🌐 Sobreinformarse antes de actuar · ↩️ Reconsiderar decisiones ya tomadas · 🧍 Paralizarse hasta tener certeza
+      </div>
+    </div>
+
+    <div class="quote">"Las conductas de seguridad — evitar, buscar reaseguro, buscar información — reducen la exposición a la incertidumbre y la tolerancia hacia ella, manteniendo el ciclo."<div class="cite">Herbert & Dugas (2019)</div></div>
+
+    <div class="box box-am">
+      <h3>⚠️ La paradoja de la certeza</h3>
+      <p style="font-size:14px;margin:0">Dado que la certeza absoluta es imposible, cualquier esfuerzo sostenido por conseguirla está destinado a fallar. El alivio es breve. La búsqueda vuelve. Y el umbral de tolerancia se hace cada vez más estrecho. El intento de solución forma parte del problema. — Geninet et al. (2012)</p>
+    </div>
+
+    <div class="quote">"La preocupación genera creencias negativas sobre ella misma en forma circular, lo que fomenta las tentativas de control del pensamiento (en general en vano) y/o el rechazo de los desencadenantes."<div class="cite">Vallejo Pareja (coord., 2005), p. 151</div></div>
+    <button class="btn btn-az" onclick="showT(3,null)">Siguiente bloque →</button>
+  </div>
+
+  <!-- T4 -->
+  <div class="tblock c" id="tb3">
+    <div class="big-em">💭</div>
+    <span class="tag tag-ce">Bloque 4 · Preocupación</span>
+    <h2>Incertidumbre y preocupación: no son lo mismo</h2>
+    <p>Esta es una distinción crítica para el trabajo clínico. Confundirlas lleva a intervenir en el lugar equivocado.</p>
+
+    <div class="box box-ce" style="padding:18px">
+      <div style="font-size:15px;text-align:center;line-height:2.2;padding:6px 0">
+        🌫️ <strong>Incertidumbre</strong> — estado de no saber<br>↓<br>
+        💭 <strong>Preocupación</strong> — respuesta conductual y verbal al no saber
+      </div>
+    </div>
+
+    <p>Cuando intervenimos solo en el contenido de los pensamientos preocupantes, dejamos intacto el proceso que los genera. Eso explica por qué muchos clientes con TAG mejoran poco con reestructuración cognitiva sola.</p>
+
+    <div class="quote">"Los pacientes creen que las preocupaciones son una forma de reducir el malestar, sin embargo tienen una función de evitación que contribuye a mantener el problema."<div class="cite">Vallejo Pareja (coord., 2005), p. 59, citando a Borkovec, Alcaine y Behar (2004)</div></div>
+
+    <div class="box box-na">
+      <h3>🤔 Preocupación útil vs. disfuncional</h3>
+      <p style="font-size:14px;margin-bottom:8px">No toda preocupación es IU. La diferencia clave:</p>
+      <div style="font-size:14px;line-height:1.9">
+        <strong>✅ Útil:</strong> lleva a una acción concreta, es proporcional al riesgo real, se resuelve con información disponible.<br>
+        <strong>❌ Disfuncional:</strong> busca certeza imposible, genera más ansiedad que resolución, se mantiene aunque no haya amenaza real — porque su función es evitar el malestar, no resolver el problema.
+      </div>
+    </div>
+
+    <div class="vineta">"Marta insiste en consulta que preocuparse es bueno, ya que puede prevenir que ocurra algo malo y que, si se preocupa tanto por ellos, es porque los quiere."<div class="cite">Caso clínico, Vallejo Pareja (coord., 2005), p. 75</div></div>
+
+    <p>Este es un ejemplo de <strong>creencias positivas sobre la preocupación</strong> — el cliente cree que preocuparse tiene una función protectora. Ese sistema de creencias también mantiene el ciclo.</p>
+
+    <div class="box box-az">
+      <h3>🔍 ¿Sabías que?</h3>
+      <p style="font-size:14px;margin:0">La preocupación como evitación cognitiva inhibe el procesamiento emocional: al preocuparnos verbalmente, reducimos la activación fisiológica asociada al miedo. Eso la hace temporalmente "útil" — y muy difícil de abandonar voluntariamente. — Borkovec et al. (2004), en Vallejo Pareja (coord., 2005), p. 59</p>
+    </div>
+
+    <div class="quote">"En cuanto a lo segundo, la preocupación genera creencias negativas sobre ella misma en forma circular, lo que fomenta las tentativas de control del pensamiento (en general en vano)."<div class="cite">Vallejo Pareja (coord., 2005), p. 151</div></div>
+    <button class="btn btn-az" onclick="showT(4,null)">Siguiente bloque →</button>
+  </div>
+
+  <!-- T5 -->
+  <div class="tblock c" id="tb4">
+    <div class="big-em">🧪</div>
+    <span class="tag tag-am">Bloque 5 · Tratamiento</span>
+    <h2>¿Cómo se trata la IU?</h2>
+    <p>El objetivo no es reducir la incertidumbre del mundo — eso es imposible. Es aumentar la capacidad del cliente de funcionar en presencia de ella.</p>
+
+    <div class="quote">"Los tratamientos anteriores afectaban indirectamente las creencias sobre la incertidumbre. Los experimentos conductuales las convierten en el blanco directo — lo que hace más probable que el cambio ocurra y se mantenga."<div class="cite">Herbert & Dugas (2019)</div></div>
+
+    <div class="box box-am">
+      <h3>🔬 Los 4 pasos del experimento conductual</h3>
+      <p style="font-size:14px;margin-bottom:10px">Herbert & Dugas (2019):</p>
+      <div style="font-size:14px;line-height:2">
+        <strong>1️⃣ Identificar</strong> la creencia sobre la incertidumbre y cuánto cree en ella (0–100%)<br>
+        <strong>2️⃣ Diseñar</strong> un experimento que elimine la conducta de seguridad<br>
+        <strong>3️⃣ Registrar</strong> el malestar, los pensamientos y lo que realmente ocurrió<br>
+        <strong>4️⃣ Reflexionar</strong> — ¿qué dice este resultado sobre la creencia original?
+      </div>
+    </div>
+
+    <div class="vineta">"Creencia: 'No puedo soportar no saber — necesito reaseguro.' Experimento: 3 días respondiendo como siempre / 3 días sin buscar reaseguro. Resultado: evidencia directa de que pudo tolerarlo."<div class="cite">Ejemplo real, Herbert & Dugas (2019)</div></div>
+
+    <div class="box box-ce">
+      <h3>⚡ ¿Por qué funciona?</h3>
+      <p style="font-size:14px;margin:0">Sin la conducta de seguridad, el organismo contacta directamente la contingencia real: puede tolerar la incertidumbre sin que ocurra la consecuencia temida. La ansiedad sube, llega a un pico y baja sola. Esa experiencia directa cambia la creencia de una forma que la reestructuración verbal no puede lograr. — Herbert & Dugas (2019)</p>
+    </div>
+
+    <div class="quote">"Dar más importancia a la experimentación, a la práctica de la conducta, que a su interpretación y al uso de instrucciones. Un predominio del aprendizaje por contingencias frente al aprendizaje por reglas."<div class="cite">Vallejo Pareja (coord., 2005), p. 33</div></div>
+
+    <p>Vallejo Pareja (coord., 2005, p. 151) describe los componentes TCC para el TAG: psicoeducación · relajación · reestructuración cognitiva · solución de problemas · <strong>exposición a preocupaciones</strong> · técnicas de desconfirmación · regulación emocional · aceptación de la realidad.</p>
+
+    <div class="box box-na">
+      <h3>🛡️ Prevención de recaída</h3>
+      <p style="font-size:14px;margin:0">Herbert & Dugas (2019): el cliente debe comparar sus conductas antiguas con las nuevas, planificar cómo responder ante retrocesos y adoptar la actitud continua de elegir deliberadamente caminos inciertos. Geninet et al. (2012): como con cualquier habilidad — andar en bicicleta, cocinar — la práctica hace al maestro.</p>
+    </div>
+
+    <div class="sep"></div>
+    <h3>📋 Registro del experimento (hoja de trabajo)</h3>
+    <div class="box box-ve" style="font-size:14px;line-height:1.9">
+      <strong>Antes:</strong> ¿Qué creencia pongo a prueba? ¿Cuánto creo en ella (0-100%)? ¿Qué conducta de seguridad eliminaré? ¿Qué acción concreta haré?<br>
+      <strong>Durante:</strong> ¿Qué malestar noto? ¿Qué pensamientos aparecen?<br>
+      <strong>Después:</strong> ¿Qué ocurrió realmente? ¿Cuánto creo ahora en la creencia original? ¿Qué me dice este resultado?
+    </div>
+    <button class="btn btn-am" onclick="go('sniv')" style="margin-top:8px">Ir a los niveles 🎯</button>
+  </div>
+</div>
+
+<!-- ===================== MENÚ NIVELES ===================== -->
+<div class="screen" id="sniv">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sp')">← Inicio</button>
+      <span class="tb-label">Niveles</span>
+    </div>
+    <div class="tb-r">
+      <div class="streak" id="streak-disp">🔥 0</div>
+      <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+    </div>
+  </div>
+  <div class="c">
+    <h2 style="margin-bottom:4px">Elige un nivel</h2>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:18px">Completa los niveles en orden. Cada uno aumenta la dificultad.</p>
+    <div class="lv-grid">
+      <div class="lv-card" id="lvc1" onclick="go('sn1')">
+        <div class="lv-ico" id="lvi1">🔓</div>
+        <div class="lv-n">1</div>
+        <div class="lv-t">¿Alicia o Brenda?</div>
+        <div class="lv-s">⭐</div>
+      </div>
+      <div class="lv-card locked" id="lvc2" onclick="go('sn2')">
+        <div class="lv-ico" id="lvi2">🔒</div>
+        <div class="lv-n">2</div>
+        <div class="lv-t">Clasifica conductas</div>
+        <div class="lv-s">⭐⭐</div>
+      </div>
+      <div class="lv-card locked" id="lvc3" onclick="go('sn3')">
+        <div class="lv-ico" id="lvi3">🔒</div>
+        <div class="lv-n">3</div>
+        <div class="lv-t">Detecta el ciclo</div>
+        <div class="lv-s">⭐⭐⭐</div>
+      </div>
+      <div class="lv-card locked" id="lvc4" onclick="go('sn4')">
+        <div class="lv-ico" id="lvi4">🔒</div>
+        <div class="lv-n">4</div>
+        <div class="lv-t">Diseña el experimento</div>
+        <div class="lv-s">⭐⭐⭐⭐</div>
+      </div>
+    </div>
+    <div class="lv-card locked" id="lvc5" onclick="go('sn5')" style="grid-column:span 2">
+      <div class="lv-ico" id="lvi5">🔒</div>
+      <div class="lv-n" style="font-size:28px">5</div>
+      <div class="lv-t">El caso completo — Valeria</div>
+      <div class="lv-s">⭐⭐⭐⭐⭐</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== NIVEL 1 ===================== -->
+<div class="screen" id="sn1">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sniv')">← Niveles</button>
+      <span class="tb-label">Nivel 1 · ⭐</span>
+    </div>
+    <div class="tb-r">
+      <button class="btn-help" onclick="openHelp(1)">❓ Ayuda</button>
+      <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="p1" style="width:0%"></div></div><div class="prog-txt" id="pt1">0 / 3</div></div>
+  <div class="c">
+
+    <div id="n1e1">
+      <div class="big-em">🤔</div>
+      <span class="tag tag-ce">Ejercicio 1 de 3</span>
+      <h2>¿Muestra intolerancia a la incertidumbre?</h2>
+      <div class="vineta">"Marcos tiene una entrevista de trabajo el lunes. El domingo repasa sus respuestas, investiga la empresa y se acuesta temprano para dormir bien."</div>
+      <div id="o1e1">
+        <div class="opt" onclick="ans(1,1,'b',this)">✅ No — es preparación adaptativa</div>
+        <div class="opt" onclick="ans(1,1,'a',this)">❌ Sí — muestra IU</div>
+      </div>
+      <div class="fb" id="f1e1"></div>
+      <button class="btn btn-ce" id="b1e1" style="display:none" onclick="n1go(2)">Siguiente →</button>
+    </div>
+
+    <div id="n1e2" style="display:none">
+      <div class="big-em">🤔</div>
+      <span class="tag tag-ce">Ejercicio 2 de 3</span>
+      <h2>¿Muestra intolerancia a la incertidumbre?</h2>
+      <div class="vineta">"Sofía lleva 3 semanas sin decidir si cambiarse de trabajo. Hace listas de pros y contras todos los días, pregunta lo mismo a personas distintas y dice que no puede decidir hasta estar 100% segura."</div>
+      <div id="o1e2">
+        <div class="opt" onclick="ans(1,2,'a',this)">✅ Sí — muestra IU</div>
+        <div class="opt" onclick="ans(1,2,'b',this)">❌ No — es ser cuidadoso</div>
+      </div>
+      <div class="fb" id="f1e2"></div>
+      <button class="btn btn-ce" id="b1e2" style="display:none" onclick="n1go(3)">Siguiente →</button>
+    </div>
+
+    <div id="n1e3" style="display:none">
+      <div class="big-em">🎯</div>
+      <span class="tag tag-ce">Ejercicio 3 de 3</span>
+      <h2>¿Qué define mejor a la IU?</h2>
+      <div id="o1e3">
+        <div class="opt" onclick="ans(1,3,'a',this)">💭 Creer que lo peor siempre va a ocurrir</div>
+        <div class="opt" onclick="ans(1,3,'b',this)">🌫️ No poder funcionar con calma ante lo desconocido, aunque el riesgo sea bajo</div>
+        <div class="opt" onclick="ans(1,3,'c',this)">😨 Sentir ansiedad frente a situaciones objetivamente peligrosas</div>
+      </div>
+      <div class="fb" id="f1e3"></div>
+      <button class="btn btn-am" id="b1e3" style="display:none" onclick="levelDone(1)">Nivel 1 completado ✅</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== NIVEL 2 ===================== -->
+<div class="screen" id="sn2">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sniv')">← Niveles</button>
+      <span class="tb-label">Nivel 2 · ⭐⭐</span>
+    </div>
+    <div class="tb-r">
+      <button class="btn-help" onclick="openHelp(2)">❓ Ayuda</button>
+      <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="p2" style="width:0%"></div></div><div class="prog-txt" id="pt2">0 / 3</div></div>
+  <div class="c">
+
+    <!-- EJ 2.1 CHIPS -->
+    <div id="n2e1">
+      <div class="big-em">🗂️</div>
+      <span class="tag tag-na">Ejercicio 1 de 3 — Clasificar</span>
+      <h2>¿Prospectiva o Inhibitoria?</h2>
+      <p style="font-size:14px;color:var(--t2)">Toca una conducta y luego toca la zona donde colocarla. Puedes devolver una conducta tocándola en su zona.</p>
+      <div class="chips" id="chips-wrap">
+        <div class="chip" id="cp-a" onclick="chipTap('cp-a')">🔍 Googlea síntomas</div>
+        <div class="chip" id="cp-b" onclick="chipTap('cp-b')">🙈 Evita ver resultados médicos</div>
+        <div class="chip" id="cp-c" onclick="chipTap('cp-c')">💬 Pregunta lo mismo 5 veces</div>
+        <div class="chip" id="cp-d" onclick="chipTap('cp-d')">🛑 Posterga la decisión</div>
+        <div class="chip" id="cp-e" onclick="chipTap('cp-e')">📋 Hace listas interminables</div>
+        <div class="chip" id="cp-f" onclick="chipTap('cp-f')">🚫 Rechaza un ascenso sin intentarlo</div>
+      </div>
+      <div class="dzones">
+        <div class="dz" id="dz-p" onclick="dropIn('dz-p')"><h4>🔎 Prospectiva</h4></div>
+        <div class="dz" id="dz-i" onclick="dropIn('dz-i')"><h4>🚧 Inhibitoria</h4></div>
+      </div>
+      <div class="fb" id="f2e1"></div>
+      <button class="btn btn-na" onclick="checkChips()">Verificar →</button>
+      <button class="btn btn-ce" id="b2e1" style="display:none" onclick="n2go(2)">Siguiente →</button>
+    </div>
+
+    <!-- EJ 2.2 -->
+    <div id="n2e2" style="display:none">
+      <div class="big-em">🎯</div>
+      <span class="tag tag-na">Ejercicio 2 de 3</span>
+      <h2>¿Qué tipo de IU predomina?</h2>
+      <div class="vineta">"Rodrigo lleva meses sin renovar su contrato de alquiler porque no sabe si el dueño subirá el precio. Cada vez que piensa en llamar, lo posterga. Ha rechazado tres oportunidades de mudarse a un lugar mejor 'por si acaso'."</div>
+      <div id="o2e2">
+        <div class="opt" onclick="ans(2,2,'a',this)">🔎 IU Prospectiva — busca información y reaseguro activamente</div>
+        <div class="opt" onclick="ans(2,2,'b',this)">🚧 IU Inhibitoria — evita y se paraliza ante la ambigüedad</div>
+        <div class="opt" onclick="ans(2,2,'c',this)">🔀 Ambas en igual proporción</div>
+      </div>
+      <div class="fb" id="f2e2"></div>
+      <button class="btn btn-na" id="b2e2" style="display:none" onclick="n2go(3)">Siguiente →</button>
+    </div>
+
+    <!-- EJ 2.3 -->
+    <div id="n2e3" style="display:none">
+      <div class="big-em">🧩</div>
+      <span class="tag tag-na">Ejercicio 3 de 3</span>
+      <h2>Verdadero o Falso</h2>
+      <p style="font-size:15px;color:var(--t1);font-weight:500">"Una persona puede tener alta IU en el área de salud, pero tolerar bien la incertidumbre en su trabajo."</p>
+      <div id="o2e3">
+        <div class="opt" onclick="ans(2,3,'a',this)">✅ Verdadero — la IU puede ser área-específica</div>
+        <div class="opt" onclick="ans(2,3,'b',this)">❌ Falso — si hay IU, afecta todas las áreas</div>
+      </div>
+      <div class="fb" id="f2e3"></div>
+      <button class="btn btn-am" id="b2e3" style="display:none" onclick="levelDone(2)">Nivel 2 completado ✅</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== NIVEL 3 ===================== -->
+<div class="screen" id="sn3">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sniv')">← Niveles</button>
+      <span class="tb-label">Nivel 3 · ⭐⭐⭐</span>
+    </div>
+    <div class="tb-r">
+      <button class="btn-help" onclick="openHelp(3)">❓ Ayuda</button>
+      <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="p3" style="width:0%"></div></div><div class="prog-txt" id="pt3">0 / 3</div></div>
+  <div class="c">
+
+    <div id="n3e1">
+      <div class="big-em">🔍</div>
+      <span class="tag tag-am">Ejercicio 1 de 3</span>
+      <h2>¿Cuál es la conducta de seguridad?</h2>
+      <div class="vineta">"Ana tiene miedo de que algo le pase a su hijo en el colegio. Cada mañana le manda 4 mensajes para saber si llegó bien. Si no responde en 10 minutos, llama directamente al colegio."</div>
+      <div id="o3e1">
+        <div class="opt" onclick="ans(3,1,'a',this)">💭 Tener pensamientos catastróficos sobre el hijo</div>
+        <div class="opt" onclick="ans(3,1,'b',this)">📱 Mandar mensajes y llamar al colegio</div>
+        <div class="opt" onclick="ans(3,1,'c',this)">😨 Sentir ansiedad por la mañana antes de que salga</div>
+      </div>
+      <div class="fb" id="f3e1"></div>
+      <button class="btn btn-am" id="b3e1" style="display:none" onclick="n3go(2)">Siguiente →</button>
+    </div>
+
+    <div id="n3e2" style="display:none">
+      <div class="big-em">🔎</div>
+      <span class="tag tag-am">Ejercicio 2 de 3</span>
+      <h2>¿Por qué se mantiene esta conducta?</h2>
+      <div class="vineta">"Juan chequea su cuenta bancaria y siente alivio inmediato. Pero a los pocos minutos vuelve a necesitar chequearla. Ahora lo hace 20 veces al día."</div>
+      <p style="font-size:14px">¿Qué mecanismo explica por qué sigue chequeando?</p>
+      <div id="o3e2">
+        <div class="opt" onclick="ans(3,2,'a',this)">💥 El chequeo le genera placer directo</div>
+        <div class="opt" onclick="ans(3,2,'b',this)">📉 El alivio post-chequeo refuerza negativamente la conducta</div>
+        <div class="opt" onclick="ans(3,2,'c',this)">🧠 Es un hábito automático sin función específica</div>
+      </div>
+      <div class="fb" id="f3e2"></div>
+      <button class="btn btn-am" id="b3e2" style="display:none" onclick="n3go(3)">Siguiente →</button>
+    </div>
+
+    <!-- EJ 3.3 EMPAREJAMIENTO -->
+    <div id="n3e3" style="display:none">
+      <div class="big-em">🔗</div>
+      <span class="tag tag-am">Ejercicio 3 de 3 — Emparejar</span>
+      <h2>Concepto con ejemplo</h2>
+      <p style="font-size:14px;color:var(--t2)">Toca un concepto y luego su ejemplo correspondiente.</p>
+      <div class="mcols">
+        <div class="mcol">
+          <div class="mi" id="mc1" onclick="matchTap('c','mc1')">🔄 Refuerzo negativo</div>
+          <div class="mi" id="mc2" onclick="matchTap('c','mc2')">🛡️ Conducta de seguridad</div>
+          <div class="mi" id="mc3" onclick="matchTap('c','mc3')">⛔ Extinción bloqueada</div>
+        </div>
+        <div class="mcol">
+          <div class="mi" id="me1" onclick="matchTap('e','me1')">La IU no baja porque nunca se enfrenta la situación incierta</div>
+          <div class="mi" id="me2" onclick="matchTap('e','me2')">El alivio al chequear refuerza seguir chequeando</div>
+          <div class="mi" id="me3" onclick="matchTap('e','me3')">Evitar ver el email para no sentir ansiedad</div>
+        </div>
+      </div>
+      <div class="fb" id="f3e3"></div>
+      <button class="btn btn-am" id="b3e3" style="display:none" onclick="levelDone(3)">Nivel 3 completado ✅</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== NIVEL 4 ===================== -->
+<div class="screen" id="sn4">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sniv')">← Niveles</button>
+      <span class="tb-label">Nivel 4 · ⭐⭐⭐⭐</span>
+    </div>
+    <div class="tb-r">
+      <button class="btn-help" onclick="openHelp(4)">❓ Ayuda</button>
+      <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="p4" style="width:0%"></div></div><div class="prog-txt" id="pt4">0 / 3</div></div>
+  <div class="c">
+
+    <div id="n4e1">
+      <div class="big-em">🧪</div>
+      <span class="tag tag-am">Ejercicio 1 de 3</span>
+      <h2>¿Cuál experimento está bien diseñado?</h2>
+      <p style="font-size:14px;color:var(--t1);font-weight:500">Creencia del cliente: <em>"Si no reviso mi email cada hora, me perderé algo urgente y no podré funcionar bien."</em></p>
+      <div id="o4e1">
+        <div class="opt" onclick="ans(4,1,'a',this)">📧 Revisar el email solo 2 veces al día durante una semana, sin buscar reaseguro después</div>
+        <div class="opt" onclick="ans(4,1,'b',this)">💭 Practicar decirse "no va a pasar nada" cada vez que sienta el impulso de revisar</div>
+        <div class="opt" onclick="ans(4,1,'c',this)">📱 Revisar cada 2 horas en vez de cada hora para ir reduciendo gradualmente</div>
+      </div>
+      <div class="fb" id="f4e1"></div>
+      <button class="btn btn-am" id="b4e1" style="display:none" onclick="n4go(2)">Siguiente →</button>
+    </div>
+
+    <div id="n4e2" style="display:none">
+      <div class="big-em">⚠️</div>
+      <span class="tag tag-am">Ejercicio 2 de 3</span>
+      <h2>¿Este experimento tiene un problema?</h2>
+      <p style="font-size:14px;color:var(--t1);font-weight:500">Creencia: <em>"Si no llamo a mi pareja para saber que está bien, algo malo podría haberle pasado."</em></p>
+      <div class="vineta">"El clínico propone: esta semana, antes de llamar, escribe en un papel tus pensamientos de preocupación. Luego llama como siempre."</div>
+      <div id="o4e2">
+        <div class="opt" onclick="ans(4,2,'a',this)">⚠️ Sí — la conducta de seguridad (llamar) se mantiene intacta</div>
+        <div class="opt" onclick="ans(4,2,'b',this)">✅ No — el registro convierte esto en un experimento válido</div>
+      </div>
+      <div class="fb" id="f4e2"></div>
+      <button class="btn btn-am" id="b4e2" style="display:none" onclick="n4go(3)">Siguiente →</button>
+    </div>
+
+    <div id="n4e3" style="display:none">
+      <div class="big-em">🎯</div>
+      <span class="tag tag-am">Ejercicio 3 de 3</span>
+      <h2>¿Qué hace funcionar al experimento?</h2>
+      <div class="vineta">"Carlos cree que si no revisa síntomas en Google no podrá calmarse. El experimento: 5 días sin buscar en Google cuando sienta un síntoma. Registra el malestar y qué ocurrió realmente cada día."</div>
+      <p style="font-size:14px">¿Por qué este experimento puede cambiar la creencia?</p>
+      <div id="o4e3">
+        <div class="opt" onclick="ans(4,3,'a',this)">📝 Porque el registro lo hace más consciente de sus pensamientos negativos</div>
+        <div class="opt" onclick="ans(4,3,'b',this)">⚡ Porque sin la conducta de seguridad, el organismo contacta directamente la contingencia real</div>
+        <div class="opt" onclick="ans(4,3,'c',this)">🔁 Porque reduce el número de veces que busca información</div>
+      </div>
+      <div class="fb" id="f4e3"></div>
+      <button class="btn btn-am" id="b4e3" style="display:none" onclick="levelDone(4)">Nivel 4 completado ✅</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== NIVEL 5 ===================== -->
+<div class="screen" id="sn5">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sniv')">← Niveles</button>
+      <span class="tb-label">Nivel 5 · ⭐⭐⭐⭐⭐</span>
+    </div>
+    <div class="tb-r">
+      <button class="btn-help" onclick="openHelp(5)">❓ Ayuda</button>
+      <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" id="p5" style="width:0%"></div></div><div class="prog-txt" id="pt5">0 / 4</div></div>
+  <div class="c">
+
+    <div id="n5e0">
+      <div class="big-em">🏆</div>
+      <span class="tag tag-na">Nivel Final</span>
+      <h2>El caso completo</h2>
+      <p>Lee con atención el caso de Valeria antes de comenzar los 4 ejercicios de integración clínica.</p>
+      <div class="vineta" style="border-left-color:var(--na)">"Valeria, 34 años, terapeuta. En sesión: dificultades para tomar decisiones. Antes de cualquier elección importante, busca información exhaustiva, consulta a múltiples personas y posterga hasta estar 'más segura'. Cuando finalmente decide, duda y reconsidera. Dice que no puede soportar equivocarse.<br><br>En el trabajo rechazó dos ascensos 'porque todavía no era el momento'. En su relación de pareja, lleva 5 años sin convivir porque 'no sabe si es para siempre'. En sesión, llega con una lista de 15 preguntas preparadas para 'asegurarse de no olvidar nada'."</div>
+      <button class="btn btn-gr" onclick="n5go(1)">Comenzar los ejercicios →</button>
+    </div>
+
+    <div id="n5e1" style="display:none">
+      <span class="tag tag-na">Ejercicio 1 de 4</span>
+      <h2>¿Qué tipo(s) de IU predominan en Valeria?</h2>
+      <div id="o5e1">
+        <div class="opt" onclick="ans(5,1,'a',this)">🔎 Solo IU Prospectiva</div>
+        <div class="opt" onclick="ans(5,1,'b',this)">🚧 Solo IU Inhibitoria</div>
+        <div class="opt" onclick="ans(5,1,'c',this)">🔀 Ambas — prospectiva al buscar info, inhibitoria al evitar decisiones</div>
+      </div>
+      <div class="fb" id="f5e1"></div>
+      <button class="btn btn-na" id="b5e1" style="display:none" onclick="n5go(2)">Siguiente →</button>
+    </div>
+
+    <div id="n5e2" style="display:none">
+      <span class="tag tag-na">Ejercicio 2 de 4</span>
+      <h2>¿Qué tipo de creencia muestra Valeria?</h2>
+      <div class="vineta">"Valeria dice: 'Si tomo una decisión sin estar segura al 100%, algo malo va a pasar y va a ser mi culpa.'"</div>
+      <div id="o5e2">
+        <div class="opt" onclick="ans(5,2,'a',this)">😤 Creencia de que la incertidumbre es injusta y arruina todo</div>
+        <div class="opt" onclick="ans(5,2,'b',this)">⚠️ Creencia de que la incertidumbre tiene consecuencias negativas para su conducta</div>
+        <div class="opt" onclick="ans(5,2,'c',this)">😱 Creencia de que ella no puede tolerar ninguna emoción difícil</div>
+      </div>
+      <div class="fb" id="f5e2"></div>
+      <button class="btn btn-na" id="b5e2" style="display:none" onclick="n5go(3)">Siguiente →</button>
+    </div>
+
+    <div id="n5e3" style="display:none">
+      <span class="tag tag-na">Ejercicio 3 de 4</span>
+      <h2>¿Por qué la IU de Valeria no disminuye con el tiempo?</h2>
+      <div id="o5e3">
+        <div class="opt" onclick="ans(5,3,'a',this)">🧬 Tiene una vulnerabilidad biológica que no puede cambiar</div>
+        <div class="opt" onclick="ans(5,3,'b',this)">⛔ Sus conductas de seguridad impiden la extinción — nunca contacta que puede funcionar sin certeza</div>
+        <div class="opt" onclick="ans(5,3,'c',this)">💡 No ha trabajado suficiente sus pensamientos automáticos negativos</div>
+      </div>
+      <div class="fb" id="f5e3"></div>
+      <button class="btn btn-na" id="b5e3" style="display:none" onclick="n5go(4)">Último ejercicio →</button>
+    </div>
+
+    <div id="n5e4" style="display:none">
+      <span class="tag tag-na">Ejercicio 4 de 4</span>
+      <h2>¿Cuál es la mejor intervención?</h2>
+      <p style="font-size:14px;font-weight:500;color:var(--t1)">Creencia identificada: <em>"Si decido sin estar segura, algo malo pasará y será mi culpa."</em></p>
+      <div id="o5e4">
+        <div class="opt" onclick="ans(5,4,'a',this)">🗣️ Pedirle que debata racionalmente la creencia y liste evidencias en contra</div>
+        <div class="opt" onclick="ans(5,4,'b',this)">🧪 Tomar una decisión pequeña sin buscar información extra y registrar qué ocurrió durante 1 semana</div>
+        <div class="opt" onclick="ans(5,4,'c',this)">🧘 Practicar relajación para tolerar mejor la ansiedad antes de decidir</div>
+        <div class="opt" onclick="ans(5,4,'d',this)">📋 Enseñarle a hacer mejores listas de pros y contras con más información</div>
+      </div>
+      <div class="fb" id="f5e4"></div>
+      <button class="btn btn-gr" id="b5e4" style="display:none" onclick="levelDone(5)">Ver resumen 🏆</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== RESUMEN ===================== -->
+<div class="screen" id="sres">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sniv')">← Niveles</button>
+      <span class="tb-label">Resumen</span>
+    </div>
+    <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+  </div>
+  <div class="c">
+    <div class="big-em" style="text-align:center">🎉</div>
+    <h2 style="text-align:center">¡Entrenamiento completado!</h2>
+    <div class="score-big" id="total-score">0 / 15</div>
+    <p style="text-align:center;font-size:14px;color:var(--t3);margin-bottom:20px">respuestas correctas en el primer intento</p>
+
+    <div id="summary-rows"></div>
+
+    <div class="sep"></div>
+    <div class="box box-am">
+      <h3>🔁 Tu racha máxima</h3>
+      <p style="font-size:24px;font-family:'Syne',sans-serif;font-weight:800;color:var(--am);margin:4px 0" id="max-streak-disp">0</p>
+      <p style="font-size:13px;color:var(--t3);margin:0">respuestas correctas consecutivas</p>
+    </div>
+    <button class="btn btn-gr" onclick="go('sfin')" style="margin-top:8px">Obtener certificado 🏆</button>
+    <button class="btn btn-ghost" onclick="go('sniv')" style="margin-top:8px">Volver a practicar</button>
+  </div>
+</div>
+
+<!-- ===================== CERTIFICADO ===================== -->
+<div class="screen" id="sfin">
+  <div class="tb">
+    <div class="tb-l">
+      <button class="btn-back" onclick="go('sp')">← Inicio</button>
+      <span class="tb-label">Certificado</span>
+    </div>
+    <button class="btn-theme" onclick="toggleTheme()">☀️🌙</button>
+  </div>
+  <div class="c">
+    <div id="cert-locked">
+      <div class="big-em">🔒</div>
+      <h2>Completa los 5 niveles primero</h2>
+      <p>Termina todos los niveles para desbloquear el certificado.</p>
+      <button class="btn btn-am" onclick="go('sniv')">Ir a los niveles →</button>
+    </div>
+    <div id="cert-form" style="display:none">
+      <div class="big-em" style="text-align:center">🏆</div>
+      <h2 style="text-align:center;margin-bottom:4px">¡Lo lograste!</h2>
+      <p style="text-align:center;margin-bottom:20px">Escribe tu nombre para generar el certificado.</p>
+      <input type="text" id="cert-name-input" placeholder="Tu nombre completo..." maxlength="50" />
+      <button class="btn btn-am" onclick="generateCert()">Generar certificado →</button>
+    </div>
+    <div id="cert-display" style="display:none">
+      <div class="cert">
+        <div style="font-size:48px;margin-bottom:10px">🎓</div>
+        <div class="cert-sub">Certificado de Entrenamiento Clínico</div>
+        <div class="cert-sep"></div>
+        <p style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:2px">Este certificado acredita que</p>
+        <div class="cert-name" id="cert-name-show">—</div>
+        <p style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:6px">completó el entrenamiento en</p>
+        <p style="font-size:17px;font-weight:700;color:#fff;margin-bottom:4px">Intolerancia a la Incertidumbre</p>
+        <p style="font-size:13px;color:rgba(255,255,255,.65)">5 niveles · 16 ejercicios clínicos</p>
+        <div class="cert-sep"></div>
+        <div class="cert-body">
+          Capacidad demostrada para reconocer, clasificar y conceptualizar la IU desde un marco conductual, identificar su ciclo de mantenimiento por refuerzo negativo, y diseñar experimentos conductuales basados en evidencia.
+        </div>
+        <div class="cert-ref">
+          Basado en: Vallejo Pareja (coord., 2005) · Geninet et al. (2012) · Herbert & Dugas (2019) · Freeston et al. (1994) · Dugas et al. (1998) · Penney et al. (2020) · Carleton (2016)
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--t3);text-align:center;margin-bottom:12px">📸 Captura de pantalla para compartir</p>
+      <button class="btn btn-ghost" onclick="go('sp')">Volver al inicio 🏠</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL AYUDA ===================== -->
+<div class="mo" id="modal" onclick="closeHelp(event)">
+  <div class="mo-box">
+    <div class="mo-handle"></div>
+    <button class="mo-close" onclick="closeModal()">✕ Cerrar</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ===== ESTADO =====
+const ST = {
+  theme:'dark',
+  streak:0,
+  maxStreak:0,
+  scores:{1:0,2:0,3:0,4:0,5:0},
+  done:{1:false,2:false,3:false,4:false,5:false}
+};
+
+const helpContent = {
+  1:`<h3 style="margin-bottom:10px">💡 Ayuda — Nivel 1</h3>
+  <p>La IU no es temer que lo malo va a pasar. Es no poder funcionar con calma sin saber <em>qué</em> pasará.</p>
+  <div class="box box-ce" style="margin-top:12px"><p style="font-size:14px;margin:0"><strong>Clave:</strong> Prepararse razonablemente es adaptativo. Buscar certeza imposible antes de poder actuar es IU.</p></div>
+  <div class="quote" style="margin-top:10px">"Una disposición negativa que surge de un conjunto de creencias catastróficas sobre la incertidumbre."<div class="cite">Herbert & Dugas (2019)</div></div>`,
+  2:`<h3 style="margin-bottom:10px">💡 Ayuda — Nivel 2</h3>
+  <p>Penney et al. (2020) distinguen dos subtipos:</p>
+  <div class="box box-ce" style="margin-top:10px;font-size:14px"><strong>🔎 Prospectiva:</strong> el cliente hace algo para reducir la incertidumbre (buscar info, preguntar, chequear).<br><br><strong>🚧 Inhibitoria:</strong> el cliente evita actuar para no enfrentar la ambigüedad (postergar, rechazar, paralizarse).</div>`,
+  3:`<h3 style="margin-bottom:10px">💡 Ayuda — Nivel 3</h3>
+  <p>El ciclo se mantiene por <strong>refuerzo negativo</strong>: la conducta de seguridad elimina temporalmente el malestar → eso refuerza repetirla → la tolerancia a la incertidumbre baja cada vez más.</p>
+  <div class="quote" style="margin-top:10px">"La evitación experiencial suele ser persistente porque al tratarse de una conducta reforzada negativamente, el más mínimo efecto de la persona para reducir el malestar refuerza la evitación."<div class="cite">Vallejo Pareja (coord., 2005), p. 36</div></div>`,
+  4:`<h3 style="margin-bottom:10px">💡 Ayuda — Nivel 4</h3>
+  <p>Un experimento conductual bien diseñado <strong>elimina la conducta de seguridad</strong> para que el organismo pueda contactar la contingencia real.</p>
+  <div class="box box-am" style="margin-top:10px;font-size:14px"><strong>Los 4 pasos:</strong><br>1️⃣ Identificar la creencia<br>2️⃣ Diseñar sin conducta de seguridad<br>3️⃣ Registrar lo que ocurrió<br>4️⃣ Reflexionar sobre la creencia</div>`,
+  5:`<h3 style="margin-bottom:10px">💡 Ayuda — Nivel 5</h3>
+  <p>Integración clínica completa. Recuerda:</p>
+  <div style="font-size:14px;line-height:1.9;margin-top:8px">
+  🔎 Prospectiva = busca activamente<br>
+  🚧 Inhibitoria = evita y se paraliza<br>
+  💭 Creencias = foco del tratamiento<br>
+  🧪 Experimento = elimina conducta de seguridad<br>
+  ⛔ Sin conducta de seguridad = extinción posible</div>`
+};
+
+// ===== RESPUESTAS CORRECTAS =====
+const CORRECT = {
+  '1-1':'b','1-2':'a','1-3':'b',
+  '2-2':'b','2-3':'a',
+  '3-1':'b','3-2':'b',
+  '4-1':'a','4-2':'a','4-3':'b',
+  '5-1':'c','5-2':'b','5-3':'b','5-4':'b'
+};
+const FEEDBACK = {
+  '1-1-b':'✅ <strong>Correcto.</strong> Prepararse razonablemente para algo importante es conducta adaptativa. La IU aparece cuando la preparación excede lo útil y busca eliminar toda posibilidad de incertidumbre. Marcos hizo algo funcional y punto. — Geninet et al. (2012)',
+  '1-1-a':'❌ Prepararse para una entrevista es conducta adaptativa, no IU. La diferencia está en si la conducta busca funcionar bien o eliminar toda posibilidad de incertidumbre.',
+  '1-2-a':'✅ <strong>Correcto.</strong> Buscar certeza absoluta ("100% segura"), listas repetitivas y reaseguro constante durante semanas son conductas de seguridad típicas. Geninet et al. (2012): el reaseguro da alivio breve pero mantiene el ciclo.',
+  '1-2-b':'❌ Ser cuidadoso tiene un límite funcional. Cuando la conducta busca certeza imposible durante 3 semanas con reaseguro constante, supera ese umbral. Es IU.',
+  '1-3-b':'✅ <strong>Correcto.</strong> Carleton (2016) la define como el miedo fundamental a lo desconocido — no poder funcionar sin saber qué pasará. No implica necesariamente predecir lo peor. Esa distinción cambia dónde intervenimos.',
+  '1-3-a':'❌ Eso describe catastrofismo, no IU. La IU no implica predecir necesariamente lo peor — sino no poder funcionar sin saber qué ocurrirá.',
+  '1-3-c':'❌ Sentir ansiedad frente a peligros reales es adaptativo. La IU aparece ante situaciones ambiguas o de baja probabilidad, con una reacción desproporcionada al riesgo real.',
+  '2-2-b':'✅ <strong>Correcto.</strong> Rodrigo evita actuar, posterga y renuncia a oportunidades para no enfrentar la ambigüedad. Eso es IU inhibitoria. El patrón dominante es no actuar, no buscar información activamente. — Penney et al. (2020)',
+  '2-2-a':'❌ No busca información activamente para reducir la incertidumbre — la evita por completo. El patrón es inhibitorio: no actuar para no enfrentar lo incierto.',
+  '2-2-c':'❌ El patrón dominante en Rodrigo es la evitación e inhibición. Rechazar ascensos y no convivir por años indica predominio inhibitorio.',
+  '2-3-a':'✅ <strong>Correcto.</strong> Geninet et al. (2012): la IU no necesariamente afecta todas las áreas de la misma manera. Una persona puede ser muy tolerante ante la incertidumbre laboral e intolerante frente a su salud.',
+  '2-3-b':'❌ La IU puede ser área-específica. Eso cambia la evaluación y la intervención — no es un rasgo que se activa igual en todos los contextos.',
+  '3-1-b':'✅ <strong>Correcto.</strong> Los mensajes y las llamadas son las conductas de seguridad — las acciones concretas que reducen temporalmente la ansiedad y mantienen el ciclo. Los pensamientos y la ansiedad son parte del ciclo, pero la conducta de seguridad es lo que actúa sobre la incertidumbre.',
+  '3-1-a':'❌ Los pensamientos catastróficos son parte del ciclo, pero no son la conducta de seguridad. La conducta de seguridad es la acción concreta que busca reducir la incertidumbre: los mensajes y las llamadas.',
+  '3-1-c':'❌ La ansiedad es la emoción que activa el ciclo, no la conducta de seguridad. La conducta de seguridad es lo que el cliente hace para reducir esa ansiedad.',
+  '3-2-b':'✅ <strong>Correcto.</strong> Vallejo Pareja (coord., 2005, p. 151): la preocupación "consigue reducir la ansiedad... pero este refuerzo negativo incrementará la probabilidad de persistencia". El alivio elimina el malestar temporalmente → refuerza chequear → umbral baja → necesita chequear más.',
+  '3-2-a':'❌ El refuerzo positivo implica que algo agradable añade probabilidad de repetir la conducta. Aquí la función es eliminar el malestar (alivio), no generar placer. Eso es refuerzo negativo.',
+  '3-2-c':'❌ El chequeo tiene una función específica y clara: reduce la ansiedad por incertidumbre. No es automático sin función — es mantenido por refuerzo negativo.',
+  '4-1-a':'✅ <strong>Correcto.</strong> Revisar 2 veces al día sin buscar reaseguro posterior es el único experimento bien diseñado: elimina la conducta de seguridad y permite contactar la contingencia real. Herbert & Dugas (2019): sin conducta de seguridad el cambio en la creencia puede ocurrir.',
+  '4-1-b':'❌ Decirse "no va a pasar nada" es una forma de reaseguro interno — una conducta de seguridad cognitiva. No genera experiencia directa con la contingencia real.',
+  '4-1-c':'❌ Reducir gradualmente sin eliminar la conducta no rompe el ciclo. La creencia no se testea — el cliente nunca comprueba que puede funcionar sin revisar.',
+  '4-2-a':'✅ <strong>Correcto.</strong> El registro por sí solo no es el experimento. Mientras la conducta de seguridad (llamar) se mantiene intacta, la creencia nunca se testea y la contingencia real no es accesible. Sin eliminar la conducta, no hay experimento.',
+  '4-2-b':'❌ El registro es útil, pero si la conducta de seguridad se mantiene, la creencia "si no llamo algo malo puede pasar" nunca se testea con experiencia directa. El registro solo no convierte esto en un experimento conductual.',
+  '4-3-b':'✅ <strong>Correcto.</strong> Vallejo Pareja (coord., 2005, p. 33): los nuevos desarrollos dan más importancia a "la experimentación, a la práctica de la conducta — un predominio del aprendizaje por contingencias". Sin la conducta de seguridad, el organismo contacta directamente que puede tolerar la incertidumbre.',
+  '4-3-a':'❌ El registro ayuda a monitorear, pero no es el mecanismo que cambia la creencia. El cambio ocurre por la experiencia directa de contactar la contingencia real sin la conducta de seguridad.',
+  '4-3-c':'❌ Reducir frecuencia no es el objetivo. El objetivo es que el cliente aprenda por experiencia que puede tolerar la incertidumbre — eso requiere eliminar la conducta de seguridad, no reducirla.',
+  '5-1-c':'✅ <strong>Correcto.</strong> Valeria muestra ambas. IU prospectiva: busca información exhaustiva, lista de 15 preguntas, consulta a múltiples personas. IU inhibitoria: rechaza ascensos, no convive. Penney et al. (2020): pueden coexistir en el mismo cliente.',
+  '5-1-a':'❌ Valeria también muestra IU inhibitoria: rechaza ascensos, no convive con su pareja. La conceptualización debe incluir ambos subtipos.',
+  '5-1-b':'❌ Valeria también muestra IU prospectiva: búsqueda exhaustiva de información, lista de preguntas para sesión, consulta múltiple.',
+  '5-2-b':'✅ <strong>Correcto.</strong> "Si decido sin certeza, algo malo pasará y será mi culpa" es una creencia de que la incertidumbre tiene consecuencias negativas para su conducta. Herbert & Dugas (2019): esta categoría de creencia genera conductas de seguridad orientadas a recuperar control.',
+  '5-2-a':'❌ La creencia de injusticia sería "no debería ser así" o "no me lo merezco". Valeria no expresa injusticia — expresa consecuencias negativas de actuar sin certeza.',
+  '5-2-c':'❌ Aunque Valeria puede tener baja tolerancia al malestar, su creencia específica es sobre las consecuencias de actuar sin certeza, no sobre tolerar emociones.',
+  '5-3-b':'✅ <strong>Correcto.</strong> Vallejo Pareja (coord., 2005, p. 36): "la conducta reforzada negativamente... el más mínimo efecto de la persona para reducir el malestar refuerza la evitación". Cada conducta de seguridad de Valeria impide la extinción — nunca aprende que puede decidir sin certeza.',
+  '5-3-a':'❌ Aunque pueden existir vulnerabilidades biológicas, no explican por qué no disminuye con el tiempo. El mecanismo de mantenimiento es conductual: las conductas de seguridad impiden la extinción.',
+  '5-3-c':'❌ El enfoque en pensamientos automáticos solo aborda el contenido de las creencias, no la función de las conductas de seguridad. Sin eliminarlas, la extinción no ocurre.',
+  '5-4-b':'✅ <strong>Correcto.</strong> Tomar una decisión pequeña sin buscar información extra y registrar lo que ocurrió es el experimento bien diseñado: elimina la conducta de seguridad, testea la creencia directamente y genera evidencia experiencial. — Herbert & Dugas (2019)',
+  '5-4-a':'❌ Debatir racionalmente no genera la experiencia directa que cambia la creencia. Vallejo Pareja (coord., 2005, p. 33) señala el "predominio del aprendizaje por contingencias frente al aprendizaje por reglas".',
+  '5-4-c':'❌ La relajación puede ayudar con el malestar, pero no testea la creencia de Valeria. El objetivo es que aprenda que puede decidir sin certeza y que las consecuencias no son las que teme.',
+  '5-4-d':'❌ Mejorar las listas de pros y contras es una conducta de seguridad más sofisticada — sigue buscando certeza antes de actuar. Eso mantiene el ciclo.'
+};
+
+// ===== CHIPS STATE =====
+let selectedChip = null;
+let chipDestinos = {};
+const chipCorrect = {'cp-a':'dz-p','cp-b':'dz-i','cp-c':'dz-p','cp-d':'dz-i','cp-e':'dz-p','cp-f':'dz-i'};
+
+// ===== MATCH STATE =====
+let matchSel = {tipo:null,id:null};
+const matchPairs = {'mc1':'me2','mc2':'me3','mc3':'me1'};
+let matchDone = 0;
+
+// ===== PROGRESS STATE =====
+let levelProgress = {1:0,2:0,3:0,4:0,5:0};
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTop=0;
+  if(id==='sniv') refreshLevels();
+  if(id==='sfin') checkCertAccess();
+  if(id==='sres') buildSummary();
+}
+
+function toggleTheme(){
+  const html=document.documentElement;
+  const now=html.getAttribute('data-theme');
+  const next=now==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  ST.theme=next;
+  document.querySelectorAll('.btn-theme').forEach(b=>b.textContent=next==='dark'?'☀️':'🌙');
+  localStorage.setItem('iu_theme',next);
+}
+
+function showT(idx, el){
+  document.querySelectorAll('.tblock').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tb'+idx).classList.add('on');
+  if(el) el.classList.add('on');
+  else document.querySelectorAll('.ttab')[idx].classList.add('on');
+  document.getElementById('st').scrollTop=0;
+}
+
+function setProgress(n,done,total){
+  const pct=Math.round(done/total*100);
+  const fill=document.getElementById('p'+n);
+  const txt=document.getElementById('pt'+n);
+  if(fill) fill.style.width=pct+'%';
+  if(txt) txt.textContent=done+' / '+total;
+  levelProgress[n]=done;
+}
+
+// ===== ANSWERING =====
+function ans(level,ex,choice,el){
+  const key=level+'-'+ex;
+  const correct=CORRECT[key];
+  const isOk=choice===correct;
+  const opts=el.parentElement;
+  opts.querySelectorAll('.opt').forEach(o=>o.classList.add('off'));
+  el.classList.remove('off');
+  el.classList.add(isOk?'ok':'fail');
+  if(!isOk){
+    opts.querySelectorAll('.opt').forEach(o=>{
+      if(o!==el) o.classList.add('dim');
+    });
+  }
+  // feedback
+  const fb=document.getElementById('f'+level+'e'+ex);
+  const fbKey=key+'-'+choice;
+  fb.className='fb on '+(isOk?'ok':'fail');
+  fb.innerHTML=FEEDBACK[fbKey]||'';
+  // streak
+  if(isOk){
+    ST.streak++;
+    if(ST.streak>ST.maxStreak) ST.maxStreak=ST.streak;
+  } else {
+    ST.streak=0;
+  }
+  document.getElementById('streak-disp').textContent='🔥 '+ST.streak;
+  // score
+  if(isOk) ST.scores[level]=(ST.scores[level]||0)+1;
+  // show next btn
+  setTimeout(()=>{
+    const btn=document.getElementById('b'+level+'e'+ex);
+    if(btn) btn.style.display='block';
+  },300);
+  saveState();
+}
+
+// ===== LEVEL 1 NAV =====
+function n1go(ex){
+  document.getElementById('n1e'+(ex-1)).style.display='none';
+  document.getElementById('n1e'+ex).style.display='block';
+  setProgress(1,ex-1,3);
+  document.getElementById('sn1').scrollTop=0;
+}
+
+// ===== LEVEL 2 =====
+function n2go(ex){
+  document.getElementById('n2e'+(ex-1)).style.display='none';
+  document.getElementById('n2e'+ex).style.display='block';
+  setProgress(2,ex-1,3);
+  document.getElementById('sn2').scrollTop=0;
+}
+
+// ===== LEVEL 3 =====
+function n3go(ex){
+  document.getElementById('n3e'+(ex-1)).style.display='none';
+  document.getElementById('n3e'+ex).style.display='block';
+  setProgress(3,ex-1,3);
+  document.getElementById('sn3').scrollTop=0;
+}
+
+// ===== LEVEL 4 =====
+function n4go(ex){
+  document.getElementById('n4e'+(ex-1)).style.display='none';
+  document.getElementById('n4e'+ex).style.display='block';
+  setProgress(4,ex-1,3);
+  document.getElementById('sn4').scrollTop=0;
+}
+
+// ===== LEVEL 5 =====
+function n5go(ex){
+  if(ex===1){
+    document.getElementById('n5e0').style.display='none';
+    document.getElementById('n5e1').style.display='block';
+  } else {
+    document.getElementById('n5e'+(ex-1)).style.display='none';
+    document.getElementById('n5e'+ex).style.display='block';
+    setProgress(5,ex-1,4);
+  }
+  document.getElementById('sn5').scrollTop=0;
+}
+
+// ===== LEVEL DONE =====
+function levelDone(n){
+  ST.done[n]=true;
+  setProgress(n,n===5?4:3,n===5?4:3);
+  saveState();
+  if(n===5){
+    go('sres');
+  } else {
+    go('sniv');
+  }
+}
+
+// ===== CHIPS (Nivel 2) =====
+function chipTap(id){
+  const chip=document.getElementById(id);
+  if(chip.classList.contains('used')) return;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  if(selectedChip===id){selectedChip=null;return;}
+  chip.classList.add('sel');
+  selectedChip=id;
+}
+function dropIn(zoneId){
+  if(!selectedChip) return;
+  const chip=document.getElementById(selectedChip);
+  const zone=document.getElementById(zoneId);
+  const placed=document.createElement('div');
+  placed.className='placed';
+  placed.textContent=chip.textContent;
+  placed.dataset.chip=selectedChip;
+  placed.onclick=()=>{
+    placed.remove();
+    document.getElementById(selectedChip||placed.dataset.chip).classList.remove('used');
+    chipDestinos[placed.dataset.chip]=null;
+  };
+  placed.onclick=function(){
+    const cid=this.dataset.chip;
+    this.remove();
+    document.getElementById(cid).classList.remove('used');
+    chipDestinos[cid]=null;
+  };
+  zone.appendChild(placed);
+  chip.classList.add('used');
+  chip.classList.remove('sel');
+  chipDestinos[selectedChip]=zoneId;
+  selectedChip=null;
+}
+function checkChips(){
+  const placed=Object.entries(chipDestinos).filter(([k,v])=>v!==null);
+  if(placed.length<6){
+    const fb=document.getElementById('f2e1');
+    fb.className='fb on fail';
+    fb.innerHTML='⚠️ Coloca todas las conductas antes de verificar.';
+    return;
+  }
+  let errors=0;
+  for(const [chip,zone] of Object.entries(chipDestinos)){
+    if(zone && zone!==chipCorrect[chip]) errors++;
+  }
+  const fb=document.getElementById('f2e1');
+  // disable zone clicks
+  document.querySelectorAll('.chip,.placed').forEach(e=>e.style.pointerEvents='none');
+  if(errors===0){
+    document.getElementById('dz-p').classList.add('ok');
+    document.getElementById('dz-i').classList.add('ok');
+    fb.className='fb on ok';
+    fb.innerHTML='✅ <strong>¡Perfecto!</strong> Prospectivas: buscar info (Googlea, pregunta, listas). Inhibitorias: evitar/paralizar (evita ver, posterga, rechaza). — Penney et al. (2020)';
+    ST.scores[2]=(ST.scores[2]||0)+1;
+    ST.streak++; if(ST.streak>ST.maxStreak) ST.maxStreak=ST.streak;
+  } else {
+    document.getElementById('dz-p').classList.add('fail');
+    document.getElementById('dz-i').classList.add('fail');
+    fb.className='fb on fail';
+    fb.innerHTML=`❌ ${errors} conductas mal clasificadas. Prospectiva = busca activamente reducir la IU. Inhibitoria = evita o paraliza para no enfrentarla.`;
+    ST.streak=0;
+  }
+  document.getElementById('streak-disp').textContent='🔥 '+ST.streak;
+  setProgress(2,1,3);
+  setTimeout(()=>{ document.getElementById('b2e1').style.display='block'; },300);
+  saveState();
+}
+
+// ===== MATCH (Nivel 3) =====
+function matchTap(tipo,id){
+  const el=document.getElementById(id);
+  if(el.classList.contains('ok')||el.classList.contains('dim')) return;
+  if(matchSel.tipo===null){
+    document.querySelectorAll('.mi').forEach(m=>m.classList.remove('sel'));
+    el.classList.add('sel');
+    matchSel={tipo,id};
+  } else if(matchSel.tipo===tipo){
+    document.querySelectorAll('.mi').forEach(m=>m.classList.remove('sel'));
+    el.classList.add('sel');
+    matchSel={tipo,id};
+  } else {
+    const first=matchSel.id;
+    const firstTipo=matchSel.tipo;
+    let cid=firstTipo==='c'?first:id;
+    let eid=firstTipo==='e'?first:id;
+    const correct=matchPairs[cid]===eid;
+    document.getElementById(first).classList.remove('sel');
+    el.classList.remove('sel');
+    if(correct){
+      document.getElementById(cid).classList.add('ok');
+      document.getElementById(eid).classList.add('ok');
+      matchDone++;
+      if(matchDone===3){
+        const fb=document.getElementById('f3e3');
+        fb.className='fb on ok';
+        fb.innerHTML='✅ <strong>¡Perfecto!</strong> Refuerzo negativo = el alivio refuerza. Conducta de seguridad = acción para evitar IU. Extinción bloqueada = nunca aprende que puede tolerar. — Herbert & Dugas (2019)';
+        ST.scores[3]=(ST.scores[3]||0)+1;
+        ST.streak++; if(ST.streak>ST.maxStreak) ST.maxStreak=ST.streak;
+        document.getElementById('streak-disp').textContent='🔥 '+ST.streak;
+        setProgress(3,3,3);
+        setTimeout(()=>{ document.getElementById('b3e3').style.display='block'; },300);
+        saveState();
+      }
+    } else {
+      document.getElementById(cid).classList.add('fail');
+      document.getElementById(eid).classList.add('fail');
+      ST.streak=0;
+      document.getElementById('streak-disp').textContent='🔥 '+ST.streak;
+      setTimeout(()=>{
+        document.getElementById(cid).classList.remove('fail');
+        document.getElementById(eid).classList.remove('fail');
+      },700);
+    }
+    matchSel={tipo:null,id:null};
+  }
+}
+
+// ===== REFRESH LEVELS =====
+function refreshLevels(){
+  for(let n=1;n<=5;n++){
+    const card=document.getElementById('lvc'+n);
+    const ico=document.getElementById('lvi'+n);
+    const unlocked=n===1||ST.done[n-1];
+    if(unlocked){
+      card.classList.remove('locked');
+    }
+    if(ST.done[n]){
+      card.classList.add('done');
+      ico.textContent='✅';
+    } else if(unlocked){
+      ico.textContent='🔓';
+    }
+  }
+}
+
+// ===== CERT =====
+function checkCertAccess(){
+  const allDone=Object.values(ST.done).every(v=>v);
+  document.getElementById('cert-locked').style.display=allDone?'none':'block';
+  document.getElementById('cert-form').style.display=allDone?'block':'none';
+  document.getElementById('cert-display').style.display='none';
+}
+function generateCert(){
+  const name=document.getElementById('cert-name-input').value.trim()||'Clínico/a';
+  document.getElementById('cert-name-show').textContent=name;
+  document.getElementById('cert-form').style.display='none';
+  document.getElementById('cert-display').style.display='block';
+}
+
+// ===== SUMMARY =====
+function buildSummary(){
+  const labels={1:'Nivel 1 — ¿Alicia o Brenda?',2:'Nivel 2 — Clasifica conductas',3:'Nivel 3 — Detecta el ciclo',4:'Nivel 4 — Diseña el experimento',5:'Nivel 5 — Caso Valeria'};
+  const maxes={1:3,2:3,3:3,4:3,5:4};
+  let total=0,totalMax=16;
+  let html='';
+  for(let n=1;n<=5;n++){
+    const sc=ST.scores[n]||0;
+    const mx=maxes[n];
+    total+=sc;
+    const pct=Math.round(sc/mx*100);
+    const cls=pct>=100?'sc-p':pct>=60?'sc-g':'sc-o';
+    html+=`<div class="sum-row"><span class="sum-lbl">${labels[n]}</span><span class="sum-sc ${cls}">${sc} / ${mx}</span></div>`;
+  }
+  document.getElementById('summary-rows').innerHTML=html;
+  document.getElementById('total-score').textContent=total+' / '+totalMax;
+  document.getElementById('max-streak-disp').textContent=ST.maxStreak;
+}
+
+// ===== MODAL =====
+function openHelp(n){
+  document.getElementById('modal-content').innerHTML=helpContent[n]||'';
+  document.getElementById('modal').classList.add('on');
+}
+function closeModal(){document.getElementById('modal').classList.remove('on');}
+function closeHelp(e){if(e.target===document.getElementById('modal')) closeModal();}
+
+// ===== SAVE / LOAD =====
+function saveState(){
+  localStorage.setItem('iu_st',JSON.stringify({done:ST.done,scores:ST.scores,maxStreak:ST.maxStreak}));
+}
+function loadState(){
+  try{
+    const d=JSON.parse(localStorage.getItem('iu_st')||'{}');
+    if(d.done) ST.done=d.done;
+    if(d.scores) ST.scores=d.scores;
+    if(d.maxStreak) ST.maxStreak=d.maxStreak;
+    const theme=localStorage.getItem('iu_theme')||'dark';
+    document.documentElement.setAttribute('data-theme',theme);
+    ST.theme=theme;
+    document.querySelectorAll('.btn-theme').forEach(b=>b.textContent=theme==='dark'?'☀️':'🌙');
+  }catch(e){}
+}
+
+// ===== INIT =====
+loadState();
+refreshLevels();
+</script>
+</body>
+</html>

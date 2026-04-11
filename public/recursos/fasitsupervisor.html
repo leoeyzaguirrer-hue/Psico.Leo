@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>FASIT — Evaluación del Supervisor</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F3F0;
+    --card: #FFFFFF;
+    --text: #2D2A26;
+    --text-soft: #6B6560;
+    --accent: #3D6B7E;
+    --accent-light: #E3EEF2;
+    --accent-dark: #2E5463;
+    --red: #C45D3E;
+    --red-light: #F4E8E3;
+    --green: #4A7C59;
+    --green-light: #E8F0EB;
+    --yellow: #C49A2A;
+    --yellow-light: #F5F0E0;
+    --border: #E8E4DF;
+    --shadow: 0 2px 12px rgba(45,42,38,0.06);
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding: 40px 0 24px;
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-top: 8px;
+  }
+  .header .role-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-top: 12px;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.35s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .disclaimer-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--yellow-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  .disclaimer-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .disclaimer-card p {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+    line-height: 1.7;
+  }
+  .disclaimer-card ul {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+  .disclaimer-card li {
+    margin-bottom: 6px;
+  }
+  .disclaimer-ref {
+    font-size: 12px;
+    color: var(--text-soft);
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 16px;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ── THERAPIST ID ── */
+  .therapist-id-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .therapist-id-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .therapist-id-card p {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .therapist-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .therapist-input:focus {
+    border-color: var(--accent);
+  }
+  .therapist-input::placeholder {
+    color: #B5B0AA;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:active { background: var(--accent-dark); transform: scale(0.98); }
+  .btn-secondary {
+    background: var(--card);
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    margin-top: 12px;
+  }
+  .btn-secondary:active { background: var(--accent-light); }
+
+  /* ── PROGRESS ── */
+  .progress-bar-container {
+    background: var(--border);
+    border-radius: 100px;
+    height: 6px;
+    margin: 20px 0 8px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    font-size: 12px;
+    color: var(--text-soft);
+    text-align: right;
+    margin-bottom: 20px;
+  }
+
+  /* ── CLASS HEADER ── */
+  .class-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+  .class-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .class-description {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+
+  /* ── QUESTION CARDS ── */
+  .question-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .question-card.answered {
+    border-color: rgba(61,107,126,0.25);
+  }
+  .question-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .question-note {
+    font-size: 12px;
+    color: var(--text-soft);
+    font-style: italic;
+    margin-bottom: 14px;
+    line-height: 1.5;
+    padding: 8px 12px;
+    background: var(--bg);
+    border-radius: 8px;
+  }
+
+  /* ── RESPONSE OPTIONS ── */
+  .response-options {
+    display: flex;
+    gap: 8px;
+  }
+  .response-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  .response-btn:active { transform: scale(0.96); }
+  .response-btn.selected-no {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .response-btn.selected-sometimes {
+    background: var(--yellow-light);
+    border-color: var(--yellow);
+    color: var(--yellow);
+  }
+  .response-btn.selected-yes {
+    background: var(--red-light);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .response-btn.selected-yes-pos {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .response-btn.selected-no-neg {
+    background: var(--red-light);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ── NAV BUTTONS ── */
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    padding-bottom: 20px;
+  }
+  .nav-buttons .btn { flex: 1; }
+  .btn-back {
+    background: var(--bg);
+    color: var(--text-soft);
+    border: 2px solid var(--border);
+  }
+
+  /* ── RESULTS ── */
+  .results-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .results-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .results-header p {
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+  .results-intro {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .result-class-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .result-class-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .result-class-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    line-height: 1.3;
+  }
+  .result-level {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .level-low { background: var(--green-light); color: var(--green); }
+  .level-mid { background: var(--yellow-light); color: var(--yellow); }
+  .level-high { background: var(--red-light); color: var(--red); }
+
+  .result-bar-track {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 100px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .result-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.8s ease;
+  }
+  .fill-low { background: var(--green); }
+  .fill-mid { background: var(--yellow); }
+  .fill-high { background: var(--red); }
+
+  .result-breakdown {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.8;
+  }
+  .result-breakdown .flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--red-light);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-right: 4px;
+  }
+  .result-breakdown .partial-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--yellow-light);
+    color: var(--yellow);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-right: 4px;
+  }
+  .result-breakdown .ok {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-right: 4px;
+  }
+  .result-item {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--bg);
+  }
+  .result-item:last-child { border-bottom: none; }
+
+  .results-disclaimer {
+    background: var(--yellow-light);
+    border-radius: var(--radius);
+    padding: 20px;
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+  .results-disclaimer strong {
+    color: var(--yellow);
+  }
+
+  .detail-toggle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    padding: 4px 0;
+    margin-top: 8px;
+  }
+  .detail-content {
+    display: none;
+    margin-top: 10px;
+  }
+  .detail-content.open { display: block; }
+
+  @media (max-width: 380px) {
+    .header h1 { font-size: 24px; }
+    .response-btn { font-size: 12px; padding: 9px 2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ════════ HEADER ════════ -->
+  <div class="header">
+    <div class="header-label">Herramienta de Reflexión Clínica</div>
+    <h1>FASIT</h1>
+    <p class="subtitle">Evaluación de habilidades interpersonales del terapeuta</p>
+    <div class="role-badge">Versión Supervisor</div>
+  </div>
+
+  <!-- ════════ SCREEN: DISCLAIMER ════════ -->
+  <div class="screen active" id="screen-disclaimer">
+    <div class="disclaimer-card">
+      <div class="disclaimer-icon">⚠️</div>
+      <h2>Nota importante antes de comenzar</h2>
+      <p>El FASIT (Functional Assessment of Skills for Interpersonal Therapists) <strong>no es un cuestionario estandarizado</strong> con puntuación psicométrica validada. Es un sistema de evaluación clínica con preguntas diseñadas como <strong>guías para la supervisión</strong>.</p>
+      <p>Esta versión contiene las <strong>preguntas de evaluación del supervisor</strong>: están diseñadas para que el supervisor evalúe las habilidades interpersonales del terapeuta a partir de la observación directa (sesiones en vivo, grabaciones, o interacciones en supervisión).</p>
+      <p>Consideraciones importantes:</p>
+      <ul>
+        <li>Las respuestas son <strong>aproximaciones</strong> a lo que originalmente son preguntas abiertas y exploratorias.</li>
+        <li>Los resultados <strong>no constituyen un diagnóstico</strong> de las competencias del terapeuta.</li>
+        <li>Se recomienda <strong>observar sesiones frecuentemente</strong> (en vivo o en video) para tener una muestra amplia de conducta antes de evaluar.</li>
+        <li>Callaghan advierte no depender exclusivamente del autorreporte del terapeuta para identificar áreas de trabajo.</li>
+        <li>Los resultados son un <strong>punto de partida para la supervisión</strong>, no una conclusión.</li>
+      </ul>
+      <div class="disclaimer-ref">
+        Basado en: Callaghan, G. M. (2006). Functional Assessment of Skills for Interpersonal Therapists: The FASIT System. <em>The Behavior Analyst Today</em>, 7(3), 399-433.
+      </div>
+    </div>
+
+    <div class="therapist-id-card">
+      <h3>Identificación del terapeuta</h3>
+      <p>Puedes ingresar un nombre o código para identificar al terapeuta evaluado. Esto aparecerá en el resumen descargable. Es opcional.</p>
+      <input type="text" class="therapist-input" id="therapistId" placeholder="Ej: Terapeuta 1, María G., Código 04...">
+    </div>
+
+    <button class="btn btn-primary" onclick="startAssessment()">Entendido, comenzar evaluación</button>
+  </div>
+
+  <!-- ════════ SCREEN: ASSESSMENT ════════ -->
+  <div class="screen" id="screen-assessment">
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div class="progress-text" id="progressText">Clase 1 de 5</div>
+    <div id="classContent"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-back" id="btnBack" onclick="prevClass()" style="display:none">Anterior</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextClass()">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- ════════ SCREEN: RESULTS ════════ -->
+  <div class="screen" id="screen-results">
+    <div class="results-header">
+      <h2>Resultados de la evaluación</h2>
+      <p id="resultsTherapistLabel"></p>
+    </div>
+    <div class="results-intro">
+      Resumen orientativo de las observaciones del supervisor organizadas según las 5 clases del FASIT. Las áreas con mayor cantidad de señales pueden guiar los próximos focos de supervisión.
+    </div>
+    <div id="resultsContent"></div>
+    <div class="results-disclaimer">
+      <strong>Recordatorio:</strong> Estos resultados son orientativos. Las áreas señaladas son hipótesis de trabajo para explorar en supervisión, no conclusiones definitivas. El contexto, la frecuencia y el impacto real en la intervención determinan si algo es un target legítimo de supervisión.
+    </div>
+    <button class="btn btn-primary" onclick="resetAll()">Nueva evaluación</button>
+    <button class="btn btn-secondary" onclick="downloadResults()">Descargar resumen</button>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FASIT DATA — Supervisor Assessment Questions
+// ══════════════════════════════════════════
+
+const classData = [
+  {
+    id: 'A',
+    name: 'Aserción de Necesidades',
+    description: 'Evalúa si el terapeuta puede identificar y expresar sus necesidades en supervisión y con el cliente: pedir dirección, apoyo, o hacer peticiones claras durante la sesión.',
+    questions: [
+      {
+        text: '¿El terapeuta tiene problemas para que sus necesidades sean satisfechas?',
+        tag: 'Visión general',
+        category: 'overview',
+        direction: 'negative'
+      },
+      {
+        text: '¿Hay momentos en que el terapeuta tiene dificultad para que sus necesidades sean satisfechas en sesión o por parte del supervisor?',
+        tag: 'Visión general',
+        category: 'overview',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta puede discriminar cuándo tiene necesidades y cuáles son, tanto en sesión con el cliente como con el supervisor?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta es capaz de hacer peticiones al supervisor o al cliente?',
+        tag: 'Repertorio general',
+        category: 'repertoire',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta es capaz de discriminar que el contexto de supervisión es un lugar apropiado para hacer peticiones?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿Las peticiones del terapeuta son apropiadas para un supervisor o cliente?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta comienza a pedir algo al supervisor o cliente y luego termina la petición o rechaza la asistencia por un nivel percibido de incomodidad?',
+        tag: 'Repertorio de escape',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta deja de hacer peticiones aunque sean razonables?',
+        tag: 'Repertorio de evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta hace peticiones al supervisor o cliente de forma indirecta, dificultando saber cuál es la petición?',
+        tag: 'Repertorio ineficaz',
+        category: 'ineffective',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta pide algo haciendo una afirmación u observación en lugar de hacer la petición directamente?',
+        tag: 'Petición disfrazada',
+        category: 'disguised',
+        direction: 'negative',
+        note: 'Ej: "Es complicado coordinar horarios" en lugar de "Necesito cambiar el horario de supervisión".'
+      },
+      {
+        text: '¿El terapeuta hace un número excesivo de peticiones al supervisor o al cliente en sesión?',
+        tag: 'Repertorio excesivo',
+        category: 'excessive',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta hace peticiones de una manera que el supervisor o cliente experimenta como aversiva?',
+        tag: 'Estilo aversivo',
+        category: 'aversive',
+        direction: 'negative'
+      }
+    ]
+  },
+  {
+    id: 'B',
+    name: 'Comunicación Bidireccional',
+    description: 'Evalúa la capacidad del terapeuta para detectar su impacto interpersonal, recibir feedback del supervisor y cliente, responder al feedback, y proporcionar feedback efectivo. Es esencial para el mecanismo de cambio en FAP.',
+    questions: [
+      {
+        text: '¿El terapeuta tiene problemas para identificar que tiene un impacto interpersonal en el supervisor o cliente?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta es capaz de reconocer cuando le han dado feedback el supervisor o el cliente?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta puede discriminar cuándo afecta al supervisor o cliente durante la sesión?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta valora el feedback del supervisor o cliente?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿La importancia que el terapeuta da al supervisor o cliente es consistente con la naturaleza o desarrollo de la relación supervisiva o terapéutica?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive',
+        note: 'Evalúa si el terapeuta sobrevalora o infravalora la relación de forma que interfiera con el trabajo.'
+      },
+      {
+        text: '¿El terapeuta responde al supervisor o cliente cuando se le da feedback sobre su comportamiento?',
+        tag: 'Repertorio general',
+        category: 'repertoire',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta muestra falta de repertorio de respuesta para responder efectivamente al feedback del supervisor o cliente?',
+        tag: 'Falta de respuesta',
+        category: 'lack_response',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta ajusta su comportamiento de manera consistente con el feedback que le ha dado el supervisor o cliente?',
+        tag: 'Insensibilidad al feedback',
+        category: 'insensitivity',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta rechaza diferencialmente el feedback crítico, pero acepta el feedback positivo?',
+        tag: 'Insensibilidad — rechazo selectivo',
+        category: 'insensitivity',
+        direction: 'negative',
+        note: 'Si el terapeuta acepta el elogio pero rechaza toda crítica, probablemente tiene el repertorio de discriminar que se le da feedback, pero tiene problemas con la respuesta.'
+      },
+      {
+        text: '¿El terapeuta continúa o aumenta su respuesta aunque se le haya dado feedback directo sobre ella?',
+        tag: 'Insensibilidad — escalada',
+        category: 'insensitivity',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta se vuelve antagonista cuando se le da feedback?',
+        tag: 'Evaluar Clase C',
+        category: 'conflict_flag',
+        direction: 'negative',
+        note: 'Si la respuesta es "Sí", evalúa en profundidad la Clase C (Conflicto).'
+      },
+      {
+        text: '¿El terapeuta es excesivamente sensible respecto al impacto que tiene en el supervisor o cliente?',
+        tag: 'Hipersensibilidad',
+        category: 'hypersensitivity',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta es excesivamente sensible cuando recibe feedback del supervisor o cliente?',
+        tag: 'Hipersensibilidad',
+        category: 'hypersensitivity',
+        direction: 'negative'
+      }
+    ]
+  },
+  {
+    id: 'C',
+    name: 'Conflicto',
+    description: 'Evalúa la capacidad del terapeuta para identificar y responder al conflicto interpersonal con el supervisor o el cliente. Especialmente relevante al trabajar con clientes que frecuentemente traen conflicto a sesión.',
+    questions: [
+      {
+        text: '¿El terapeuta tiene algún tipo de interacción conflictiva con el supervisor o el cliente en sesión?',
+        tag: 'Visión general',
+        category: 'overview',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta es consciente de que hay conflicto cuando ocurre con el supervisor o con el cliente durante la sesión?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta reconoce que el conflicto puede ocurrir entre él/ella y el supervisor o cliente?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta intenta detener cualquier conflicto una vez que ha comenzado con el supervisor o el cliente en sesión?',
+        tag: 'Evitación',
+        category: 'avoidance',
+        direction: 'negative',
+        note: 'Detener el conflicto antes de expresar necesidades o llegar a resolución indica escape.'
+      },
+      {
+        text: '¿El terapeuta cede ante el supervisor o cliente sin expresar sus propias necesidades u opinión?',
+        tag: 'Escape — aquiescencia excesiva',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta se retira si ocurre o puede ocurrir conflicto con el supervisor o cliente?',
+        tag: 'Escape / evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta parece excesivamente conciliador o escapa/evita el conflicto complaciendo innecesariamente al supervisor o cliente?',
+        tag: 'Evitación — respuestas conciliatorias excesivas',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: 'Cuando el terapeuta intenta resolver un conflicto con el supervisor o cliente, ¿las estrategias de resolución son claras?',
+        tag: 'Repertorio indirecto / ineficaz',
+        category: 'ineffective',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta está dispuesto a ceder o llegar a un compromiso en el conflicto?',
+        tag: 'Inflexibilidad ante el compromiso',
+        category: 'unwilling',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta utiliza estrategias de resolución de conflicto que inadvertidamente facilitan o escalan el conflicto?',
+        tag: 'Escalada de conflicto',
+        category: 'escalating',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta intenta deliberadamente escalar el conflicto?',
+        tag: 'Escalada deliberada',
+        category: 'escalating',
+        direction: 'negative'
+      }
+    ]
+  },
+  {
+    id: 'D',
+    name: 'Revelación y Cercanía Interpersonal',
+    description: 'Evalúa la capacidad del terapeuta para auto-revelarse apropiadamente, buscar apoyo, y responder a las revelaciones del cliente o supervisor. Incluye la discriminación de los límites entre la supervisión y la terapia personal del terapeuta.',
+    questions: [
+      {
+        text: '¿El terapeuta evidencia deseo o necesidad de una relación supervisiva cercana?',
+        tag: 'Visión general / deseo de cercanía',
+        category: 'overview',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta se auto-revela o busca apoyo del supervisor en supervisión?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta busca apoyo del cliente durante la sesión de terapia?',
+        tag: 'Discriminación — límite terapéutico',
+        category: 'discrimination_boundary',
+        direction: 'negative',
+        note: 'Buscar apoyo emocional del cliente es una señal importante. El foco de la terapia debe estar en las necesidades del cliente, no del terapeuta.'
+      },
+      {
+        text: '¿El terapeuta reconoce que el supervisor o cliente es un participante activo en la interacción?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive',
+        note: 'Evalúa la sensibilidad del terapeuta hacia el supervisor o cliente como otra persona con sentimientos en la relación.'
+      },
+      {
+        text: '¿El terapeuta se auto-revela con el supervisor o cliente en momentos apropiados, considerando el desarrollo de la relación supervisiva o terapéutica?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta reconoce al supervisor como una persona con quien puede auto-revelarse o pedir apoyo social?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta inicia auto-revelación u otros comportamientos de cercanía interpersonal y luego los termina?',
+        tag: 'Escape',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta deja de auto-revelarse o buscar apoyo en el contexto de supervisión incluso cuando sería beneficioso hacerlo?',
+        tag: 'Evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿Es confuso lo que el terapeuta está revelando o que está buscando apoyo cuando se involucra en estas conductas con el supervisor?',
+        tag: 'Revelación poco clara',
+        category: 'unclear',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta hace un alto número de comentarios autodepreciativos que no son consistentes con las percepciones o experiencias del supervisor respecto al terapeuta?',
+        tag: 'Revelación inexacta — autodepreciación',
+        category: 'inaccurate',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta se involucra en habla grandiosa o exagerada con el supervisor o cliente?',
+        tag: 'Revelación inexacta — grandiosa',
+        category: 'inaccurate',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta habla sobre sus propias experiencias con tanta frecuencia que el resultado es desagradable o contraproducente para el supervisor o cliente?',
+        tag: 'Revelación excesiva',
+        category: 'excessive',
+        direction: 'negative'
+      }
+    ]
+  },
+  {
+    id: 'E',
+    name: 'Experiencia y Expresión Emocional',
+    description: 'Evalúa la tolerancia del terapeuta a sus propias experiencias emocionales y su capacidad para identificarlas, etiquetarlas y expresarlas. Fundamental para intervenciones interpersonales donde el terapeuta necesita mantenerse presente emocionalmente.',
+    questions: [
+      {
+        text: '¿El terapeuta tiene problemas para expresar sus emociones?',
+        tag: 'Visión general',
+        category: 'overview',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta es capaz de identificar cuándo tiene experiencias emocionales?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta hace esta discriminación in vivo (durante la experiencia emocional)?',
+        tag: 'Discriminación — en vivo',
+        category: 'discrimination',
+        direction: 'positive',
+        note: 'Diferencia importante: algunos terapeutas reconocen emociones solo retrospectivamente, no mientras ocurren.'
+      },
+      {
+        text: '¿El terapeuta es capaz de discriminar las diferentes experiencias emocionales que tiene?',
+        tag: 'Discriminación',
+        category: 'discrimination',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta identifica al supervisor o cliente como alguien con quien puede compartir sus emociones?',
+        tag: 'Control contextual',
+        category: 'context',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta muestra emociones con poca frecuencia en relación a los temas de terapia o supervisión?',
+        tag: 'Escape / evitación — expresión infrecuente',
+        category: 'escape_avoid',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta evidencia reglas para no experimentar emociones mientras ocurren?',
+        tag: 'Escape y evitación',
+        category: 'escape_avoid',
+        direction: 'negative',
+        note: 'Ej: "No debo mostrar que esto me afecta" o reglas implícitas de estoicismo que impiden la respuesta emocional natural.'
+      },
+      {
+        text: '¿El terapeuta escapa o termina una respuesta emocional después de que ha comenzado?',
+        tag: 'Repertorio de escape',
+        category: 'escape',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta utiliza estrategias de evitación para prevenir el inicio de una respuesta emocional?',
+        tag: 'Repertorio de evitación',
+        category: 'avoidance',
+        direction: 'negative'
+      },
+      {
+        text: '¿El terapeuta etiqueta con precisión sus experiencias emocionales mientras ocurren?',
+        tag: 'Etiquetado inexacto',
+        category: 'inaccurate',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta comunica sus experiencias emocionales de una manera que es clara y relativamente fácil de responder?',
+        tag: 'Expresión ineficaz',
+        category: 'ineffective',
+        direction: 'positive'
+      },
+      {
+        text: '¿El terapeuta insinúa sus sentimientos o los expresa directamente?',
+        tag: 'Expresión ineficaz',
+        category: 'ineffective',
+        direction: 'negative',
+        note: 'Evalúa si el terapeuta tiende a insinuar en lugar de expresar directamente.'
+      },
+      {
+        text: '¿El terapeuta se involucra en expresión excesiva o excesivamente intensa de experiencias emocionales?',
+        tag: 'Expresión afectiva excesiva',
+        category: 'excessive',
+        direction: 'negative'
+      }
+    ]
+  }
+];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentClassIndex = 0;
+let answers = {};
+let therapistName = '';
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startAssessment() {
+  therapistName = document.getElementById('therapistId').value.trim() || 'Sin identificar';
+  showScreen('screen-assessment');
+  currentClassIndex = 0;
+  renderClass();
+}
+
+function renderClass() {
+  const cls = classData[currentClassIndex];
+  const total = classData.length;
+  const pct = ((currentClassIndex) / total) * 100;
+
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `Clase ${currentClassIndex + 1} de ${total}`;
+
+  let html = '';
+  html += `<div class="class-badge">Clase ${cls.id}</div>`;
+  html += `<div class="class-title">${cls.name}</div>`;
+  html += `<div class="class-description">${cls.description}</div>`;
+
+  cls.questions.forEach((q, i) => {
+    const key = `${cls.id}-${i}`;
+    const answered = answers[key] ? 'answered' : '';
+    html += `<div class="question-card ${answered}" id="card-${key}">`;
+    html += `<div class="question-tag">${q.tag}</div>`;
+    html += `<div class="question-text">${q.text}</div>`;
+    if (q.note) {
+      html += `<div class="question-note">${q.note}</div>`;
+    }
+    html += `<div class="response-options">`;
+    html += renderResponseBtn(key, 'no', 'No', q);
+    html += renderResponseBtn(key, 'sometimes', 'A veces', q);
+    html += renderResponseBtn(key, 'yes', 'Sí', q);
+    html += `</div></div>`;
+  });
+
+  document.getElementById('classContent').innerHTML = html;
+
+  document.getElementById('btnBack').style.display = currentClassIndex === 0 ? 'none' : 'block';
+  document.getElementById('btnNext').textContent = currentClassIndex === total - 1 ? 'Ver resultados' : 'Siguiente';
+}
+
+function renderResponseBtn(key, value, label, q) {
+  const selected = answers[key] === value;
+  let selectedClass = '';
+  if (selected) {
+    if (value === 'yes' && q.direction === 'negative') selectedClass = 'selected-yes';
+    else if (value === 'yes' && q.direction === 'positive') selectedClass = 'selected-yes-pos';
+    else if (value === 'no' && q.direction === 'positive') selectedClass = 'selected-no-neg';
+    else if (value === 'no' && q.direction === 'negative') selectedClass = 'selected-no';
+    else if (value === 'sometimes') selectedClass = 'selected-sometimes';
+  }
+  return `<button class="response-btn ${selectedClass}" onclick="selectAnswer('${key}', '${value}')">${label}</button>`;
+}
+
+function selectAnswer(key, value) {
+  answers[key] = value;
+  const card = document.getElementById(`card-${key}`);
+  card.classList.add('answered');
+
+  const clsId = key.split('-')[0];
+  const qIndex = parseInt(key.split('-')[1]);
+  const cls = classData.find(c => c.id === clsId);
+  const q = cls.questions[qIndex];
+  const optionsContainer = card.querySelector('.response-options');
+  let html = '';
+  html += renderResponseBtn(key, 'no', 'No', q);
+  html += renderResponseBtn(key, 'sometimes', 'A veces', q);
+  html += renderResponseBtn(key, 'yes', 'Sí', q);
+  optionsContainer.innerHTML = html;
+}
+
+function nextClass() {
+  if (currentClassIndex < classData.length - 1) {
+    currentClassIndex++;
+    renderClass();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResults();
+  }
+}
+
+function prevClass() {
+  if (currentClassIndex > 0) {
+    currentClassIndex--;
+    renderClass();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ══════════════════════════════════════════
+// SCORING & RESULTS
+// ══════════════════════════════════════════
+function getScore(key, direction) {
+  const val = answers[key];
+  if (!val) return 0;
+  if (direction === 'negative') {
+    if (val === 'yes') return 2;
+    if (val === 'sometimes') return 1;
+    return 0;
+  } else {
+    if (val === 'no') return 2;
+    if (val === 'sometimes') return 1;
+    return 0;
+  }
+}
+
+function showResults() {
+  showScreen('screen-results');
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('resultsTherapistLabel').textContent = `Terapeuta evaluado: ${therapistName}`;
+
+  let html = '';
+
+  classData.forEach(cls => {
+    let totalScore = 0;
+    let maxScore = cls.questions.length * 2;
+    let flaggedItems = [];
+    let partialItems = [];
+
+    cls.questions.forEach((q, i) => {
+      const key = `${cls.id}-${i}`;
+      const score = getScore(key, q.direction);
+      totalScore += score;
+      if (score === 2) flaggedItems.push(q);
+      else if (score === 1) partialItems.push(q);
+    });
+
+    const pct = Math.round((totalScore / maxScore) * 100);
+    let levelClass, levelText, fillClass;
+    if (pct <= 25) { levelClass = 'level-low'; levelText = 'Bajo'; fillClass = 'fill-low'; }
+    else if (pct <= 55) { levelClass = 'level-mid'; levelText = 'Moderado'; fillClass = 'fill-mid'; }
+    else { levelClass = 'level-high'; levelText = 'Alto'; fillClass = 'fill-high'; }
+
+    html += `<div class="result-class-card">`;
+    html += `<div class="result-class-header">`;
+    html += `<div class="result-class-name">Clase ${cls.id}: ${cls.name}</div>`;
+    html += `<span class="result-level ${levelClass}">${levelText}</span>`;
+    html += `</div>`;
+    html += `<div class="result-bar-track"><div class="result-bar-fill ${fillClass}" style="width: ${pct}%"></div></div>`;
+
+    if (flaggedItems.length === 0 && partialItems.length === 0) {
+      html += `<div class="result-breakdown"><span class="ok">✓</span> No se identificaron áreas de atención significativas en esta clase.</div>`;
+    } else {
+      html += `<button class="detail-toggle" onclick="toggleDetail('detail-${cls.id}')">Ver detalle de áreas señaladas (${flaggedItems.length + partialItems.length})</button>`;
+      html += `<div class="detail-content" id="detail-${cls.id}">`;
+      html += `<div class="result-breakdown">`;
+
+      flaggedItems.forEach(q => {
+        html += `<div class="result-item"><span class="flag">⚑ Atención</span> <strong>${q.tag}:</strong> ${q.text}</div>`;
+      });
+      partialItems.forEach(q => {
+        html += `<div class="result-item"><span class="partial-badge">~ Parcial</span> <strong>${q.tag}:</strong> ${q.text}</div>`;
+      });
+
+      html += `</div></div>`;
+    }
+
+    html += `</div>`;
+  });
+
+  document.getElementById('resultsContent').innerHTML = html;
+}
+
+function toggleDetail(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  const btn = el.previousElementSibling;
+  if (el.classList.contains('open')) {
+    btn.textContent = btn.textContent.replace('Ver', 'Ocultar');
+  } else {
+    btn.textContent = btn.textContent.replace('Ocultar', 'Ver');
+  }
+}
+
+function resetAll() {
+  answers = {};
+  currentClassIndex = 0;
+  showScreen('screen-disclaimer');
+  document.getElementById('therapistId').value = '';
+}
+
+function downloadResults() {
+  let text = 'FASIT — Evaluación del Supervisor\n';
+  text += '═══════════════════════════════════════════════\n\n';
+  text += `Terapeuta evaluado: ${therapistName}\n`;
+  text += `Fecha: ${new Date().toLocaleDateString('es-ES')}\n\n`;
+  text += 'NOTA: Este resumen es orientativo y no constituye una evaluación\n';
+  text += 'psicométrica estandarizada. Utilizar como guía para supervisión.\n\n';
+  text += 'Referencia: Callaghan, G. M. (2006). FASIT System.\n';
+  text += 'The Behavior Analyst Today, 7(3), 399-433.\n\n';
+
+  classData.forEach(cls => {
+    let totalScore = 0;
+    let maxScore = cls.questions.length * 2;
+    let flagged = [];
+    let partial = [];
+
+    cls.questions.forEach((q, i) => {
+      const key = `${cls.id}-${i}`;
+      const score = getScore(key, q.direction);
+      totalScore += score;
+      if (score === 2) flagged.push(q);
+      else if (score === 1) partial.push(q);
+    });
+
+    const pct = Math.round((totalScore / maxScore) * 100);
+    let level;
+    if (pct <= 25) level = 'BAJO';
+    else if (pct <= 55) level = 'MODERADO';
+    else level = 'ALTO';
+
+    text += `───────────────────────────────────────────────\n`;
+    text += `CLASE ${cls.id}: ${cls.name.toUpperCase()} — Nivel de atención: ${level} (${pct}%)\n`;
+    text += `───────────────────────────────────────────────\n`;
+
+    if (flagged.length > 0) {
+      text += '\n  ⚑ Áreas de atención:\n';
+      flagged.forEach(q => {
+        text += `    • [${q.tag}] ${q.text}\n`;
+      });
+    }
+    if (partial.length > 0) {
+      text += '\n  ~ Áreas parciales:\n';
+      partial.forEach(q => {
+        text += `    • [${q.tag}] ${q.text}\n`;
+      });
+    }
+    if (flagged.length === 0 && partial.length === 0) {
+      text += '\n  ✓ Sin áreas de atención significativas.\n';
+    }
+    text += '\n';
+  });
+
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `FASIT_Supervisor_${therapistName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
