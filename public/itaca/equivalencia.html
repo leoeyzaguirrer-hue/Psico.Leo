@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Laboratorio Experimental de Equivalencia</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ======================================
+       1. IDENTIDAD VISUAL Y PALETA
+    ====================================== */
+    :root {
+      --color-primario: #1B4F8A; /* Azul Oscuro */
+      --color-secundario: #2B9ED4; /* Azul Claro */
+      --color-fondo-card: #F2EDE8; /* Crema */
+      --color-acento1: #F9BC15; /* Amarillo */
+      --color-acento2: #E8720A; /* Naranja */
+      --color-texto: #111111;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Coco Gothic', 'Montserrat', sans-serif;
+      /* Fondo Hexagonal Prominente */
+      background-color: var(--color-primario);
+      background-image: url('FONDOS_Mesa de trabajo 1 copia 2.jpg');
+      background-size: 300px; 
+      background-repeat: repeat;
+      color: var(--color-texto);
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    /* ======================================
+       2. CONTENEDOR PRINCIPAL TIPO APP
+    ====================================== */
+    .lab-container {
+      background-color: var(--color-fondo-card);
+      width: 100%;
+      max-width: 1000px;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      border: 4px solid var(--color-secundario);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* TÍTULO Y CONTADOR */
+    .lab-title {
+      font-size: 38px;
+      font-weight: 800;
+      text-align: center;
+      color: var(--color-primario);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .contador-premium {
+      background-color: var(--color-primario);
+      color: var(--color-acento1);
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      width: fit-content;
+      margin: 0 auto 30px auto;
+      border: 2px solid var(--color-acento1);
+    }
+
+    /* ======================================
+       3. SISTEMA DE FASES Y DIAGRAMAS
+    ====================================== */
+    .fase-premium {
+      display: none; 
+      background: #ffffff;
+      border: 2px solid var(--color-secundario);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+    .fase-premium.activa { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .fase-titulo {
+      font-size: 32px;
+      color: var(--color-primario);
+      margin-bottom: 20px;
+      border-bottom: 3px solid var(--color-acento1);
+      padding-bottom: 10px;
+      display: inline-block;
+    }
+
+    .fase-texto-grande {
+      font-size: 20px;
+      margin-bottom: 30px;
+      color: var(--color-texto);
+      line-height: 1.6;
+    }
+
+    /* Barra de Progreso y Red Relacional */
+    .progress-bar-container {
+      background-color: rgba(43, 158, 212, 0.15);
+      color: var(--color-primario);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: inline-block;
+      border: 1px solid var(--color-secundario);
+    }
+
+    .red-relacional {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--color-primario);
+      background: var(--color-fondo-card);
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+    }
+    .nodo { background: var(--color-secundario); color: white; padding: 6px 14px; border-radius: 8px; }
+    .flecha-entrenada { color: var(--color-primario); font-size: 26px; }
+    .flecha-derivada { color: var(--color-acento2); border-bottom: 4px dashed var(--color-acento2); display: inline-block; padding-bottom: 2px; line-height: 0.5;}
+
+    /* Guía del Experimentador */
+    .guia-experimentador {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+    .instruccion-operativa, .nota-tecnica {
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+    .instruccion-operativa {
+      background-color: #f8f9fa;
+      border-left: 6px solid var(--color-secundario);
+      color: var(--color-primario);
+    }
+    .nota-tecnica {
+      background-color: #fff3e0;
+      border-left: 6px solid var(--color-acento2);
+      color: #8a4300;
+    }
+
+    /* ======================================
+       4. ELEMENTOS DE INTERACCIÓN (Tarjetas y Botones)
+    ====================================== */
+    .conjuntos-grid-grande {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+    .conjunto-card-grande {
+      background: var(--color-fondo-card);
+      color: var(--color-primario);
+      border-radius: 16px;
+      border: 2px solid var(--color-secundario);
+      padding: 30px;
+      font-size: 24px;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .conjunto-card-grande h3 { margin-bottom: 15px; color: var(--color-primario); }
+    .conjunto-card-grande p { margin: 10px 0; }
+
+    .emparejamientos-grande {
+      background-color: var(--color-primario);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+
+    .boton-continuar {
+      width: 100%;
+      background-color: var(--color-acento2); /* Naranja */
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    .boton-continuar:hover {
+      background-color: var(--color-acento1); /* Amarillo */
+      color: var(--color-primario);
+      transform: translateY(-2px);
+    }
+
+    /* MTS (Matching-to-Sample) */
+    .tarjeta-central-grande {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+      border: 4px solid var(--color-primario);
+      background: var(--color-fondo-card);
+      color: var(--color-primario);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      margin: 0 auto 30px auto;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .comparaciones {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .boton-comparacion {
+      background: white;
+      color: var(--color-primario);
+      border: 3px solid var(--color-secundario);
+      border-radius: 16px;
+      padding: 20px 30px;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .boton-comparacion:hover {
+      transform: translateY(-5px);
+      border-color: var(--color-acento2);
+      box-shadow: 0 8px 15px rgba(232, 114, 10, 0.2);
+    }
+
+    .feedback {
+      font-size: 24px;
+      font-weight: bold;
+      min-height: 35px;
+      color: var(--color-primario);
+    }
+
+    /* Microfases F5 y Fallo */
+    .microfase-card {
+      background: #f8f9fa;
+      border: 2px solid var(--color-secundario);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 20px auto 30px auto;
+      text-align: left;
+    }
+    .microfase-texto { font-size: 18px; line-height: 1.6; margin-bottom: 20px; color: var(--color-texto); }
+    .microfase-pregunta { font-size: 20px; font-weight: bold; color: var(--color-primario); margin-bottom: 20px; }
+    .microfase-botones { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+    .bloque-ensayos-oculto { display: none; }
+    .bloque-ensayos-activo { display: block; animation: fadeIn 0.5s ease; }
+
+  </style>
+</head>
+<body>
+
+<div class="lab-container">
+
+  <h1 class="lab-title">Laboratorio Experimental de Equivalencia</h1>
+
+  <div class="contador-premium">
+    Ensayos acumulados: <span id="contadorGlobal">0</span>
+  </div>
+
+  <section class="fase-premium activa" id="fase1">
+    <div class="progress-bar-container">Fase 1 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">A</span> <span class="flecha-entrenada">➔</span> <span class="nodo">B</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 1 · Entrenamiento A–B</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Estudia las relaciones directas presentadas. Observa qué estímulo del Conjunto A corresponde a qué estímulo del Conjunto B.</div>
+      <div class="nota-tecnica"><strong>Nota Técnica (Análisis Conductual):</strong> Se establece una historia de refuerzo directo. Esta es una relación explícitamente entrenada, indispensable como línea base para derivaciones futuras.</div>
+    </div>
+
+    <div class="conjuntos-grid-grande">
+      <div class="conjunto-card-grande">
+        <h3>Conjunto A</h3>
+        <p>🔵 Círculo azul</p>
+        <p>🔴 Círculo rojo</p>
+        <p>🟢 Círculo verde</p>
+      </div>
+      <div class="conjunto-card-grande">
+        <h3>Conjunto B</h3>
+        <p>UNO</p>
+        <p>DOS</p>
+        <p>TRES</p>
+      </div>
+    </div>
+
+    <div class="emparejamientos-grande">
+      🔵 → UNO &nbsp;&nbsp;|&nbsp;&nbsp; 🔴 → DOS &nbsp;&nbsp;|&nbsp;&nbsp; 🟢 → TRES
+    </div>
+
+    <button class="boton-continuar" onclick="irAFase2()">CONTINUAR</button>
+  </section>
+
+  <section class="fase-premium" id="fase2">
+    <div class="progress-bar-container">Fase 2 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">B</span> <span class="flecha-derivada">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="nodo">A</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 2 · Ensayos de Simetría A–B y B–A</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Selecciona el estímulo de comparación que corresponde a la muestra central basándote en la fase anterior.</div>
+      <div class="nota-tecnica"><strong>Nota Técnica:</strong> Prueba de Simetría. Se evalúa si la relación entrenada (A➔B) surge funcionalmente de manera inversa (B⇢A) sin haber sido entrenada directamente.</div>
+    </div>
+
+    <div class="tarjeta-central-grande" id="tarjetaMuestra">🔵</div>
+    <div class="comparaciones" id="comparaciones"></div>
+    <div class="feedback" id="feedback"></div>
+  </section>
+
+  <section class="fase-premium" id="fase3">
+    <div class="progress-bar-container">Fase 3 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">A</span> ➔ <span class="nodo">B</span> <span class="flecha-entrenada">➔</span> <span class="nodo">C</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 3 · Entrenamiento B–C</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Presta atención a las nuevas correspondencias. Los estímulos del Conjunto B ahora se vinculan a un nuevo Conjunto C.</div>
+      <div class="nota-tecnica"><strong>Nota Técnica:</strong> Expansión de la red. Al compartir el nodo "B" entre los conjuntos A y C, se generan las condiciones necesarias para evaluar la transitividad posteriormente.</div>
+    </div>
+
+    <div class="conjuntos-grid-grande">
+      <div class="conjunto-card-grande">
+        <h3>Conjunto B</h3>
+        <p>UNO</p><p>DOS</p><p>TRES</p>
+      </div>
+      <div class="conjunto-card-grande">
+        <h3>Conjunto C</h3>
+        <p>⭐ Estrella</p><p>❤️ Corazón</p><p>🌙 Luna</p>
+      </div>
+    </div>
+
+    <div class="emparejamientos-grande">
+      UNO → ⭐ &nbsp;&nbsp;|&nbsp;&nbsp; DOS → ❤️ &nbsp;&nbsp;|&nbsp;&nbsp; TRES → 🌙
+    </div>
+
+    <button class="boton-continuar" onclick="irAFase4()">CONTINUAR</button>
+  </section>
+
+  <section class="fase-premium" id="fase4">
+    <div class="progress-bar-container">Fase 4 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">C</span> <span class="flecha-derivada">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="nodo">B</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 4 · Simetría B–C y C–B</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Resuelve los ensayos de emparejamiento con la muestra.</div>
+    </div>
+
+    <div class="tarjeta-central-grande" id="tarjetaF4">UNO</div>
+    <div class="comparaciones" id="comparacionesF4"></div>
+    <div class="feedback" id="feedbackF4"></div>
+  </section>
+
+  <section class="fase-premium" id="fase5">
+    <div class="progress-bar-container">Fase 5 de 9</div>
+
+    <h2 class="fase-titulo">Fase 5 · Transitividad A–C y C–A</h2>
+
+    <div class="microfase-card" id="prediccionF5">
+      <p class="microfase-texto">
+        Hasta ahora solo has entrenado relaciones directas A–B y B–C.
+        La siguiente fase presentará relaciones A–C y C–A que no se han entrenado
+        explícitamente. Desde el punto de vista experimental, esto es una prueba
+        de <strong>transitividad</strong>.
+      </p>
+      <p class="microfase-pregunta">
+        ¿Qué crees que ocurrirá cuando se presenten estas relaciones nuevas?
+      </p>
+      <div class="microfase-botones">
+        <button class="boton-comparacion" onclick="iniciarEnsayosF5('no_sabe')">
+          No debería saber responder
+        </button>
+        <button class="boton-comparacion" onclick="iniciarEnsayosF5('si_sabe')">
+          Creo que sí responderá bien
+        </button>
+      </div>
+    </div>
+
+    <div id="bloqueEnsayosF5" class="bloque-ensayos-oculto">
+      <div class="red-relacional">
+        <span class="nodo">A</span> <span class="flecha-derivada">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="nodo">C</span>
+      </div>
+      <div class="guia-experimentador">
+        <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Empareja la muestra central con las opciones correspondientes.</div>
+        <div class="nota-tecnica"><strong>Nota Técnica:</strong> Prueba de Transitividad. Evaluamos si el control de estímulos se transfiere a través del nodo intermedio (B) para conectar estímulos que nunca se presentaron juntos.</div>
+      </div>
+
+      <div class="tarjeta-central-grande" id="tarjetaF5">🔵</div>
+      <div class="comparaciones" id="comparacionesF5"></div>
+      <div class="feedback" id="feedbackF5"></div>
+    </div>
+  </section>
+
+  <section class="fase-premium" id="fase6">
+    <div class="progress-bar-container">Fase 6 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">C</span> <span class="flecha-entrenada">➔</span> <span class="nodo">D</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 6 · Expansión de Red (C–D)</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Revisa el nuevo bloque de estímulos.</div>
+    </div>
+
+    <div class="conjuntos-grid-grande">
+      <div class="conjunto-card-grande">
+        <h3>Conjunto C</h3>
+        <p>⭐ Estrella</p><p>❤️ Corazón</p><p>🌙 Luna</p>
+      </div>
+      <div class="conjunto-card-grande">
+        <h3>Conjunto D</h3>
+        <p>🔺 Triángulo rojo</p><p>🟧 Cuadrado naranja</p><p>🟪 Cuadrado lila</p>
+      </div>
+    </div>
+
+    <div class="emparejamientos-grande">
+      ⭐ → 🔺 &nbsp;&nbsp;|&nbsp;&nbsp; ❤️ → 🟧 &nbsp;&nbsp;|&nbsp;&nbsp; 🌙 → 🟪
+    </div>
+
+    <button class="boton-continuar" onclick="irAFase7()">CONTINUAR</button>
+  </section>
+
+  <section class="fase-premium" id="fase7">
+    <div class="progress-bar-container">Fase 7 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">D</span> <span class="flecha-derivada">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="nodo">C</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 7 · Simetría C–D y D–C</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Continúa con la tarea de emparejamiento.</div>
+    </div>
+
+    <div class="tarjeta-central-grande" id="tarjetaF7">⭐</div>
+    <div class="comparaciones" id="comparacionesF7"></div>
+    <div class="feedback" id="feedbackF7"></div>
+  </section>
+
+  <section class="fase-premium" id="fase8">
+    <div class="progress-bar-container">Fase 8 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">D</span> <span class="flecha-derivada">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="nodo">A</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 8 · Derivación D–A y A–D</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Resuelve los ensayos propuestos.</div>
+      <div class="nota-tecnica"><strong>Nota Técnica:</strong> Prueba combinada (Transitividad + Simetría = Equivalencia). Los estímulos más distantes de la red se ponen a prueba sin haber sido entrenados directamente.</div>
+    </div>
+
+    <div class="tarjeta-central-grande" id="tarjetaF8">🔺</div>
+    <div class="comparaciones" id="comparacionesF8"></div>
+    <div class="feedback" id="feedbackF8"></div>
+  </section>
+
+  <section class="fase-premium" id="fase9">
+    <div class="progress-bar-container">Fase 9 de 9</div>
+    <div class="red-relacional">
+      <span class="nodo">D</span> <span class="flecha-derivada">&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="nodo">B</span>
+    </div>
+
+    <h2 class="fase-titulo">Fase 9 · Derivación D–B y B–D</h2>
+
+    <div class="guia-experimentador">
+      <div class="instruccion-operativa"><strong>Instrucción Operativa:</strong> Últimos ensayos para confirmar la red completa.</div>
+    </div>
+
+    <div class="tarjeta-central-grande" id="tarjetaF9">🔺</div>
+    <div class="comparaciones" id="comparacionesF9"></div>
+    <div class="feedback" id="feedbackF9"></div>
+  </section>
+
+  <section class="fase-premium" id="faseFinal">
+    <h2 class="fase-titulo">Resultados Finales</h2>
+
+    <div class="conjunto-card-grande" style="margin-bottom: 20px;">
+      <p>✅ Simetrías logradas: <span id="scoreSimetrias">0</span></p>
+      <p>✅ Transitividades logradas: <span id="scoreTransitividad">0</span></p>
+      <p>✅ Combinaciones aprendidas (ensayos totales): <span id="scoreCombinaciones">0</span></p>
+    </div>
+
+    <div class="microfase-card">
+      <p class="microfase-texto">
+        Has construido una red de equivalencia donde cualquier estímulo de la clase
+        puede “representar” a los demás. Como señalan Sidman y colegas, este tipo
+        de redes funciona como un <strong>modelo funcional del significado
+        semántico</strong>: lo que ocurre con un miembro de la clase puede afectar
+        a todos los demás.
+      </p>
+      <p class="microfase-texto">
+        En términos educativos, esto permite <strong>acelerar el aprendizaje</strong>:
+        entrenar algunas discriminaciones condicionales puede producir la derivación
+        de muchas otras relaciones sin entrenamiento directo. En contextos clínicos,
+        este mismo proceso ayuda a entender cómo ciertas palabras o símbolos adquieren
+        funciones emocionales sin experiencia directa con todos sus referentes.
+      </p>
+    </div>
+
+    <button class="boton-continuar" onclick="irAFaseFallo()">
+      Explorar cuándo la equivalencia no emerge
+    </button>
+  </section>
+
+  <section class="fase-premium" id="faseFallo">
+    <h2 class="fase-titulo">Cuando la equivalencia no emerge</h2>
+
+    <div class="microfase-card">
+      <p class="microfase-texto">
+        En muchos estudios, la equivalencia no aparece automáticamente.
+        Cuando falta parte de la historia de entrenamiento, o las discriminaciones
+        condicionales no están bien establecidas, las relaciones derivadas no se
+        observan. No es una “capacidad mágica” del organismo, sino el resultado
+        de una <strong>historia de aprendizaje específica</strong>.
+      </p>
+      <p class="microfase-texto">
+        Esto protege de explicaciones mentalistas: si no se cumplen reflexividad,
+        simetría y transitividad para un conjunto de estímulos, no podemos hablar
+        de clase de equivalencia. El analista de conducta debe mirar primero la
+        historia de entrenamiento y el control contextual antes de atribuir
+        “déficits internos”.
+      </p>
+    </div>
+
+    <div class="microfase-card">
+      <p class="microfase-pregunta">
+        Imagina que en tu propio desempeño hubieras fallado la transitividad A–C.
+        ¿Qué opciones explicativas encajan mejor con el análisis de conducta?
+      </p>
+      <div class="microfase-botones">
+        <button class="boton-comparacion" style="font-size:16px; padding:15px; opacity:0.7; cursor:not-allowed;" disabled>
+          “No tengo la capacidad de formar equivalencias”
+        </button>
+        <button class="boton-comparacion" style="font-size:16px; padding:15px; opacity:0.7; cursor:not-allowed;" disabled>
+          “Probablemente faltó entrenamiento o discriminación condicional”
+        </button>
+      </div>
+      <p class="microfase-texto" style="margin-top: 20px;">
+        La segunda opción es la coherente con el enfoque de Sidman y con la
+        literatura sobre equivalencia: mirar la <strong>historia de
+        entrenamiento</strong>, no inventar entidades internas para explicar la
+        conducta. 
+      </p>
+    </div>
+
+    <button class="boton-continuar" onclick="volverAFinal()">
+      Volver al resumen de resultados
+    </button>
+  </section>
+
+</div> <script>
+let contadorGlobal = 0;
+const contadorSpan = document.getElementById("contadorGlobal");
+
+function irAFase2() {
+  document.getElementById("fase1").classList.remove("activa");
+  document.getElementById("fase2").classList.add("activa");
+  cargarEnsayo();
+}
+
+const ensayos = [
+  { muestra: "🔵", correcto: "UNO", opciones: ["UNO", "DOS", "TRES"] },
+  { muestra: "🟢", correcto: "TRES", opciones: ["DOS", "TRES", "UNO"] },
+  { muestra: "🔴", correcto: "DOS", opciones: ["TRES", "UNO", "DOS"] },
+  { muestra: "UNO", correcto: "🔵", opciones: ["🟢", "🔵", "🔴"] },
+  { muestra: "DOS", correcto: "🔴", opciones: ["🔴", "🟢", "🔵"] },
+  { muestra: "TRES", correcto: "🟢", opciones: ["🔵", "🟢", "🔴"] }
+];
+
+let ensayoActual = 0;
+
+const tarjeta = document.getElementById("tarjetaMuestra");
+const comparacionesDiv = document.getElementById("comparaciones");
+const feedback = document.getElementById("feedback");
+
+function cargarEnsayo() {
+  const ensayo = ensayos[ensayoActual];
+  tarjeta.textContent = ensayo.muestra;
+  comparacionesDiv.innerHTML = "";
+  feedback.textContent = "";
+
+  ensayo.opciones.forEach(opcion => {
+    const btn = document.createElement("button");
+    btn.className = "boton-comparacion";
+    btn.textContent = opcion;
+    btn.onclick = () => verificarRespuesta(opcion, ensayo.correcto);
+    comparacionesDiv.appendChild(btn);
+  });
+}
+
+function verificarRespuesta(seleccion, correcto) {
+  contadorGlobal++;
+  contadorSpan.textContent = contadorGlobal;
+
+  if (seleccion === correcto) {
+    feedback.textContent = "✅ Correcto";
+    ensayoActual++;
+
+    if (ensayoActual < ensayos.length) {
+      setTimeout(cargarEnsayo, 1000);
+    } else {
+      feedback.textContent = "🎉 Felicitaciones, esto es SIMETRÍA";
+    setTimeout(pasarAFase3, 1800);  
+    }
+
+  } else {
+    feedback.textContent = "❌ Incorrecto";
+  }
+}
+/* ============================
+   TRANSICIÓN AUTOMÁTICA A FASE 3
+============================ */
+function pasarAFase3() {
+  document.getElementById("fase2").classList.remove("activa");
+  document.getElementById("fase3").classList.add("activa");
+   cargarEnsayoF4();
+  }
+
+/* ============================
+   FASE 4 — SIMETRÍA B–C
+============================ */
+const ensayosF4 = [
+  { muestra: "UNO", correcto: "⭐", opciones: ["⭐", "🌙", "❤️"] },
+  { muestra: "DOS", correcto: "❤️", opciones: ["🌙", "❤️", "⭐"] },
+  { muestra: "TRES", correcto: "🌙", opciones: ["❤️", "⭐", "🌙"] },
+
+  { muestra: "⭐", correcto: "UNO", opciones: ["DOS", "UNO", "TRES"] },
+  { muestra: "❤️", correcto: "DOS", opciones: ["UNO", "TRES", "DOS"] },
+  { muestra: "🌙", correcto: "TRES", opciones: ["TRES", "UNO", "DOS"] }
+];
+
+let ensayoF4 = 0;
+const tarjetaF4 = document.getElementById("tarjetaF4");
+const comparacionesF4 = document.getElementById("comparacionesF4");
+const feedbackF4 = document.getElementById("feedbackF4");
+
+function pasarAFase4() {
+  document.getElementById("fase3").classList.remove("activa");
+  document.getElementById("fase4").classList.add("activa");
+  cargarEnsayoF4();
+}
+
+function cargarEnsayoF4() {
+  const ensayo = ensayosF4[ensayoF4];
+  tarjetaF4.textContent = ensayo.muestra;
+  comparacionesF4.innerHTML = "";
+  feedbackF4.textContent = "";
+
+  ensayo.opciones.forEach(opcion => {
+    const btn = document.createElement("button");
+    btn.className = "boton-comparacion";
+    btn.textContent = opcion;
+    btn.onclick = () => verificarF4(opcion, ensayo.correcto);
+    comparacionesF4.appendChild(btn);
+  });
+}
+
+function verificarF4(seleccion, correcto) {
+  contadorGlobal++;
+  contadorSpan.textContent = contadorGlobal;
+
+  if (seleccion === correcto) {
+    feedbackF4.textContent = "✅ Correcto";
+    ensayoF4++;
+
+    if (ensayoF4 < ensayosF4.length) {
+      setTimeout(cargarEnsayoF4, 1000);
+    } else {
+      feedbackF4.textContent = "🎉 Felicitaciones, esto es SIMETRÍA";
+      setTimeout(pasarAFase5, 900);
+    }
+
+  } else {
+    feedbackF4.textContent = "❌ Incorrecto";
+  }
+}
+function irAFase4() {
+  document.getElementById("fase3").classList.remove("activa");
+  document.getElementById("fase4").classList.add("activa");
+}
+/* ============================
+   FASE 5 · TRANSITIVIDAD A–C
+============================ */
+const ensayosF5 = [
+  { muestra: "🔵", correcto: "⭐", opciones: ["⭐", "🌙", "❤️"] },
+  { muestra: "🟢", correcto: "🌙", opciones: ["❤️", "🌙", "⭐"] },
+  { muestra: "🔴", correcto: "❤️", opciones: ["🌙", "⭐", "❤️"] },
+
+  { muestra: "⭐", correcto: "🔵", opciones: ["🟢", "🔵", "🔴"] }
+];
+
+let ensayoF5 = 0;
+
+function pasarAFase5() {
+  // Salir de la Fase 4 y entrar a la Fase 5
+  document.getElementById("fase4").classList.remove("activa");
+  document.getElementById("fase5").classList.add("activa");
+
+  // Mostrar micro-fase de predicción y ocultar ensayos
+  document.getElementById("prediccionF5").style.display = "block";
+
+  const bloque = document.getElementById("bloqueEnsayosF5");
+  bloque.classList.remove("bloque-ensayos-activo");
+  bloque.classList.add("bloque-ensayos-oculto");
+}
+
+function iniciarEnsayosF5(prediccion) {
+  // Aquí podrías guardar la predicción si luego quieres analizarla
+  // por ahora solo la podríamos registrar en consola:
+  console.log("Predicción del alumno F5:", prediccion);
+
+  // Ocultamos la tarjeta de predicción
+  document.getElementById("prediccionF5").style.display = "none";
+
+  // Mostramos el bloque de ensayos
+  const bloque = document.getElementById("bloqueEnsayosF5");
+  bloque.classList.remove("bloque-ensayos-oculto");
+  bloque.classList.add("bloque-ensayos-activo");
+
+  // Y lanzamos el primer ensayo exactamente igual que antes
+  cargarEnsayoF5();
+}
+
+function cargarEnsayoF5() {
+  const ensayo = ensayosF5[ensayoF5];
+  document.getElementById("tarjetaF5").textContent = ensayo.muestra;
+  const cont = document.getElementById("comparacionesF5");
+  cont.innerHTML = "";
+  document.getElementById("feedbackF5").textContent = "";
+
+  ensayo.opciones.forEach(op => {
+    const btn = document.createElement("button");
+    btn.className = "boton-comparacion";
+    btn.textContent = op;
+    btn.onclick = () => verificarF5(op, ensayo.correcto);
+    cont.appendChild(btn);
+  });
+}
+
+function verificarF5(sel, correcto) {
+  contadorGlobal++;
+  contadorSpan.textContent = contadorGlobal;
+
+  if (sel === correcto) {
+    document.getElementById("feedbackF5").textContent = "✅ Correcto";
+    ensayoF5++;
+
+    if (ensayoF5 < ensayosF5.length) {
+      setTimeout(cargarEnsayoF5, 900);
+    } else {
+      document.getElementById("feedbackF5").textContent =
+        "🎉 Excelente, esto es TRANSITIVIDAD";
+      setTimeout(() => {
+        document.getElementById("fase5").classList.remove("activa");
+        document.getElementById("fase6").classList.add("activa");
+      }, 1200);
+    }
+  } else {
+    document.getElementById("feedbackF5").textContent = "❌ Incorrecto";
+  }
+}
+
+/* ============================
+   FASE 7 · SIMETRÍA C–D
+============================ */
+const ensayosF7 = [
+  { muestra: "⭐", correcto: "🔺", opciones: ["🔺", "🟪", "🟧"] },
+  { muestra: "❤️", correcto: "🟧", opciones: ["🟪", "🟧", "🔺"] },
+  { muestra: "🌙", correcto: "🟪", opciones: ["🟧", "🟪", "🔺"] }
+];
+
+let ensayoF7 = 0;
+
+function irAFase7() {
+  document.getElementById("fase6").classList.remove("activa");
+  document.getElementById("fase7").classList.add("activa");
+  cargarEnsayoF7();
+}
+
+function cargarEnsayoF7() {
+  const e = ensayosF7[ensayoF7];
+  document.getElementById("tarjetaF7").textContent = e.muestra;
+  const cont = document.getElementById("comparacionesF7");
+  cont.innerHTML = "";
+  document.getElementById("feedbackF7").textContent = "";
+
+  e.opciones.forEach(op => {
+    const btn = document.createElement("button");
+    btn.className = "boton-comparacion";
+    btn.textContent = op;
+    btn.onclick = () => verificarF7(op, e.correcto);
+    cont.appendChild(btn);
+  });
+}
+
+function verificarF7(sel, correcto) {
+  contadorGlobal++;
+  contadorSpan.textContent = contadorGlobal;
+
+  if (sel === correcto) {
+    document.getElementById("feedbackF7").textContent = "✅ Correcto";
+    ensayoF7++;
+
+    if (ensayoF7 < ensayosF7.length) {
+      setTimeout(cargarEnsayoF7, 900);
+    } else {
+      document.getElementById("fase7").classList.remove("activa");
+      document.getElementById("fase8").classList.add("activa");
+      cargarEnsayoF8();
+    }
+  } else {
+    document.getElementById("feedbackF7").textContent = "❌ Incorrecto";
+  }
+}
+/* ============================
+   FASE 8 · DERIVACIÓN D–A y A–D
+============================ */
+const ensayosF8 = [
+  { muestra: "🔺", correcto: "🔵", opciones: ["🔵", "🟢", "🔴"] },
+  { muestra: "🟥", correcto: "🔴", opciones: ["🔵", "🔴", "🟢"] },
+  { muestra: "🟩", correcto: "🟢", opciones: ["🟢", "🔵", "🔴"] }
+];
+
+let ensayoF8 = 0;
+
+function cargarEnsayoF8() {
+  const e = ensayosF8[ensayoF8];
+  document.getElementById("tarjetaF8").textContent = e.muestra;
+  const cont = document.getElementById("comparacionesF8");
+  cont.innerHTML = "";
+  document.getElementById("feedbackF8").textContent = "";
+
+  e.opciones.forEach(op => {
+    const btn = document.createElement("button");
+    btn.className = "boton-comparacion";
+    btn.textContent = op;
+    btn.onclick = () => verificarF8(op, e.correcto);
+    cont.appendChild(btn);
+  });
+}
+
+function verificarF8(sel, correcto) {
+  contadorGlobal++;
+  contadorSpan.textContent = contadorGlobal;
+
+  if (sel === correcto) {
+    document.getElementById("feedbackF8").textContent = "✅ Correcto";
+    ensayoF8++;
+
+    if (ensayoF8 < ensayosF8.length) {
+      setTimeout(cargarEnsayoF8, 900);
+    } else {
+      document.getElementById("feedbackF8").textContent =
+        "🎉 Felicidades, has derivado sin entrenamiento directo";
+      setTimeout(() => {
+        document.getElementById("fase8").classList.remove("activa");
+        document.getElementById("fase9").classList.add("activa");
+        cargarEnsayoF9();
+      }, 1400);
+    }
+  } else {
+    document.getElementById("feedbackF8").textContent = "❌ Incorrecto";
+  }
+}
+
+/* ============================
+   FASE 9 · DERIVACIÓN D–B y B–D
+============================ */
+const ensayosF9 = [
+  { muestra: "🔺", correcto: "UNO", opciones: ["UNO", "DOS", "TRES"] },
+  { muestra: "🟧", correcto: "DOS", opciones: ["TRES", "DOS", "UNO"] },
+  { muestra: "🟪", correcto: "TRES", opciones: ["TRES", "UNO", "DOS"] }
+];
+
+let ensayoF9 = 0;
+
+function cargarEnsayoF9() {
+  const e = ensayosF9[ensayoF9];
+  document.getElementById("tarjetaF9").textContent = e.muestra;
+  const cont = document.getElementById("comparacionesF9");
+  cont.innerHTML = "";
+  document.getElementById("feedbackF9").textContent = "";
+
+  e.opciones.forEach(op => {
+    const btn = document.createElement("button");
+    btn.className = "boton-comparacion";
+    btn.textContent = op;
+    btn.onclick = () => verificarF9(op, e.correcto);
+    cont.appendChild(btn);
+  });
+}
+
+function verificarF9(sel, correcto) {
+  contadorGlobal++;
+  contadorSpan.textContent = contadorGlobal;
+
+  if (sel === correcto) {
+    document.getElementById("feedbackF9").textContent = "✅ Correcto";
+    ensayoF9++;
+
+    if (ensayoF9 < ensayosF9.length) {
+      setTimeout(cargarEnsayoF9, 900);
+    } else {
+      document.getElementById("fase9").classList.remove("activa");
+      document.getElementById("faseFinal").classList.add("activa");
+      mostrarResultadosFinales();
+    }
+  } else {
+    document.getElementById("feedbackF9").textContent = "❌ Incorrecto";
+  }
+}
+
+/* ============================
+   RESULTADOS FINALES
+============================ */
+function mostrarResultadosFinales() {
+  // Valores simbólicos basados en tu diseño experimental
+  document.getElementById("scoreSimetrias").textContent = 12;
+  document.getElementById("scoreTransitividad").textContent = 6;
+  document.getElementById("scoreCombinaciones").textContent = contadorGlobal;
+}
+function irAFaseFallo() {
+  document.getElementById("faseFinal").classList.remove("activa");
+  document.getElementById("faseFallo").classList.add("activa");
+}
+
+function volverAFinal() {
+  document.getElementById("faseFallo").classList.remove("activa");
+  document.getElementById("faseFinal").classList.add("activa");
+}
+</script>
+</body>
+</html>
